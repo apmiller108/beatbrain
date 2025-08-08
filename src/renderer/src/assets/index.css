@@ -1,0 +1,50 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+               'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+               sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f9fa;
+}
+
+.App {
+  min-height: 100vh;
+}
+
+/* Status indicator */
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Feature preview styling */
+.feature-preview h6 {
+  color: #495057;
+  margin-bottom: 0.75rem;
+}
+
+/* Progress items */
+.progress-item {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.progress-item:last-child {
+  border-bottom: none;
+}
+
+/* Custom card shadows */
+.shadow-sm {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+/* Code styling */
+code {
+  background-color: #f8f9fa;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}

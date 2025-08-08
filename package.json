@@ -2,9 +2,12 @@
   "name": "beatbrain",
   "version": "0.1.0",
   "description": "DJ assistant and playlist creator",
-  "main": "main.js",
+  "main": "./out/main/index.js",
   "scripts": {
-    "start": "electron .",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx --fix",
+    "start": "electron-vite preview",
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
