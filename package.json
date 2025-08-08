@@ -1,0 +1,22 @@
+{
+  "name": "beatbrain",
+  "version": "0.1.0",
+  "description": "DJ assistant and playlist creator",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apmiller108/beatbrain.git"
+  },
+  "author": "Alex P. Miller",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/apmiller108/beatbrain/issues"
+  },
+  "homepage": "https://github.com/apmiller108/beatbrain#readme",
+  "devDependencies": {
+    "electron": "^37.2.6"
+  }
+}
