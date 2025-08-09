@@ -62,7 +62,7 @@ function App() {
             </p>
             <hr />
             <p className="mb-0">
-              <strong>Next:</strong> We'll integrate with your Mixxx database and add Claude AI capabilities.
+              <strong>Next:</strong> We&apos;ll integrate with your Mixxx database and add Claude AI capabilities.
             </p>
           </Alert>
         )}
@@ -181,7 +181,7 @@ function App() {
             </div>
             <div className="text-center mt-4">
               <Button variant="primary" size="lg">
-                🔨 Let's Start Building!
+                🔨 Let&apos;s Start Building!
               </Button>
             </div>
           </Card.Body>
