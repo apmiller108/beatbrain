@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Navbar, Nav, Card, Button, Alert, Badge } from 'react-bootstrap'
+import {
+  Container,
+  Navbar,
+  Nav,
+  Card,
+  Button,
+  Alert,
+  Badge,
+} from 'react-bootstrap'
 
 function App() {
   const [appInfo, setAppInfo] = useState({
     version: 'Loading...',
     platform: 'Loading...',
-    userDataPath: 'Loading...'
+    userDataPath: 'Loading...',
   })
   const [showAlert, setShowAlert] = useState(true)
 
@@ -26,12 +34,16 @@ function App() {
     loadAppInfo()
   }, [])
 
-  const getPlatformIcon = (platform) => {
+  const getPlatformIcon = platform => {
     switch (platform) {
-      case 'win32': return '🪟'
-      case 'darwin': return '🍎'
-      case 'linux': return '🐧'
-      default: return '💻'
+      case 'win32':
+        return '🪟'
+      case 'darwin':
+        return '🍎'
+      case 'linux':
+        return '🐧'
+      default:
+        return '💻'
     }
   }
   return (
@@ -41,7 +53,9 @@ function App() {
         <Container>
           <Navbar.Brand>
             🎧 BeatBrain
-            <Badge bg="secondary" className="ms-2">v{appInfo.version}</Badge>
+            <Badge bg="secondary" className="ms-2">
+              v{appInfo.version}
+            </Badge>
           </Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link href="#library">📚 Library</Nav.Link>
@@ -54,15 +68,21 @@ function App() {
       {/* Main Content */}
       <Container className="mt-4">
         {showAlert && (
-          <Alert variant="success" dismissible onClose={() => setShowAlert(false)} className="shadow-sm">
+          <Alert
+            variant="success"
+            dismissible
+            onClose={() => setShowAlert(false)}
+            className="shadow-sm">
             <Alert.Heading>🎉 Welcome to BeatBrain!</Alert.Heading>
             <p>
-              Your AI-powered DJ library management tool is ready to go! This Electron + React + Vite
-              setup gives you a solid foundation for building amazing features.
+              Your AI-powered DJ library management tool is ready to go! This
+              Electron + React + Vite setup gives you a solid foundation for
+              building amazing features.
             </p>
             <hr />
             <p className="mb-0">
-              <strong>Next:</strong> We&apos;ll integrate with your Mixxx database and add Claude AI capabilities.
+              <strong>Next:</strong> We&apos;ll integrate with your Mixxx
+              database and add Claude AI capabilities.
             </p>
           </Alert>
         )}
@@ -90,7 +110,9 @@ function App() {
                   <div className="col-12">
                     <strong>User Data Path:</strong>
                     <div className="mt-1">
-                      <code className="small text-muted">{appInfo.userDataPath}</code>
+                      <code className="small text-muted">
+                        {appInfo.userDataPath}
+                      </code>
                     </div>
                   </div>
                 </div>
@@ -155,8 +177,9 @@ function App() {
                 <div className="feature-preview">
                   <h6>📚 Smart Library Browser</h6>
                   <p className="text-muted small">
-                    Browse your entire Mixxx collection with advanced sorting, filtering,
-                    and search capabilities. View track metadata, BPM, keys, and more.
+                    Browse your entire Mixxx collection with advanced sorting,
+                    filtering, and search capabilities. View track metadata,
+                    BPM, keys, and more.
                   </p>
                 </div>
               </div>
@@ -164,8 +187,9 @@ function App() {
                 <div className="feature-preview">
                   <h6>🤖 AI Music Assistant</h6>
                   <p className="text-muted small">
-                    Chat with Claude about your music library. Get intelligent playlist
-                    suggestions based on genre, BPM, energy, and your personal taste.
+                    Chat with Claude about your music library. Get intelligent
+                    playlist suggestions based on genre, BPM, energy, and your
+                    personal taste.
                   </p>
                 </div>
               </div>
@@ -173,8 +197,8 @@ function App() {
                 <div className="feature-preview">
                   <h6>📝 Playlist Generation</h6>
                   <p className="text-muted small">
-                    Export AI-generated playlists as M3U files that you can import
-                    directly into Mixxx for your DJ sets.
+                    Export AI-generated playlists as M3U files that you can
+                    import directly into Mixxx for your DJ sets.
                   </p>
                 </div>
               </div>

@@ -5,7 +5,7 @@ const api = {
   // App info
   getVersion: () => ipcRenderer.invoke('app:getVersion'),
   getPlatform: () => ipcRenderer.invoke('app:getPlatform'),
-  getPath: (name) => ipcRenderer.invoke('app:getPath', name),
+  getPath: name => ipcRenderer.invoke('app:getPath', name),
 
   // Future database operations
   // loadDatabase: (path) => ipcRenderer.invoke('db:load', path),
