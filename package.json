@@ -7,7 +7,7 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint --fix",
-    "format": "prettier --write 'src/**/*.{js,jsx}'",
+    "format": "prettier --write 'src/**/*.{js,mjs,jsx}'",
     "start": "electron-vite preview",
     "dev": "electron-vite dev",
     "build": "electron-vite build",
