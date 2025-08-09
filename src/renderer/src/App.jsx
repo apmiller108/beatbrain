@@ -40,7 +40,7 @@ function App() {
       <Navbar bg="dark" variant="dark" expand="lg" className="shadow">
         <Container>
           <Navbar.Brand>
-            🎧 Mixxx Claude Assistant
+            🎧 BeatBrain
             <Badge bg="secondary" className="ms-2">v{appInfo.version}</Badge>
           </Navbar.Brand>
           <Nav className="me-auto">
@@ -57,7 +57,7 @@ function App() {
       <Container className="mt-4">
         {showAlert && (
           <Alert variant="success" dismissible onClose={() => setShowAlert(false)} className="shadow-sm">
-            <Alert.Heading>🎉 Welcome to Mixxx Claude Assistant!</Alert.Heading>
+            <Alert.Heading>🎉 Welcome to BeatBrain!</Alert.Heading>
             <p>
               Your AI-powered DJ library management tool is ready to go! This Electron + React + Vite
               setup gives you a solid foundation for building amazing features.
