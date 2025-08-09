@@ -1,0 +1,10 @@
+((nil . ((eval . (let ((project-root (locate-dominating-file default-directory "package.json")))
+                   (when project-root
+                     (let ((eslint-path (expand-file-name "node_modules/.bin/eslint" project-root)))
+                       (when (file-exists-p eslint-path)
+                         (setq-local flycheck-javascript-eslint-executable eslint-path)
+                         (setq-local flycheck-eslint-executable eslint-path))))))))
+ (js-mode . ((flycheck-checker . javascript-eslint)))
+ (js2-mode . ((flycheck-checker . javascript-eslint)))
+ (rjsx-mode . ((flycheck-checker . javascript-eslint)))
+ (web-mode . ((flycheck-checker . javascript-eslint))))
