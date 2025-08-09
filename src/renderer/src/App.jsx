@@ -45,9 +45,7 @@ function App() {
           </Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link href="#library">📚 Library</Nav.Link>
-            <Nav.Link href="#crates">📦 Crates</Nav.Link>
             <Nav.Link href="#playlists">📝 Playlists</Nav.Link>
-            <Nav.Link href="#claude">🤖 Claude Chat</Nav.Link>
             <Nav.Link href="#settings">⚙️ Settings</Nav.Link>
           </Nav>
         </Container>
