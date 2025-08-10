@@ -311,11 +311,12 @@ message that contained instructions for harmonic mixing.
 
 ### \<2025-08-10 Sun\> Application Database Setup
 
-• Implemented application SQLite database using better-sqlite3 library
-for storing user preferences and settings • Created AppDatabase class
+- Implemented application SQLite database using better-sqlite3 library
+for storing user preferences and settings 
+- Created AppDatabase class
 with methods for managing settings and user preferences across two
-tables (app<sub>settings</sub> and user<sub>preferences</sub>) •
-Integrated database initialization into Electron main process with
+tables (app_settings and user_preferences) 
+- Integrated database initialization into Electron main process with
 proper cleanup on app exit
 
 ## TODOs for Feature: Mixxx Database Detection
