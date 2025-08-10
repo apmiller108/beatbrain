@@ -1,5 +1,6 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
+import appDatabase from './database/appDatabase'
 // import icon from '../../resources/icon.png?asset'
 
 function createWindow() {
@@ -41,7 +42,19 @@ app.whenReady().then(() => {
     app.setAppUserModelId('com.beatbrain')
   }
 
+  try {
+    appDatabase.initialize()
+    console.log('Application database initialized successfully')
+  } catch (error) {
+    console.error('Failed to initialize application', error)
+    app.quit()
+  }
+
   createWindow()
+})
+
+app.on('before-quit', () => {
+  appDatabase.close()
 })
 
 app.on('window-all-closed', () => {
