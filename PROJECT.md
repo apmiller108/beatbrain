@@ -330,6 +330,14 @@ auto-detection logic for Windows, macOS, and Linux default locations
 
 Create module to safely connect to and query mixxxdb.sqlite
 
+### <span class="todo TODO">TODO</span> UI Database status indicator
+
+Create React component to show connection status in UI
+
+### <span class="todo TODO">TODO</span> Status bar integration
+
+Display database connection status in application status bar
+
 ### <span class="todo TODO">TODO</span> Database file monitoring
 
 Implement file system watchers to detect changes to Mixxx database
@@ -346,17 +354,10 @@ Implement events for database status updates between main and renderer
 
 ### <span class="todo TODO">TODO</span> Add IPC handler for opening file dialog to select Mixxx database
 
-### <span class="todo TODO">TODO</span> UI Database status indicator
-
-Create React component to show connection status in UI
-
 ### <span class="todo TODO">TODO</span> Manual file selection button
 
 Add UI button for browsing/selecting database file manually
 
-### <span class="todo TODO">TODO</span> Status bar integration
-
-Display database connection status in application status bar
 
 ## Core Features (Future Phases)
 
@@ -373,3 +374,4 @@ Display database connection status in application status bar
     Mixxx database
   - Search and filtering - Implement library browsing with sort/filter
     capabilities
+  - Play audio files
