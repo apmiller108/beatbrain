@@ -48,8 +48,7 @@ function App() {
   }
   return (
     <div className="App">
-      {/* Navigation Bar */}
-      <Navbar bg="dark" variant="dark" expand="lg" className="shadow">
+      <Navbar bg="dark" variant="dark" expand="md" className="shadow">
         <Container>
           <Navbar.Brand>
             🎧 BeatBrain
@@ -57,11 +56,14 @@ function App() {
               v{appInfo.version}
             </Badge>
           </Navbar.Brand>
-          <Nav className="me-auto">
-            <Nav.Link href="#library">📚 Library</Nav.Link>
-            <Nav.Link href="#playlists">📝 Playlists</Nav.Link>
-            <Nav.Link href="#settings">⚙️ Settings</Nav.Link>
-          </Nav>
+          <Navbar.Toggle></Navbar.Toggle>
+          <Navbar.Collapse>
+            <Nav className="me-auto">
+              <Nav.Link href="#library">📚 Library</Nav.Link>
+              <Nav.Link href="#playlists">📝 Playlists</Nav.Link>
+              <Nav.Link href="#settings">⚙️ Settings</Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
         </Container>
       </Navbar>
 
