@@ -50,6 +50,30 @@ app.whenReady().then(() => {
     app.quit()
   }
 
+
+  // IPC handlers
+  ipcMain.handle('app:getVersion', () => {
+    return app.getVersion()
+  })
+
+  ipcMain.handle('app:getPlatform', () => {
+    return process.platform
+  })
+
+  ipcMain.handle('app:getPath', (_, name) => {
+    return app.getPath(name)
+  })
+
+  // Future database handlers
+  // ipcMain.handle('db:load', async (_, dbPath) => {
+  //   // Database loading logic
+  // })
+
+  // Future Claude API handlers
+  // ipcMain.handle('claude:query', async (_, query) => {
+  //   // Claude API logic
+  // })
+
   createWindow()
 })
 
@@ -61,25 +85,3 @@ app.on('window-all-closed', () => {
   app.quit()
 })
 
-// IPC handlers
-ipcMain.handle('app:getVersion', () => {
-  return app.getVersion()
-})
-
-ipcMain.handle('app:getPlatform', () => {
-  return process.platform
-})
-
-ipcMain.handle('app:getPath', (_, name) => {
-  return app.getPath(name)
-})
-
-// Future database handlers
-// ipcMain.handle('db:load', async (_, dbPath) => {
-//   // Database loading logic
-// })
-
-// Future Claude API handlers
-// ipcMain.handle('claude:query', async (_, query) => {
-//   // Claude API logic
-// })
