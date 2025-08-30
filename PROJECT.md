@@ -54,14 +54,14 @@ App Name: **BeatBrain**
 ### Database Schema Integration
 
 1.  Application database
-    
+
     Schema will depend on the application state that will need to be
     persisted. Specific database schema TBD.
 
 2.  mixxxdb.sqlite
-    
+
     1.  Primary Tables
-        
+
           - **`library`**: Main track metadata (artist, title, album,
             BPM, key, genre, etc.)
           - **`track_locations`**: File paths and metadata
@@ -69,9 +69,9 @@ App Name: **BeatBrain**
           - **`crate_tracks`**: Track-to-crate relationships
           - **`Playlists`**: User playlists
           - **`PlaylistTracks`**: Playlist contents
-    
+
     2.  Metadata Available to Claude
-        
+
           - Track identification (artist, title, album)
           - Technical specs (BPM, key, duration, bitrate)
           - Categorization (genre, year, rating)
@@ -116,21 +116,21 @@ better-sqlite3 bootstrap chokidar react react-bootstrap react-dom
 ### Key UI Components
 
 1.  1\. Library Table
-    
+
       - **Columns**: Artist, Title, Album, BPM, Key, Genre, Duration,
         Rating
       - **Features**: Click-to-sort, multi-column filtering, search bar
       - **Bootstrap Components**: Table, Form controls, Input groups
 
 2.  2\. Claude Chat Interface
-    
+
       - **Chat-style interface** for natural language queries
       - **Prompt examples** for playlist generation
       - **Response display** with formatted playlist suggestions
       - **Export buttons** for generated playlists
 
 3.  3\. Settings Panel
-    
+
       - **API Key management** with secure storage
       - **Database path configuration**
       - **Export preferences**
@@ -270,7 +270,7 @@ better-sqlite3 bootstrap chokidar react react-bootstrap react-dom
 2.  Dark mode
 
 3.  Playlist description
-    
+
     Generate a Soundcloud description and tracklist to accompany the
     playlist
 
@@ -285,6 +285,37 @@ In order to have Claude consider colors, I will probably have to convert
 the decimal notation that the colors are currently stored as in the
 mixxxdb into RGB notation. Claude seems to understand RGB better than
 decimal.
+
+## Current project structure
+
+.
+├── electron.vite.config.js
+├── eslint.config.js
+├── launch.json
+├── out
+│   ├── main
+│   │   └── index.js
+│   └── preload
+│       └── index.mjs
+├── package.json
+├── package-lock.json
+├── PROJECT.md
+├── README.md
+└── src
+    ├── main
+    │   ├── database
+    │   │   └── appDatabase.js
+    │   └── index.js
+    ├── preload
+    │   └── index.mjs
+    └── renderer
+        ├── index.html
+        └── src
+            ├── App.jsx
+            ├── assets
+            │   └── index.css
+            └── main.jsx
+
 
 ## Progress
 
@@ -312,49 +343,49 @@ message that contained instructions for harmonic mixing.
 ### \<2025-08-10 Sun\> Application Database Setup
 
 - Implemented application SQLite database using better-sqlite3 library
-for storing user preferences and settings 
+for storing user preferences and settings
 - Created AppDatabase class
 with methods for managing settings and user preferences across two
-tables (app_settings and user_preferences) 
+tables (app_settings and user_preferences)
 - Integrated database initialization into Electron main process with
 proper cleanup on app exit
 
 ## TODOs for Feature: Mixxx Database Detection
 
-### <span class="todo TODO">TODO</span> Database Detection & Management
+### TODO: Database Detection & Management
 
 Platform-specific Mixxx database path detection - Implement
 auto-detection logic for Windows, macOS, and Linux default locations
 
-### <span class="todo TODO">TODO</span> Read-only Mixxx database connection
+### TODO: Read-only Mixxx database connection
 
 Create module to safely connect to and query mixxxdb.sqlite
 
-### <span class="todo TODO">TODO</span> UI Database status indicator
+### TODO: UI Database status indicator
 
 Create React component to show connection status in UI
 
-### <span class="todo TODO">TODO</span> Status bar integration
+### TODO: Status bar integration
 
 Display database connection status in application status bar
 
-### <span class="todo TODO">TODO</span> Database file monitoring
+### TODO: Database file monitoring
 
 Implement file system watchers to detect changes to Mixxx database
 
-### <span class="todo TODO">TODO</span> Database IPC handlers
+### TODO: Database IPC handlers
 
 Create main process handlers for database operations
 
-### <span class="todo TODO">TODO</span> Status communication
+### TODO: Status communication
 
 Implement events for database status updates between main and renderer
 
-### <span class="todo TODO">TODO</span> Manual file selection
+### TODO: Manual file selection
 
-### <span class="todo TODO">TODO</span> Add IPC handler for opening file dialog to select Mixxx database
+### TODO: Add IPC handler for opening file dialog to select Mixxx database
 
-### <span class="todo TODO">TODO</span> Manual file selection button
+### TODO: Manual file selection button
 
 Add UI button for browsing/selecting database file manually
 
