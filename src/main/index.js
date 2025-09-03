@@ -1,6 +1,7 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import appDatabase from './database/appDatabase'
+import mixxxDatabase from './database/mixxxDatabase'
 // import icon from '../../resources/icon.png?asset'
 
 function createWindow() {
@@ -64,21 +65,37 @@ app.whenReady().then(() => {
     return app.getPath(name)
   })
 
-  // Future database handlers
-  // ipcMain.handle('db:load', async (_, dbPath) => {
-  //   // Database loading logic
-  // })
+  // Mixxx database handlers
+  ipcMain.handle('mixxx:getStatus', () => {
+    return mixxxDatabase.getStatus()
+  })
 
-  // Future Claude API handlers
-  // ipcMain.handle('claude:query', async (_, query) => {
-  //   // Claude API logic
-  // })
+  ipcMain.handle('mixxx:connect', async(_, dbPath) => {
+    return mixxxDatabase.connect(dbPath)
+  })
+
+  ipcMain.handle('mixxx:disconnect', async() => {
+    return mixxxDatabase.disconnect()
+  })
+
+  ipcMain.handle('mixxx:getStats', async() => {
+    return mixxxDatabase.getLibraryStats()
+  })
+
+  ipcMain.handle('mixxx:getSampleTracks', async(_, limit = 10) => {
+    return mixxxDatabase.getSampleTracks(limit)
+  })
+
+  ipcMain.handle('mixxx:testConnection', () => {
+    return mixxxDatabase.testConnection()
+  })
 
   createWindow()
 })
 
 app.on('before-quit', () => {
   appDatabase.close()
+  mixxxDatabase.disconnect()
 })
 
 app.on('window-all-closed', () => {

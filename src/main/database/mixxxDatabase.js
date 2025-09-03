@@ -235,6 +235,8 @@ class MixxxDatabase {
     this.dbPath = null
     this.isConnected = false
     this.lastError = null
+
+    return this.getStatus()
   }
 }
 

@@ -7,10 +7,14 @@ const api = {
   getPlatform: () => ipcRenderer.invoke('app:getPlatform'),
   getPath: name => ipcRenderer.invoke('app:getPath', name),
 
-  // Future database operations
-  // loadDatabase: (path) => ipcRenderer.invoke('db:load', path),
-  // getTracks: () => ipcRenderer.invoke('db:getTracks'),
-  // getCrates: () => ipcRenderer.invoke('db:getCrates'),
+  mixxx: {
+    getStatus: () => ipcRenderer.invoke('mixxx:getStatus'),
+    connect: dbPath => ipcRenderer.invoke('mixxx:connect', dbPath),
+    disconnect: () => ipcRenderer.invoke('mixxx:disconnect'),
+    getStats: () => ipcRenderer.invoke('mixxx:getStats'),
+    getSampleTracks: (limit = 10) => ipcRenderer.invoke('mixxx:getSampleTracks', limit),
+    testConnection: () => ipcRenderer.invoke('mixxx:testConnection')
+  }
 
   // Future Claude API operations
   // sendQuery: (query) => ipcRenderer.invoke('claude:query', query),
