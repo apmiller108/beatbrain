@@ -44,52 +44,77 @@ function App() {
       }
     }
 
+    const connectToMixxx = async (dbPath) => {
+      try {
+        setLoading(true)
+        const result = await window.api.mixxx.connect(dbPath)
+        return result.success
+      } catch (error) {
+        console.error('Failed to connect to Mixxx:', error)
+        return false
+      } finally {
+        setLoading(false)
+      }
+    }
+
     const loadMixxxStatus = async () => {
       try {
         const status = await window.api.mixxx.getStatus()
         setMixxxStatus(status)
-
-        // Try to auto-connect if not connected
-        if (!status.isConnected) {
-          await handleConnectToMixxx()
-        }
       } catch (error) {
         console.error('Failed to load Mixxx status:', error)
       }
     }
 
-    // TODO load mixxx library stats
-    // TODO load sample tracks
+    const loadMixxxStats = async () => {
+      try {
+        const statsResult = await window.api.mixxx.getStats()
+        setMixxxStats(statsResult)
+      } catch (error) {
+        console.error('Failed to load Mixxx stats:', error)
+      }
+    }
 
-    loadAppInfo()
-    loadMixxxStatus()
+    // TODO load sample tracks
+    const loadSampleTracks = async () => {
+      try {
+        const tracksResult = await window.api.mixxx.getSampleTracks(5)
+        setSampleTracks(tracksResult)
+      } catch (error) {
+        console.error('Failed to load sample tracks:', error)
+      }
+    }
+
+    async function initialize() {
+      loadAppInfo()
+      await connectToMixxx()
+      loadMixxxStatus()
+      loadMixxxStats()
+      loadSampleTracks()
+    }
+
+    initialize()
+
   }, [])
 
   const handleConnectToMixxx = async () => {
-    setLoading(true)
     try {
-      const result = await window.api.mixxx.connect()
+      setLoading(true)
+      await window.api.mixxx.connect()
+
       const status = await window.api.mixxx.getStatus()
       setMixxxStatus(status)
-
-      if (result.success) {
-        // Load stats and sample tracks
-        const statsResult = await window.api.mixxx.getStats()
-        if (statsResult.success) {
-          setMixxxStats(statsResult.data)
-        }
-
-        const tracksResult = await window.api.mixxx.getSampleTracks(5)
-        if (tracksResult.success) {
-          setSampleTracks(tracksResult.data)
-        }
-      }
+      const stats = await window.api.mixxx.getStats()
+      setMixxxStats(stats)
+      const tracks = await window.api.mixxx.getSampleTracks(5)
+      setSampleTracks(tracks)
     } catch (error) {
       console.error('Failed to connect to Mixxx:', error)
     } finally {
       setLoading(false)
     }
   }
+
 
   const handleDisconnect = async () => {
     try {
