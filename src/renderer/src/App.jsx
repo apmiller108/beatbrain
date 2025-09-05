@@ -4,14 +4,15 @@ import {
   Navbar,
   Nav,
   Card,
-  Button,
   Alert,
   Badge,
-  Spinner,
   Table,
   Row,
   Col
 } from 'react-bootstrap'
+
+import MixxxDatabaseStatus from './MixxxDatabaseStatus'
+import SystemInformation from './SystemInformation'
 
 function App() {
   const [appInfo, setAppInfo] = useState({
@@ -135,15 +136,6 @@ function App() {
     return `${hours}h ${minutes}m`
   }
 
-  const getPlatformIcon = platform => {
-    switch (platform) {
-      case 'win32': return '🪟'
-      case 'darwin': return '🍎'
-      case 'linux': return '🐧'
-      default: return '💻'
-    }
-  }
-
   return (
     <div className="App">
       <Navbar bg="dark" variant="dark" expand="md" className="shadow">
@@ -183,95 +175,16 @@ function App() {
 
         <Row className="g-4">
           <Col lg={6}>
-            <Card className="shadow-sm h-100">
-              <Card.Header className="bg-primary text-white">
-                <h5 className="mb-0">📱 System Information</h5>
-              </Card.Header>
-              <Card.Body>
-                <Row className="g-3">
-                  <Col sm={6}>
-                    <strong>Platform:</strong>
-                    <div className="mt-1">
-                      {getPlatformIcon(appInfo.platform)} {appInfo.platform}
-                    </div>
-                  </Col>
-                  <Col sm={6}>
-                    <strong>Version:</strong>
-                    <div className="mt-1">
-                      <Badge bg="info">{appInfo.version}</Badge>
-                    </div>
-                  </Col>
-                  <Col xs={12}>
-                    <strong>User Data Path:</strong>
-                    <div className="mt-1">
-                      <code className="small text-muted">
-                        {appInfo.userDataPath}
-                      </code>
-                    </div>
-                  </Col>
-                </Row>
-                <div className="mt-3">
-                  <div className="d-flex align-items-center">
-                    <div className="status-indicator bg-success me-2"></div>
-                    <span className="text-success">Application Running</span>
-                  </div>
-                </div>
-              </Card.Body>
-            </Card>
+            <SystemInformation appInfo={appInfo} />
           </Col>
 
           <Col lg={6}>
-            <Card className="shadow-sm h-100">
-              <Card.Header className={`text-white ${mixxxStatus.isConnected ? 'bg-success' : 'bg-warning'}`}>
-                <h5 className="mb-0">🎵 Mixxx Database Status</h5>
-              </Card.Header>
-              <Card.Body>
-                <div className="d-flex align-items-center mb-3">
-                  <div className={`status-indicator ${mixxxStatus.isConnected ? 'bg-success' : 'bg-danger'} me-2`}></div>
-                  <span className={mixxxStatus.isConnected ? 'text-success' : 'text-danger'}>
-                    {mixxxStatus.isConnected ? 'Connected' : 'Disconnected'}
-                  </span>
-                </div>
-
-                {mixxxStatus.isConnected && mixxxStatus.dbPath && (
-                  <div className="mb-3">
-                    <strong>Database Path:</strong>
-                    <div className="mt-1">
-                      <code className="small text-muted">{mixxxStatus.dbPath}</code>
-                    </div>
-                  </div>
-                )}
-
-                {mixxxStatus.lastError && (
-                  <Alert variant="danger" className="small">
-                    <strong>Error:</strong> {mixxxStatus.lastError}
-                  </Alert>
-                )}
-
-                <div className="d-grid gap-2">
-                  {mixxxStatus.isConnected ? (
-                    <Button variant="outline-danger" onClick={handleDisconnect}>
-                      Disconnect
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="success"
-                      onClick={handleConnectToMixxx}
-                      disabled={loading}
-                    >
-                      {loading ? (
-                        <>
-                          <Spinner size="sm" className="me-2" />
-                          Connecting...
-                        </>
-                      ) : (
-                        'Connect to Mixxx'
-                      )}
-                    </Button>
-                  )}
-                </div>
-              </Card.Body>
-            </Card>
+            <MixxxDatabaseStatus
+              mixxxStatus={mixxxStatus}
+              onConnect={handleConnectToMixxx}
+              onDisconnect={handleDisconnect}
+              loading={loading}
+            />
           </Col>
         </Row>
 

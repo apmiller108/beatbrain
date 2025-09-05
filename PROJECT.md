@@ -292,30 +292,28 @@ decimal.
 ├── electron.vite.config.js
 ├── eslint.config.js
 ├── launch.json
-├── out
-│   ├── main
-│   │   └── index.js
-│   └── preload
-│       └── index.mjs
-├── package.json
 ├── package-lock.json
+├── package.json
 ├── PROJECT.md
 ├── README.md
 └── src
+    ├── assets
     ├── main
     │   ├── database
-    │   │   └── appDatabase.js
+    │   │   ├── appDatabase.js
+    │   │   └── mixxxDatabase.js
     │   └── index.js
     ├── preload
     │   └── index.mjs
     └── renderer
+        ├── assets
         ├── index.html
         └── src
             ├── App.jsx
             ├── assets
             │   └── index.css
-            └── main.jsx
-
+            ├── main.jsx
+            └── MixxxDatabaseStatus.jsx
 
 ## Progress
 
@@ -350,36 +348,14 @@ tables (app_settings and user_preferences)
 - Integrated database initialization into Electron main process with
 proper cleanup on app exit
 
+### \<2025-09-04 Fri\> Mixxx Database module
+- Created mixxxDatabase.js module for connecting and reading from the mixxx database.
+
 ## TODOs for Feature: Mixxx Database Detection
-
-### TODO: Database Detection & Management
-
-Platform-specific Mixxx database path detection - Implement
-auto-detection logic for Windows, macOS, and Linux default locations
-
-### TODO: Read-only Mixxx database connection
-
-Create module to safely connect to and query mixxxdb.sqlite
-
-### TODO: UI Database status indicator
-
-Create React component to show connection status in UI
 
 ### TODO: Status bar integration
 
 Display database connection status in application status bar
-
-### TODO: Database file monitoring
-
-Implement file system watchers to detect changes to Mixxx database
-
-### TODO: Database IPC handlers
-
-Create main process handlers for database operations
-
-### TODO: Status communication
-
-Implement events for database status updates between main and renderer
 
 ### TODO: Manual file selection
 

@@ -46,7 +46,7 @@ export default [
 
       // General JavaScript rules
       'no-unused-vars': 'warn',
-      'no-console': 'warn',
+      'no-console': 'off',
       'prefer-const': 'error',
       'no-var': 'error',
 
