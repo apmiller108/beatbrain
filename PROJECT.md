@@ -312,8 +312,12 @@ decimal.
             ├── App.jsx
             ├── assets
             │   └── index.css
+            ├── LibraryStats.jsx
             ├── main.jsx
-            └── MixxxDatabaseStatus.jsx
+            ├── MixxxDatabaseStatus.jsx
+            ├── SystemInformation.jsx
+            ├── TrackList.jsx
+            └── utilities.js
 
 ## Progress
 
