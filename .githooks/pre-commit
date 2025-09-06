@@ -23,7 +23,7 @@ if git diff --cached --name-only | grep -q "^PROJECT\.md$"; then
             printed_structure = 1
             next
         }
-        /^## / && in_structure && printed_structure {
+        /^#+/ && in_structure && printed_structure {
             in_structure = 0
         }
         !in_structure || !printed_structure {
