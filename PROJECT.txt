@@ -289,16 +289,17 @@ decimal.
 
 ## Current project structure
 
+```
 .
 ├── electron.vite.config.js
 ├── eslint.config.js
 ├── launch.json
-├── package-lock.json
 ├── package.json
+├── package-lock.json
 ├── PROJECT.md
+├── PROJECT.txt
 ├── README.md
 └── src
-    ├── assets
     ├── main
     │   ├── database
     │   │   ├── appDatabase.js
@@ -307,7 +308,6 @@ decimal.
     ├── preload
     │   └── index.mjs
     └── renderer
-        ├── assets
         ├── index.html
         └── src
             ├── App.jsx
@@ -318,7 +318,14 @@ decimal.
             ├── MixxxDatabaseStatus.jsx
             ├── SystemInformation.jsx
             ├── TrackList.jsx
-            └── utilities.js
+            ├── utilities.js
+            └── views
+                ├── LibraryView.jsx
+                ├── PlaylistsView.jsx
+                └── SettingsView.jsx
+
+8 directories, 24 files
+```
 
 ## Progress
 
@@ -359,42 +366,44 @@ proper cleanup on app exit
 # TODOS
 
 ## TODOs for Feature: Core Navigation & Status (Phase 1)
-### TODO: Create view routing system
-- Add navigation state management to App.jsx with default view as ‘playlist’
-- Create placeholder components for playlist, library, and settings views
-- Wire up navigation buttons/menu to switch between views
+### DONE: Create view routing system
+- [x] Add navigation state management to App.jsx with default view as ‘playlist’
+- [x] Create placeholder components for playlist, library, and settings views
+- [x] Wire up navigation buttons/menu to switch between views
 ### TODO: Implement database status display in status bar
-- Add real-time status indicator to bottom status bar (🟢 Connected, 🔴 No connection, 🟡 Locked/retry, ⚪ Not configured)
-- Connect status display to existing mixxxDatabase.js module
-- Show current connection state and update automatically
+- [ ] Add real-time status indicator to bottom status bar (🟢 Connected, 🔴 No connection, 🟡 Locked/retry, ⚪ Not configured)
+- [ ] Connect status display to existing mixxxDatabase.js module
+- [ ] Show current connection state and update automatically
 ### TODO: Add database connection prompts at startup
-- Implement auto-detection logic for Mixxx database on application startup
-- Show user-friendly connection dialog if database is found
-- Guide user to settings view if no database is found
+- [ ] Implement auto-detection logic for Mixxx database on application startup
+- [ ] Show user-friendly connection dialog if database is found
+- [ ] Guide user to settings view if no database is found
 ### TODO: Create view components directory structure
-- Create src/renderer/src/views/ directory with PlaylistView.jsx, LibraryView.jsx, SettingsView.jsx
-- Create src/renderer/src/components/ directory for reusable UI components
-- Add Navigation.jsx, StatusBar.jsx, and DatabaseStatus.jsx components
-- ## TODOs for Feature: Settings Foundation (Phase 2)
+- [x] Create src/renderer/src/views/ directory with PlaylistView.jsx, LibraryView.jsx, SettingsView.jsx
+- [ ] Create src/renderer/src/components/ directory for reusable UI components
+- [ ] Add Navigation.jsx, StatusBar.jsx, and DatabaseStatus.jsx components
+## TODOs for Feature: Settings Foundation (Phase 2)
 ### TODO: Move existing components to Settings view
-- Relocate SystemInformation component from main view to SettingsView.jsx
-- Relocate MixxxDatabaseStatus component from main view to SettingsView.jsx
+- [x] Relocate SystemInformation component from main view to SettingsView.jsx
+- [x] Relocate MixxxDatabaseStatus component from main view to SettingsView.jsx
 - Create proper Settings layout with organized sections
+### TODO: Update Library view
+- [x] Relocate TrackList and LibraryStatistics to LibraryView
+- [ ] Move datafetching from App.jsx to LibarayView.jsx
 ### TODO: Add manual database file selection to Settings
-- Implement file browser dialog for selecting mixxxdb.sqlite manually
-- Add database path validation and connection testing
-- Provide clear feedback on connection success/failure
+- [ ] Implement file browser dialog for selecting mixxxdb.sqlite manually
+- [ ] Add database path validation and connection testing
+- [ ] Provide clear feedback on connection success/failure
 ### TODO: Implement API key management in Settings
-- Add secure storage for Anthropic API key using Electron’s safeStorage API
-- Create input field with validation for API key entry
-- Add connection testing to verify API key validity
-- Ensure no plaintext storage of API credentials
+- [ ] Add secure storage for Anthropic API key using Electron’s safeStorage API
+- [ ] Create input field with validation for API key entry
+- [ ] Add connection testing to verify API key validity
+- [ ] Ensure no plaintext storage of API credentials
 ### TODO: Create reusable UI components
-- Build Navigation component for view switching
-- Build StatusBar component for bottom application status
-- Build DatabaseStatus component for connection state display
-- Ensure components follow Bootstrap styling conventions
-
+- [ ] Build Navigation component for view switching
+- [ ] Build StatusBar component for bottom application status
+- [ ] Build DatabaseStatus component for connection state display
+- [ ] Ensure components follow Bootstrap styling conventions
 
 # Core Features (Future Phases)
 

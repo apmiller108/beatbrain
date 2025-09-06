@@ -2,12 +2,48 @@
 
 # Check if PROJECT.md is staged for commit
 if git diff --cached --name-only | grep -q "^PROJECT\.md$"; then
-    echo "PROJECT.md is staged, copying to PROJECT.txt..."
+    echo "PROJECT.md is staged, updating PROJECT.txt and project structure..."
+
+    # First, update the project structure in PROJECT.md
+    if command -v tree >/dev/null 2>&1; then
+        # Create a temporary file with the updated content
+        temp_file=$(mktemp)
+
+        # Read PROJECT.md and replace the project structure section
+        awk '
+        BEGIN { in_structure = 0; printed_structure = 0 }
+        /^## Current project structure/ {
+            print $0
+            print ""
+            print "```"
+            system("tree --gitignore")
+            print "```"
+            print ""
+            in_structure = 1
+            printed_structure = 1
+            next
+        }
+        /^## / && in_structure && printed_structure {
+            in_structure = 0
+        }
+        !in_structure || !printed_structure {
+            print $0
+        }
+        ' PROJECT.md > "$temp_file"
+
+        # Replace PROJECT.md with updated content
+        mv "$temp_file" PROJECT.md
+
+        echo "Project structure updated in PROJECT.md"
+    else
+        echo "Warning: 'tree' command not found. Project structure not updated."
+    fi
 
     # Copy PROJECT.md to PROJECT.txt
-    cp PROJECT.md -f PROJECT.txt
+    cp PROJECT.md PROJECT.txt
 
-    git add PROJECT.txt
+    # Stage both files for the same commit
+    git add PROJECT.md PROJECT.txt
 
-    echo "PROJECT.txt updated and staged"
+    echo "PROJECT.txt updated and both files staged"
 fi

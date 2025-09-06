@@ -9,12 +9,13 @@ import {
   Col
 } from 'react-bootstrap'
 
-import MixxxDatabaseStatus from './MixxxDatabaseStatus'
-import SystemInformation from './SystemInformation'
-import LibraryStatistics from './LibraryStats'
-import TrackList from './TrackList'
+import PlaylistsView from './views/PlaylistsView'
+import LibraryView from './views/LibraryView'
+import SettingsView from './views/SettingsView'
 
 function App() {
+  const [currentView, setCurrentView] = useState('playlists')
+
   const [appInfo, setAppInfo] = useState({
     version: 'Loading...',
     platform: 'Loading...',
@@ -115,7 +116,6 @@ function App() {
     }
   }
 
-
   const handleDisconnect = async () => {
     try {
       await window.api.mixxx.disconnect()
@@ -125,6 +125,36 @@ function App() {
       setSampleTracks([])
     } catch (error) {
       console.error('Failed to disconnect:', error)
+    }
+  }
+
+  // Navigation handler
+  const handleNavigation = (view) => {
+    setCurrentView(view)
+  }
+
+  // Render current view
+  const renderCurrentView = () => {
+    switch (currentView) {
+      case 'library':
+        return <LibraryView
+                 mixxxStats={mixxxStats}
+                 sampleTracks={sampleTracks}
+               />
+      case 'playlists':
+        return <PlaylistsView />
+      case 'settings':
+        return (
+          <SettingsView
+            appInfo={appInfo}
+            mixxxStatus={mixxxStatus}
+            onConnect={handleConnectToMixxx}
+            onDisconnect={handleDisconnect}
+            loading={loading}
+          />
+        )
+      default:
+        return <PlaylistView />
     }
   }
 
@@ -139,9 +169,27 @@ function App() {
           <Navbar.Toggle></Navbar.Toggle>
           <Navbar.Collapse>
             <Nav className="me-auto">
-              <Nav.Link href="#library">📚 Library</Nav.Link>
-              <Nav.Link href="#playlists">📝 Playlists</Nav.Link>
-              <Nav.Link href="#settings">⚙️ Settings</Nav.Link>
+              <Nav.Link
+                active={currentView === 'library'}
+                onClick={() => handleNavigation('library')}
+                style={{ cursor: 'pointer' }}
+              >
+                📚 Library
+              </Nav.Link>
+              <Nav.Link
+                active={currentView === 'playlists'}
+                onClick={() => handleNavigation('playlists')}
+                style={{ cursor: 'pointer' }}
+              >
+                📝 Playlists
+              </Nav.Link>
+              <Nav.Link
+                active={currentView === 'settings'}
+                onClick={() => handleNavigation('settings')}
+                style={{ cursor: 'pointer' }}
+              >
+                ⚙️ Settings
+              </Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -165,25 +213,8 @@ function App() {
           </Alert>
         )}
 
-        <Row className="g-4">
-          <Col lg={6}>
-            <SystemInformation appInfo={appInfo} />
-          </Col>
-
-          <Col lg={6}>
-            <MixxxDatabaseStatus
-              mixxxStatus={mixxxStatus}
-              onConnect={handleConnectToMixxx}
-              onDisconnect={handleDisconnect}
-              loading={loading}
-            />
-          </Col>
-        </Row>
-
-        {mixxxStats && (<LibraryStatistics mixxxStats={mixxxStats} />)}
-
-        {sampleTracks.length && (<TrackList tracks={sampleTracks} />)}
-
+        {/* Render the current view */}
+        {renderCurrentView()}
       </Container>
     </div>
   )
