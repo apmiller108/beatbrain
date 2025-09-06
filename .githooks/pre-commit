@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Check if PROJECT.md is staged for commit
+if git diff --cached --name-only | grep -q "^PROJECT\.md$"; then
+    echo "PROJECT.md is staged, copying to PROJECT.txt..."
+    
+    # Copy PROJECT.md to PROJECT.txt
+    cp PROJECT.md PROJECT.txt
+    
+    echo "PROJECT.txt updated and staged"
+fi
