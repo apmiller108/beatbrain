@@ -6,6 +6,7 @@ A cross-platform Electron desktop application that provides an
 intelligent interface to Mixxx DJ software's music library using Claude
 AI for playlist generation and music discovery.
 
+
 App Name: **BeatBrain**
 
 ## Core Functionality
