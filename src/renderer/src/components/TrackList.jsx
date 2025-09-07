@@ -1,6 +1,6 @@
 import { Card, Table } from 'react-bootstrap'
 import propTypes from 'prop-types'
-import { formatDuration } from './utilities'
+import { formatDuration } from '../utilities'
 
 function TrackList({ tracks }) {
   return (

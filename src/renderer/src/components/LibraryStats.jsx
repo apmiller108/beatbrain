@@ -1,6 +1,6 @@
 import { Card, Row, Col, Badge } from 'react-bootstrap'
 import propTypes from 'prop-types'
-import { formatDuration } from './utilities'
+import { formatDuration } from '../utilities'
 
 function LibraryStatistics({ mixxxStats }) {
   return (

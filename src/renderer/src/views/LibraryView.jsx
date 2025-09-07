@@ -1,7 +1,7 @@
 import propTypes from 'prop-types'
 
-import LibraryStatistics from '../LibraryStats'
-import TrackList from '../TrackList'
+import LibraryStatistics from '../components/LibraryStats'
+import TrackList from '../components/TrackList'
 
 const LibraryView = ({ mixxxStats, sampleTracks }) => (
   <div className="text-center py-5">

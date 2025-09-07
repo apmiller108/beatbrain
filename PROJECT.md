@@ -370,23 +370,25 @@ proper cleanup on app exit
 - [x] Add navigation state management to App.jsx with default view as ‘playlist’
 - [x] Create placeholder components for playlist, library, and settings views
 - [x] Wire up navigation buttons/menu to switch between views
+### TODO: Create view components directory structure
+- [x] Create src/renderer/src/views/ directory with PlaylistView.jsx, LibraryView.jsx, SettingsView.jsx
+- [X] Create src/renderer/src/components/ directory for reusable UI components
+- [ ] Add Navigation.jsx component for view switching
 ### TODO: Implement database status display in status bar
+- [ ] Add component StatusBar.jsx
 - [ ] Add real-time status indicator to bottom status bar (🟢 Connected, 🔴 No connection, 🟡 Locked/retry, ⚪ Not configured)
 - [ ] Connect status display to existing mixxxDatabase.js module
 - [ ] Show current connection state and update automatically
 ### TODO: Add database connection prompts at startup
+- [ ] Build DatabaseStatus component for connection state display
 - [ ] Implement auto-detection logic for Mixxx database on application startup
 - [ ] Show user-friendly connection dialog if database is found
 - [ ] Guide user to settings view if no database is found
-### TODO: Create view components directory structure
-- [x] Create src/renderer/src/views/ directory with PlaylistView.jsx, LibraryView.jsx, SettingsView.jsx
-- [ ] Create src/renderer/src/components/ directory for reusable UI components
-- [ ] Add Navigation.jsx, StatusBar.jsx, and DatabaseStatus.jsx components
 ## TODOs for Feature: Settings Foundation (Phase 2)
 ### TODO: Move existing components to Settings view
 - [x] Relocate SystemInformation component from main view to SettingsView.jsx
 - [x] Relocate MixxxDatabaseStatus component from main view to SettingsView.jsx
-- Create proper Settings layout with organized sections
+- [ ] Create proper Settings layout with organized sections
 ### TODO: Update Library view
 - [x] Relocate TrackList and LibraryStatistics to LibraryView
 - [ ] Move datafetching from App.jsx to LibarayView.jsx
@@ -399,11 +401,6 @@ proper cleanup on app exit
 - [ ] Create input field with validation for API key entry
 - [ ] Add connection testing to verify API key validity
 - [ ] Ensure no plaintext storage of API credentials
-### TODO: Create reusable UI components
-- [ ] Build Navigation component for view switching
-- [ ] Build StatusBar component for bottom application status
-- [ ] Build DatabaseStatus component for connection state display
-- [ ] Ensure components follow Bootstrap styling conventions
 
 # Core Features (Future Phases)
 
@@ -415,7 +412,8 @@ proper cleanup on app exit
   queries
 - Playlist generation - Implement AI-powered playlist creation
 - M3U export functionality - Generate and export playlists in M3U
-  format
+  format. Edit playlists after they are generated. Regenerate playlist.
+  Music player to preview tracks
 - Library table display - Show tracks, crates, and playlists from
   Mixxx database
 - Search and filtering - Implement library browsing with sort/filter

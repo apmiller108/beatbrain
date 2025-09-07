@@ -4,8 +4,8 @@ import {
 } from 'react-bootstrap'
 import propTypes from 'prop-types'
 
-import MixxxDatabaseStatus from '../MixxxDatabaseStatus'
-import SystemInformation from '../SystemInformation'
+import MixxxDatabaseStatus from '../components/MixxxDatabaseStatus'
+import SystemInformation from '../components/SystemInformation'
 
 const SettingsView = ({ appInfo, mixxxStatus, onConnect, onDisconnect, loading }) => (
   <div>
