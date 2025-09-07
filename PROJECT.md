@@ -313,18 +313,19 @@ decimal.
             ├── App.jsx
             ├── assets
             │   └── index.css
-            ├── LibraryStats.jsx
+            ├── components
+            │   ├── LibraryStats.jsx
+            │   ├── MixxxDatabaseStatus.jsx
+            │   ├── SystemInformation.jsx
+            │   └── TrackList.jsx
             ├── main.jsx
-            ├── MixxxDatabaseStatus.jsx
-            ├── SystemInformation.jsx
-            ├── TrackList.jsx
             ├── utilities.js
             └── views
                 ├── LibraryView.jsx
                 ├── PlaylistsView.jsx
                 └── SettingsView.jsx
 
-8 directories, 24 files
+9 directories, 24 files
 ```
 
 ## Progress
@@ -401,6 +402,14 @@ proper cleanup on app exit
 - [ ] Create input field with validation for API key entry
 - [ ] Add connection testing to verify API key validity
 - [ ] Ensure no plaintext storage of API credentials
+## TODOs for Feature: Playlist generation (Phase 1)
+- [ ] TODO: build module to making requests to Anthropic's claude. Add @anthropic-ai/sdk npm package
+## TODOs for Feature: Playlist generation (Phase 2)
+## TODOs for Feature: Enahanced library view
+- [ ] TODO: More stats
+- [ ] TODO: search
+- [ ] TODO: filter tracks
+- [ ] TODO: data visulization (show how library has evolved over time)
 
 # Core Features (Future Phases)
 
