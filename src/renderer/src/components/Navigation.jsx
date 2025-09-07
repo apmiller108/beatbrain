@@ -1,5 +1,5 @@
 import { Nav } from 'react-bootstrap';
-import { propTypes } from 'react-bootstrap/esm/Image';
+import propTypes from 'prop-types';
 
 const Navigation = ({ view, setView }) => {
   return (

@@ -13,6 +13,7 @@ import PlaylistsView from './views/PlaylistsView'
 import LibraryView from './views/LibraryView'
 import SettingsView from './views/SettingsView'
 import Navigation from './components/Navigation'
+import StatusBar from './components/StatusBar'
 
 function App() {
   const [currentView, setCurrentView] = useState('playlists')
@@ -195,6 +196,7 @@ function App() {
           </Col>
         </Row>
       </Container>
+      <StatusBar mixxxStatus={mixxxStatus} />
     </div>
   )
 }
