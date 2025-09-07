@@ -373,11 +373,11 @@ proper cleanup on app exit
 - [x] Add navigation state management to App.jsx with default view as ‘playlist’
 - [x] Create placeholder components for playlist, library, and settings views
 - [x] Wire up navigation buttons/menu to switch between views
-### TODO: Create view components directory structure
+### DONE: Create view components directory structure
 - [x] Create src/renderer/src/views/ directory with PlaylistView.jsx, LibraryView.jsx, SettingsView.jsx
-- [X] Create src/renderer/src/components/ directory for reusable UI components
+- [x] Create src/renderer/src/components/ directory for reusable UI components
 - [x] Add Navigation.jsx component for view switching
-### TODO: Implement database status display in status bar
+### DONE: Implement database status display in status bar
 - [x] Add component StatusBar.jsx
 - [x] Add real-time status indicator to bottom status bar (🟢 Connected, 🔴 No connection, 🟡 Locked/retry, ⚪ Not configured)
 - [x] Connect status display to existing mixxxDatabase.js module
