@@ -316,6 +316,7 @@ decimal.
             ├── components
             │   ├── LibraryStats.jsx
             │   ├── MixxxDatabaseStatus.jsx
+            │   ├── Navigation.jsx
             │   ├── SystemInformation.jsx
             │   └── TrackList.jsx
             ├── main.jsx
@@ -325,7 +326,7 @@ decimal.
                 ├── PlaylistsView.jsx
                 └── SettingsView.jsx
 
-9 directories, 24 files
+9 directories, 25 files
 ```
 
 ## Progress
@@ -374,7 +375,7 @@ proper cleanup on app exit
 ### TODO: Create view components directory structure
 - [x] Create src/renderer/src/views/ directory with PlaylistView.jsx, LibraryView.jsx, SettingsView.jsx
 - [X] Create src/renderer/src/components/ directory for reusable UI components
-- [ ] Add Navigation.jsx component for view switching
+- [x] Add Navigation.jsx component for view switching
 ### TODO: Implement database status display in status bar
 - [ ] Add component StatusBar.jsx
 - [ ] Add real-time status indicator to bottom status bar (🟢 Connected, 🔴 No connection, 🟡 Locked/retry, ⚪ Not configured)

@@ -12,6 +12,7 @@ import {
 import PlaylistsView from './views/PlaylistsView'
 import LibraryView from './views/LibraryView'
 import SettingsView from './views/SettingsView'
+import Navigation from './components/Navigation'
 
 function App() {
   const [currentView, setCurrentView] = useState('playlists')
@@ -128,11 +129,6 @@ function App() {
     }
   }
 
-  // Navigation handler
-  const handleNavigation = (view) => {
-    setCurrentView(view)
-  }
-
   // Render current view
   const renderCurrentView = () => {
     switch (currentView) {
@@ -154,67 +150,50 @@ function App() {
           />
         )
       default:
-        return <PlaylistView />
+        return <PlaylistsView />
     }
   }
 
   return (
     <div className="App">
-      <Navbar bg="dark" variant="dark" expand="md" className="shadow">
-        <Container>
-          <Navbar.Brand>
-            🎧 BeatBrain
-            <Badge bg="secondary" className="ms-2">v{appInfo.version}</Badge>
-          </Navbar.Brand>
-          <Navbar.Toggle></Navbar.Toggle>
-          <Navbar.Collapse>
-            <Nav className="me-auto">
-              <Nav.Link
-                active={currentView === 'library'}
-                onClick={() => handleNavigation('library')}
-                style={{ cursor: 'pointer' }}
-              >
-                📚 Library
-              </Nav.Link>
-              <Nav.Link
-                active={currentView === 'playlists'}
-                onClick={() => handleNavigation('playlists')}
-                style={{ cursor: 'pointer' }}
-              >
-                📝 Playlists
-              </Nav.Link>
-              <Nav.Link
-                active={currentView === 'settings'}
-                onClick={() => handleNavigation('settings')}
-                style={{ cursor: 'pointer' }}
-              >
-                ⚙️ Settings
-              </Nav.Link>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+      <Container fluid>
+        <Row>
+          <Col md={2} className="p-0">
+            <Navigation view={currentView} setView={setCurrentView} />
+          </Col>
+          <Col md={10}>
+            <Container className="mt-4">
+              <Navbar bg="dark" variant="dark" expand="md" className="shadow mb-4">
+                <Container>
+                  <Navbar.Brand>
+                    🎧 BeatBrain
+                    <Badge bg="secondary" className="ms-2">v{appInfo.version}</Badge>
+                  </Navbar.Brand>
+                </Container>
+              </Navbar>
 
-      <Container className="mt-4">
-        {showAlert && (
-          <Alert
-            variant="success"
-            dismissible
-            onClose={() => setShowAlert(false)}
-            className="shadow-sm">
-            <Alert.Heading>🎉 Welcome to BeatBrain!</Alert.Heading>
-            <p>
-              Your AI-powered DJ library management tool is ready to go!
-              {mixxxStatus.isConnected ?
-                " We've successfully connected to your Mixxx database!" :
-                " Let's connect to your Mixxx database to get started."
-              }
-            </p>
-          </Alert>
-        )}
+              {showAlert && (
+                <Alert
+                  variant="success"
+                  dismissible
+                  onClose={() => setShowAlert(false)}
+                  className="shadow-sm">
+                  <Alert.Heading>🎉 Welcome to BeatBrain!</Alert.Heading>
+                  <p>
+                    Your AI-powered DJ library management tool is ready to go!
+                    {mixxxStatus.isConnected ?
+                      " We've successfully connected to your Mixxx database!" :
+                      " Let's connect to your Mixxx database to get started."
+                    }
+                  </p>
+                </Alert>
+              )}
 
-        {/* Render the current view */}
-        {renderCurrentView()}
+              {/* Render the current view */}
+              {renderCurrentView()}
+            </Container>
+          </Col>
+        </Row>
       </Container>
     </div>
   )
