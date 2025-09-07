@@ -89,7 +89,7 @@ App Name: **BeatBrain**
 
 ## Dependencies
 
-better-sqlite3 bootstrap chokidar react react-bootstrap react-dom
+better-sqlite3 bootstrap chokidar react react-bootstrap react-bootstrap-icons react-dom
 
 ## User Interface Design
 

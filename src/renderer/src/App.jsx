@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react'
 import {
   Container,
   Navbar,
-  Nav,
   Alert,
   Badge,
   Row,
   Col
 } from 'react-bootstrap'
+import { Headphones } from 'react-bootstrap-icons';
 
 import PlaylistsView from './views/PlaylistsView'
 import LibraryView from './views/LibraryView'
@@ -167,8 +167,11 @@ function App() {
               <Navbar bg="dark" variant="dark" expand="md" className="shadow mb-4">
                 <Container>
                   <Navbar.Brand>
-                    🎧 BeatBrain
-                    <Badge bg="secondary" className="ms-2">v{appInfo.version}</Badge>
+                    <div className="d-flex justify-content-start align-items-center">
+                      <Headphones color="royalblue" size={30} />
+                      <span className="mx-2">BeatBrain</span>
+                      <Badge bg="secondary" className="ms-2">v{appInfo.version}</Badge>
+                    </div>
                   </Navbar.Brand>
                 </Container>
               </Navbar>
