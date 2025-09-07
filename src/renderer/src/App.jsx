@@ -199,7 +199,7 @@ function App() {
           </Col>
         </Row>
       </Container>
-      <StatusBar mixxxStatus={mixxxStatus} />
+      <StatusBar mixxxStatus={mixxxStatus} loading={loading} appInfo={appInfo} />
     </div>
   )
 }
