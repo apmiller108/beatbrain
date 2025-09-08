@@ -1,7 +1,5 @@
-import {
-  Row,
-  Col
-} from 'react-bootstrap'
+import { Row, Col } from 'react-bootstrap'
+import { Gear } from 'react-bootstrap-icons';
 import propTypes from 'prop-types'
 
 import MixxxDatabaseStatus from '../components/MixxxDatabaseStatus'
@@ -9,7 +7,10 @@ import SystemInformation from '../components/SystemInformation'
 
 const SettingsView = ({ appInfo, mixxxStatus, onConnect, onDisconnect, loading }) => (
   <div>
-    <h2 className="mb-4">⚙️ Settings</h2>
+    <h2 className="mb-4 d-flex justify-content-start align-items-center">
+      <Gear className="me-1"/>
+      Settings
+    </h2>
     <Row className="g-4">
       <Col lg={6}>
         <SystemInformation appInfo={appInfo} />

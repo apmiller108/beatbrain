@@ -1,12 +1,13 @@
 import { Card, Table } from 'react-bootstrap'
 import propTypes from 'prop-types'
+import { MusicNoteBeamed } from 'react-bootstrap-icons'
 import { formatDuration } from '../utilities'
 
 function TrackList({ tracks }) {
   return (
     <Card className="mt-4 shadow-sm">
       <Card.Header className="bg-dark text-white">
-        <h5 className="mb-0">🎵 Sample Tracks</h5>
+        <h5 className="mb-0"><MusicNoteBeamed className="me-2" /> Sample Tracks</h5>
       </Card.Header>
       <Card.Body>
         <Table responsive striped hover>

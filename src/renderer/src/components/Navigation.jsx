@@ -1,5 +1,6 @@
 import { Nav } from 'react-bootstrap';
 import propTypes from 'prop-types';
+import { Gear, CollectionPlay, MusicNoteList } from 'react-bootstrap-icons';
 
 const Navigation = ({ view, setView }) => {
   return (
@@ -11,17 +12,17 @@ const Navigation = ({ view, setView }) => {
     >
       <Nav.Item>
         <Nav.Link eventKey="library">
-          📚 Library
+          <CollectionPlay className="me-2" /> Library
         </Nav.Link>
       </Nav.Item>
       <Nav.Item>
         <Nav.Link eventKey="playlists">
-          📝 Playlists
+          <MusicNoteList className="me-2" /> Playlists
         </Nav.Link>
       </Nav.Item>
       <Nav.Item>
         <Nav.Link eventKey="settings">
-          ⚙️ Settings
+          <Gear className="me-2" /> Settings
         </Nav.Link>
       </Nav.Item>
     </Nav>

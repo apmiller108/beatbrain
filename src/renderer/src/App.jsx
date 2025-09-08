@@ -163,14 +163,13 @@ function App() {
             <Navigation view={currentView} setView={setCurrentView} />
           </Col>
           <Col md={10}>
-            <Container className="mt-4">
+            <Container className="mt-3">
               <Navbar bg="dark" variant="dark" expand="md" className="shadow mb-4">
                 <Container>
                   <Navbar.Brand>
                     <div className="d-flex justify-content-start align-items-center">
                       <Headphones color="royalblue" size={30} />
                       <span className="mx-2">BeatBrain</span>
-                      <Badge bg="secondary" className="ms-2">v{appInfo.version}</Badge>
                     </div>
                   </Navbar.Brand>
                 </Container>
