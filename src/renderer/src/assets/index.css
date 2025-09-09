@@ -48,3 +48,8 @@ code {
   border-radius: 0.25rem;
   font-size: 0.875em;
 }
+
+.beatbrain-logo {
+  width: 4rem;
+  margin: -1rem;
+}

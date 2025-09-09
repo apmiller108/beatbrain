@@ -3,17 +3,16 @@ import {
   Container,
   Navbar,
   Alert,
-  Badge,
   Row,
   Col
 } from 'react-bootstrap'
-import { Headphones } from 'react-bootstrap-icons';
 
 import PlaylistsView from './views/PlaylistsView'
 import LibraryView from './views/LibraryView'
 import SettingsView from './views/SettingsView'
 import Navigation from './components/Navigation'
 import StatusBar from './components/StatusBar'
+import logo from './assets/beatbrain_logo.png'
 
 function App() {
   const [currentView, setCurrentView] = useState('playlists')
@@ -166,10 +165,10 @@ function App() {
             <Container className="mt-3">
               <Navbar bg="dark" variant="dark" expand="md" className="shadow mb-4">
                 <Container>
-                  <Navbar.Brand>
+                  <Navbar.Brand className="p-2">
                     <div className="d-flex justify-content-start align-items-center">
-                      <Headphones color="royalblue" size={30} />
-                      <span className="mx-2">BeatBrain</span>
+                      <img className="beatbrain-logo" src={logo} alt="BeatBrain"/>
+                      <span className="ms-4">BeatBrain</span>
                     </div>
                   </Navbar.Brand>
                 </Container>
