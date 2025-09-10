@@ -1,9 +1,11 @@
-
+import { MusicNoteList } from "react-bootstrap-icons"
 
 const PlaylistsView = () => (
-  <div className="text-center py-5">
-    <h2>📝 Playlist View</h2>
-    <p className="text-muted">AI-powered playlist generation coming soon...</p>
+  <div>
+    <h2 className="mb-4 d-flex justify-content-start align-items-center">
+      <MusicNoteList className="me-2" />
+      Playlists
+    </h2>
   </div>
 )
 
