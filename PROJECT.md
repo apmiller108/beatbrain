@@ -50,14 +50,27 @@ App Name: **BeatBrain**
   - **Backend**: Electron main process with Node.js
   - **Database**: SQLite3 with read-only access
   - **AI Integration**: Anthropic Claude API
-  - **File Monitoring**: Node.js file system watchers
 
 ### Database Schema Integration
 
-1.  Application database
+1.  Application database (beatbrain.sqlite)
 
-    Schema will depend on the application state that will need to be
-    persisted. Specific database schema TBD.
+```sql
+CREATE TABLE app_settings (
+          key TEXT PRIMARY KEY,
+          value TEXT NOT NULL,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+CREATE TABLE user_preferences (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          category TEXT NOT NULL,
+          key TEXT NOT NULL,
+          value TEXT NOT NULL,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE(category, key)
+        );
+CREATE TABLE sqlite_sequence(name,seq);
+```
 
 2.  mixxxdb.sqlite
 
@@ -88,8 +101,10 @@ App Name: **BeatBrain**
 | **Linux**   | `~/.mixxx/mixxxdb.sqlite`                                                                    |
 
 ## Dependencies
-
 better-sqlite3 bootstrap chokidar react react-bootstrap react-bootstrap-icons react-dom
+
+## Dev Dependencies
+eslint, electron, electron-rebuild, electron-vite
 
 ## User Interface Design
 
@@ -312,6 +327,8 @@ decimal.
         └── src
             ├── App.jsx
             ├── assets
+            │   ├── beatbrain_logo.png
+            │   ├── beatbrain_logo.svg
             │   └── index.css
             ├── components
             │   ├── LibraryStats.jsx
@@ -327,14 +344,14 @@ decimal.
                 ├── PlaylistsView.jsx
                 └── SettingsView.jsx
 
-9 directories, 26 files
+9 directories, 28 files
 ```
 
 ## Progress
 
 ### \<2025-08-01 Fri\> Proof of concept 1
 
-Used Claude to produce a hypinotic techno playlist. It was good.
+Used Claude to produce a hypnotic techno playlist. It was good.
 
 ### \<2025-08-08 Fri\> Proof of concept 2
 
@@ -342,14 +359,7 @@ Used Claude to produce another techno playlist with a custom system
 message that contained instructions for harmonic mixing.
 
 ### \<2025-08-08 Fri\> Scafolded Electon app
-
-  - setup Electron desktop application using React, Bootstrap, and Vite.
-  - resolved several setup issues including missing dependencies
-    (@electron-toolkit/utils), file path resolution errors with the
-    React entry point, default export problems in the App component, and
-    Content Security Policy violations caused by Bootstrap’s inline SVG
-    icons in dismissible alerts.
-  - The application now runs successfully with a Bootstrap UI
+setup Electron desktop application using React, Bootstrap, and Vite.
 
 ### \<2025-08-10 Sun\> Added ESlint and Prettier
 
@@ -383,10 +393,17 @@ proper cleanup on app exit
 - [x] Connect status display to existing mixxxDatabase.js module
 - [x] Show current connection state and update automatically
 ### TODO: Add database connection prompts at startup
-- [ ] Build DatabaseStatus component for connection state display
-- [ ] Implement auto-detection logic for Mixxx database on application startup
-- [ ] Show user-friendly connection dialog if database is found
-- [ ] Guide user to settings view if no database is found
+- [ ] Implement auto-detection logic for Mixxx database on application startup. Update the existing logic to not automatically connect to Mixxx.
+- [ ] Create DatabaseConnectionModal component - Main dialog for connection prompts
+- [ ] Show user-friendly connection dialog if database is found. Ask user if they want to connect to the database that was autodetected.
+- [ ] provide option to manually select the Mixxx database path on local file system.
+- [ ] If no Mixxx database is auto detected, show option to select database path on local file system
+- [ ] Have checkbox to "remember my choice" / "do not prompt again", If
+      selected, store the choice in the application database and use that to
+      autmatically connect to the database.
+- [ ] Update MixxxDatabaseStatus component to allow to changing database. This is used on the Settings View. If the user dismisses the modal, they can still go to settings to set it up.
+- [ ] Make the database icon in the StatusBar component clickable. Brings up modal that contains the MixxxDatabaseStatus component
+## TODOS for setting up a test suite
 ## TODOs for Feature: Settings Foundation (Phase 2)
 ### TODO: Move existing components to Settings view
 - [x] Relocate SystemInformation component from main view to SettingsView.jsx
