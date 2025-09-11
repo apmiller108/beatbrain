@@ -44,6 +44,7 @@ function DatabaseConnectionModal({
       keyboard={false}
       centered
       size="lg"
+      className="database-connection-modal"
     >
       <Modal.Header>
         <Modal.Title>
@@ -65,6 +66,7 @@ function DatabaseConnectionModal({
               type="radio"
               id="auto-detect"
               name="connectionOption"
+              className="auto-detect-option"
               label={
                 <div>
                   <strong>Use auto-detected database</strong>
@@ -84,7 +86,7 @@ function DatabaseConnectionModal({
             type="radio"
             id="manual-select"
             name="connectionOption"
-            label="Select database file manually"
+            label="Select database file"
             checked={selectedOption === 'manual'}
             onChange={() => setSelectedOption('manual')}
           />

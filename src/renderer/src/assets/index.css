@@ -53,3 +53,11 @@ code {
   width: 4rem;
   margin: -1rem;
 }
+
+.database-connection-modal {
+  .auto-detect-option {
+    label {
+      width: 100%;
+    }
+  }
+}

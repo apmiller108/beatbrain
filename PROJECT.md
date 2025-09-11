@@ -166,16 +166,6 @@ eslint, electron, electron-rebuild, electron-vite
 - searchLibrary(query)
 ```
 
-### File System Monitoring
-
-``` javascript
-// Watch for database changes
-- watchDatabaseFile()
-- handleDatabaseUpdate()
-- refreshLibraryData()
-- notifyUserOfChanges()
-```
-
 ### Claude Integration
 
 ``` javascript
@@ -260,14 +250,6 @@ eslint, electron, electron-rebuild, electron-vite
 
 ## Questions and considerations
 
-### Database monitoring
-
-  - How frequently to poll for changes?
-  - Consider using SQLite’s PRAGMA user<sub>version</sub> to detect
-    schema changes
-  - Might want to hash the database file or check modification
-    timestamps before doing full refreshes.
-
 ### Claude context management
 
   - How to handle large libraries that may exceed context window?
@@ -289,11 +271,6 @@ eslint, electron, electron-rebuild, electron-vite
 
     Generate a Soundcloud description and tracklist to accompany the
     playlist
-
-### Electron security
-
-  - Should I disable nodejs integration in renderer process?
-  - Should I use context isolation?
 
 ### Colors
 
@@ -368,9 +345,9 @@ setup Electron desktop application using React, Bootstrap, and Vite.
 
 - Implemented application SQLite database using better-sqlite3 library
 for storing user preferences and settings
-- Created AppDatabase class
+- Created `appDatabase.js` class
 with methods for managing settings and user preferences across two
-tables (app_settings and user_preferences)
+tables (`app_settings` and `user_preferences`)
 - Integrated database initialization into Electron main process with
 proper cleanup on app exit
 
