@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import appDatabase from './database/appDatabase'
 import mixxxDatabase from './database/mixxxDatabase'
@@ -88,6 +88,31 @@ app.whenReady().then(() => {
 
   ipcMain.handle('mixxx:testConnection', () => {
     return mixxxDatabase.testConnection()
+  })
+
+  ipcMain.handle('app:selectDatabaseFile', async () => {
+    const result = await dialog.showOpenDialog({
+      title: 'Select Mixxx Database File',
+      filters: [
+        { name: 'SQLite Database', extensions: ['sqlite', 'db'] },
+        { name: 'All Files', extensions: ['*'] }
+      ],
+      properties: ['openFile']
+    })
+
+    if (!result.canceled && result.filePaths.length > 0) {
+      return result.filePaths[0]
+    }
+    return null
+  })
+
+  // User preferences handlers
+  ipcMain.handle('app:getUserPreference', async (_, category, key) => {
+    return appDatabase.getUserPreference(category, key)
+  })
+
+  ipcMain.handle('app:setUserPreference', async (_, category, key, value) => {
+    return appDatabase.setUserPreference(category, key, value)
   })
 
   createWindow()

@@ -1,4 +1,4 @@
-import { Navbar, Container, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Navbar, Container, OverlayTrigger, Tooltip, Button } from 'react-bootstrap'
 import {
   CheckCircleFill,
   XCircleFill,
@@ -12,7 +12,7 @@ const StatusBar = ({ mixxxStatus, loading, appInfo }) => {
     // Loading/retry state
     if (loading) {
       return {
-        icon: <ExclamationTriangleFill className="text-warning me-2" />,
+        icon: <ExclamationTriangleFill className="text-warning" />,
         text: "Connecting to Mixxx database...",
         variant: "warning",
         tooltip: "Attempting to connect to database"
@@ -22,7 +22,7 @@ const StatusBar = ({ mixxxStatus, loading, appInfo }) => {
     // Connected state
     if (mixxxStatus.isConnected && mixxxStatus.dbPath) {
       return {
-        icon: <CheckCircleFill className="text-success me-2" />,
+        icon: <CheckCircleFill className="text-success" />,
         text: "Connected to Mixxx database",
         variant: "success",
         tooltip: `Database: ${mixxxStatus.dbPath}`
@@ -32,7 +32,7 @@ const StatusBar = ({ mixxxStatus, loading, appInfo }) => {
     // Not configured state
     if (!mixxxStatus.dbPath) {
       return {
-        icon: <Circle className="text-secondary me-2" />,
+        icon: <Circle className="text-secondary" />,
         text: "Mixxx database not configured",
         variant: "secondary",
         tooltip: "No database path configured. Go to Settings to connect."
@@ -41,7 +41,7 @@ const StatusBar = ({ mixxxStatus, loading, appInfo }) => {
 
     // Disconnected/error state
     return {
-      icon: <XCircleFill className="text-danger me-2" />,
+      icon: <XCircleFill className="text-danger" />,
       text: "Disconnected from Mixxx database",
       variant: "danger",
       tooltip: mixxxStatus.lastError
@@ -51,6 +51,12 @@ const StatusBar = ({ mixxxStatus, loading, appInfo }) => {
   };
 
   const statusContent = getStatusContent()
+
+  const handleDatabaseClick = () => {
+    // This could open the connection modal or navigate to settings
+    // logging for now
+    console.log('Database status clicked')
+  }
 
   return (
     <Navbar fixed="bottom" bg="light" variant="light" className="border-top shadow-sm">
@@ -64,11 +70,12 @@ const StatusBar = ({ mixxxStatus, loading, appInfo }) => {
           }
         >
           <small className={`d-flex align-items-center text-${statusContent.variant}`}>
-            {statusContent.icon}
+            <Button variant="outline-light" size="sm" onClick={handleDatabaseClick}>
+              {statusContent.icon}
+            </Button>
             <span>{statusContent.text}</span>
           </small>
         </OverlayTrigger>
-        {/* Optional: Add app info on the right side */}
         <small className="text-muted">
           BeatBrain v{appInfo.version}
         </small>

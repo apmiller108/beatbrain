@@ -331,6 +331,7 @@ decimal.
             │   ├── beatbrain_logo.svg
             │   └── index.css
             ├── components
+            │   ├── DatabaseConnectionModal.jsx
             │   ├── LibraryStats.jsx
             │   ├── MixxxDatabaseStatus.jsx
             │   ├── Navigation.jsx
@@ -344,7 +345,7 @@ decimal.
                 ├── PlaylistsView.jsx
                 └── SettingsView.jsx
 
-9 directories, 28 files
+9 directories, 29 files
 ```
 
 ## Progress
@@ -393,12 +394,12 @@ proper cleanup on app exit
 - [x] Connect status display to existing mixxxDatabase.js module
 - [x] Show current connection state and update automatically
 ### TODO: Add database connection prompts at startup
-- [ ] Implement auto-detection logic for Mixxx database on application startup. Update the existing logic to not automatically connect to Mixxx.
-- [ ] Create DatabaseConnectionModal component - Main dialog for connection prompts
-- [ ] Show user-friendly connection dialog if database is found. Ask user if they want to connect to the database that was autodetected.
-- [ ] provide option to manually select the Mixxx database path on local file system.
+- [x] Implement auto-detection logic for Mixxx database on application startup. Update the existing logic to not automatically connect to Mixxx.
+- [x] Create DatabaseConnectionModal component - Main dialog for connection prompts
+- [x] Show user-friendly connection dialog if database is found. Ask user if they want to connect to the database that was autodetected.
+- [x] provide option to manually select the Mixxx database path on local file system.
 - [ ] If no Mixxx database is auto detected, show option to select database path on local file system
-- [ ] Have checkbox to "remember my choice" / "do not prompt again", If
+- [x] Have checkbox to "remember my choice" / "do not prompt again", If
       selected, store the choice in the application database and use that to
       autmatically connect to the database.
 - [ ] Update MixxxDatabaseStatus component to allow to changing database. This is used on the Settings View. If the user dismisses the modal, they can still go to settings to set it up.

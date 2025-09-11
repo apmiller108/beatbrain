@@ -7,6 +7,13 @@ const api = {
   getPlatform: () => ipcRenderer.invoke('app:getPlatform'),
   getPath: name => ipcRenderer.invoke('app:getPath', name),
 
+  // User preferences
+  getUserPreference: (category, key) => ipcRenderer.invoke('app:getUserPreference', category, key),
+  setUserPreference: (category, key, value) => {
+    ipcRenderer.invoke('app:setUserPreference', category, key, value)
+  },
+
+  selectDatabaseFile: () => ipcRenderer.invoke('app:selectDatabaseFile'),
   mixxx: {
     getStatus: () => ipcRenderer.invoke('mixxx:getStatus'),
     connect: dbPath => ipcRenderer.invoke('mixxx:connect', dbPath),
