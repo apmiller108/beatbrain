@@ -26,7 +26,7 @@ class MixxxDatabase {
       case 'linux':
         return  path.join(os.homedir(), '.mixxx', 'mixxxdb.sqlite')
       default:
-        return
+        return ''
     }
   }
 
@@ -218,7 +218,8 @@ class MixxxDatabase {
       isConnected: this.isConnected,
       dbPath: this.dbPath,
       lastError: this.lastError,
-      defaultPath: this.getDefaultPath()
+      defaultPath: this.getDefaultPath(),
+      defaultPathExists: fs.existsSync(this.getDefaultPath())
     }
   }
 

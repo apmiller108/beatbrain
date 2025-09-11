@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Modal, Button, Alert, Form, Spinner } from 'react-bootstrap'
 import { MusicNote } from 'react-bootstrap-icons'
 import PropTypes from 'prop-types'
@@ -14,6 +14,15 @@ function DatabaseConnectionModal({
   const [rememberChoice, setRememberChoice] = useState(false)
   const [selectedOption, setSelectedOption] = useState('auto') // 'auto' or 'manual'
   const [manualPath, setManualPath] = useState('')
+
+  useEffect(() => {
+    if (mixxxStatus.defaultPathExists) {
+      setSelectedOption('auto')
+    } else {
+      setSelectedOption('manual')
+    }
+  }, [mixxxStatus])
+
 
   const handleConnect = async () => {
     let dbPath = null
@@ -60,7 +69,7 @@ function DatabaseConnectionModal({
           </p>
         </div>
 
-        {mixxxStatus.defaultPath && (
+        {mixxxStatus.defaultPathExists && (
           <div className="mb-4">
             <Form.Check
               type="radio"

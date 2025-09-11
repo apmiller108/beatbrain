@@ -23,12 +23,7 @@ function App() {
     platform: 'Loading...',
     userDataPath: 'Loading...',
   })
-  const [mixxxStatus, setMixxxStatus] = useState({
-    isConnected: false,
-    dbPath: null,
-    lastError: null,
-    defaultPaths: []
-  })
+  const [mixxxStatus, setMixxxStatus] = useState({})
   const [mixxxStats, setMixxxStats] = useState(null)
   const [sampleTracks, setSampleTracks] = useState([])
   const [loading, setLoading] = useState(false)
@@ -73,6 +68,7 @@ function App() {
 
     async function initialize() {
       await loadAppInfo()
+      await loadMixxxStatus()
 
       // Check if user has a saved preference for auto-connecting
       const autoConnect = await window.api.getUserPreference('database', 'auto_connect')
@@ -89,9 +85,10 @@ function App() {
         }
       } else if (autoConnect === 'false' || autoConnect === null) {
         // User chose not to connect automatically or first time user
-        await loadMixxxStatus()
         setShowConnectionModal(true)
       }
+
+      await loadMixxxStatus()
     }
 
     initialize()
