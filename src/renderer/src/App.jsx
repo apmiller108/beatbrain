@@ -137,7 +137,7 @@ function App() {
     }
   }
 
-  const handleModalConnect = async (dbPath, rememberChoice) => {
+  const handleConnectionModalConnect = async (dbPath, rememberChoice) => {
     try {
       setLoading(true)
       const result = await window.api.mixxx.connect(dbPath)
@@ -163,11 +163,11 @@ function App() {
     }
   }
 
-  const handleModalHide = async () => {
+  const handleConnectionModalHide = async () => {
     setShowConnectionModal(false)
   }
 
-  const handleManualFileSelect = async () => {
+  const handleManualDatabaseFileSelect = async () => {
     try {
       const filePath = await window.api.selectDatabaseFile()
       return filePath
@@ -248,9 +248,9 @@ function App() {
 
       <DatabaseConnectionModal
         show={showConnectionModal}
-        onHide={handleModalHide}
-        onConnect={handleModalConnect}
-        onManualSelect={handleManualFileSelect}
+        onHide={handleConnectionModalHide}
+        onConnect={handleConnectionModalConnect}
+        onManualSelect={handleManualDatabaseFileSelect}
         mixxxStatus={mixxxStatus}
         loading={loading}
       />
