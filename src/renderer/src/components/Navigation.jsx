@@ -6,7 +6,7 @@ const Navigation = ({ view, setView }) => {
   return (
     <Nav
       variant="pills"
-      className="flex-column bg-light vh-100 p-3"
+      className="flex-column bg-light p-3"
       activeKey={view}
       onSelect={(selectedKey) => setView(selectedKey)}
     >

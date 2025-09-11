@@ -87,11 +87,8 @@ function App() {
           // Auto-connect failed, show modal
           setShowConnectionModal(true)
         }
-      } else if (autoConnect === 'false') {
-        // User chose not to connect automatically
-        await loadMixxxStatus()
-      } else {
-        // First time user - show connection modal
+      } else if (autoConnect === 'false' || autoConnect === null) {
+        // User chose not to connect automatically or first time user
         await loadMixxxStatus()
         setShowConnectionModal(true)
       }
@@ -168,8 +165,6 @@ function App() {
 
   const handleModalHide = async () => {
     setShowConnectionModal(false)
-    // Save preference that user skipped
-    await window.api.setUserPreference('database', 'auto_connect', 'false')
   }
 
   const handleManualFileSelect = async () => {
