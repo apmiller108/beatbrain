@@ -1,20 +1,18 @@
 import { Card, Button, Alert, Spinner } from 'react-bootstrap'
 import propTypes from 'prop-types'
-import { MusicNoteBeamed } from 'react-bootstrap-icons'
 
 function MixxxDatabaseStatus({
   mixxxStatus,
-  onConnect,
   onDisconnect,
+  handleShowConnectionModal,
   loading = false
 }) {
-  const handleConnect = async () => await onConnect()
   const handleDisconnect = async () => await onDisconnect()
 
   return (
     <Card className="shadow-sm h-100 database-status">
       <Card.Header className={`text-white ${mixxxStatus.isConnected ? 'bg-success' : 'bg-warning'}`}>
-        <h5 className="mb-0"><MusicNoteBeamed className="me-2" /> Mixxx Database Status</h5>
+        <h5 className="mb-0">🎵 Mixxx Database Status</h5>
       </Card.Header>
       <Card.Body>
         <div className="d-flex align-items-center mb-3">
@@ -47,17 +45,10 @@ function MixxxDatabaseStatus({
           ) : (
             <Button
               variant="success"
-              onClick={handleConnect}
+              onClick={handleShowConnectionModal}
               disabled={loading}
             >
-              {loading ? (
-                <>
-                  <Spinner size="sm" className="me-2" />
-                  Connecting...
-                </>
-              ) : (
-                'Connect to Mixxx'
-              )}
+              Configure Database
             </Button>
           )}
         </div>
@@ -73,9 +64,9 @@ MixxxDatabaseStatus.propTypes = {
     lastError: propTypes.string,
     defaultPath: propTypes.string.isRequired
   }).isRequired,
-  onConnect: propTypes.func,
   onDisconnect: propTypes.func,
-  loading: propTypes.bool
+  loading: propTypes.bool,
+  handleShowConnectionModal: propTypes.func.isRequired
 }
 
 export default MixxxDatabaseStatus

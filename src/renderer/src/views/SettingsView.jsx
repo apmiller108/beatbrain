@@ -5,7 +5,7 @@ import propTypes from 'prop-types'
 import MixxxDatabaseStatus from '../components/MixxxDatabaseStatus'
 import SystemInformation from '../components/SystemInformation'
 
-const SettingsView = ({ appInfo, mixxxStatus, onConnect, onDisconnect, loading }) => (
+const SettingsView = ({ appInfo, mixxxStatus, onDisconnect, loading, handleShowConnectionModal }) => (
   <div>
     <h2 className="mb-4 d-flex justify-content-start align-items-center">
       <Gear className="me-1"/>
@@ -18,8 +18,8 @@ const SettingsView = ({ appInfo, mixxxStatus, onConnect, onDisconnect, loading }
       <Col lg={6}>
         <MixxxDatabaseStatus
           mixxxStatus={mixxxStatus}
-          onConnect={onConnect}
           onDisconnect={onDisconnect}
+          handleShowConnectionModal={handleShowConnectionModal}
           loading={loading}
         />
       </Col>
@@ -32,7 +32,8 @@ SettingsView.propTypes = {
   mixxxStatus: propTypes.object.isRequired,
   onConnect: propTypes.func.isRequired,
   onDisconnect: propTypes.func.isRequired,
-  loading: propTypes.bool.isRequired
+  loading: propTypes.bool.isRequired,
+  handleShowConnectionModal: propTypes.func.isRequired,
 }
 
 export default SettingsView

@@ -7,7 +7,7 @@ import {
 } from 'react-bootstrap-icons';
 import propTypes from 'prop-types'
 
-const StatusBar = ({ mixxxStatus, loading, appInfo, handleStatusBarClick }) => {
+const StatusBar = ({ mixxxStatus, loading, appInfo, handleShowConnectionModal }) => {
   const getStatusContent = () => {
     // Loading/retry state
     if (loading) {
@@ -24,8 +24,7 @@ const StatusBar = ({ mixxxStatus, loading, appInfo, handleStatusBarClick }) => {
       return {
         icon: <CheckCircleFill className="text-success" />,
         text: "Connected to Mixxx database",
-        variant: "success",
-        tooltip: `Database: ${mixxxStatus.dbPath}`
+        variant: "success"
       };
     }
 
@@ -34,8 +33,7 @@ const StatusBar = ({ mixxxStatus, loading, appInfo, handleStatusBarClick }) => {
       return {
         icon: <Circle className="text-secondary" />,
         text: "Mixxx database not configured",
-        variant: "secondary",
-        tooltip: "No database path configured. Go to Settings to connect."
+        variant: "secondary"
       };
     }
 
@@ -43,10 +41,7 @@ const StatusBar = ({ mixxxStatus, loading, appInfo, handleStatusBarClick }) => {
     return {
       icon: <XCircleFill className="text-danger" />,
       text: "Disconnected from Mixxx database",
-      variant: "danger",
-      tooltip: mixxxStatus.lastError
-        ? `Error: ${mixxxStatus.lastError}`
-        : `Database path: ${mixxxStatus.dbPath}`
+      variant: "danger"
     };
   };
 
@@ -55,25 +50,16 @@ const StatusBar = ({ mixxxStatus, loading, appInfo, handleStatusBarClick }) => {
   return (
     <Navbar fixed="bottom" bg="light" variant="light" className="border-top shadow-sm status-bar">
       <Container fluid className="px-4">
-        <OverlayTrigger
-          placement="top"
-          overlay={
-            <Tooltip id="status-tooltip">
-              {statusContent.tooltip}
-            </Tooltip>
-          }
-        >
-          <small className={`d-flex align-items-center text-${statusContent.variant}`}>
-            <Button variant="outline-light"
-                    size="sm"
-                    className="database-connection-modal-opener"
-                    onClick={handleStatusBarClick}
-            >
-              {statusContent.icon}
-              <span className="ms-2">{statusContent.text}</span>
-            </Button>
-          </small>
-        </OverlayTrigger>
+        <small className={`d-flex align-items-center text-${statusContent.variant}`}>
+          <Button variant="outline-light"
+                  size="sm"
+                  className="database-connection-modal-opener"
+                  onClick={handleShowConnectionModal}
+          >
+            {statusContent.icon}
+            <span className="ms-2">{statusContent.text}</span>
+          </Button>
+        </small>
         <small className="text-muted">
           BeatBrain v{appInfo.version}
         </small>
@@ -91,7 +77,8 @@ StatusBar.propTypes = {
   loading: propTypes.bool.isRequired,
   appInfo: propTypes.shape({
     version: propTypes.string.isRequired,
-  }).isRequired
+  }).isRequired,
+  handleShowDatabaseConnectionModal: propTypes.func.required
 };
 
 export default StatusBar;

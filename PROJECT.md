@@ -370,7 +370,7 @@ proper cleanup on app exit
 - [x] Add real-time status indicator to bottom status bar (🟢 Connected, 🔴 No connection, 🟡 Locked/retry, ⚪ Not configured)
 - [x] Connect status display to existing mixxxDatabase.js module
 - [x] Show current connection state and update automatically
-### TODO: Add database connection prompts at startup
+### DONE: Add database connection prompts at startup
 - [x] Implement auto-detection logic for Mixxx database on application startup. Update the existing logic to not automatically connect to Mixxx.
 - [x] Create DatabaseConnectionModal component - Main dialog for connection prompts
 - [x] Show user-friendly connection dialog if database is found. Ask user if they want to connect to the database that was autodetected.
@@ -379,31 +379,56 @@ proper cleanup on app exit
 - [x] Have checkbox to "remember my choice" / "do not prompt again", If
       selected, store the choice in the application database and use that to
       autmatically connect to the database.
-- [ ] Show the database disconnet button in the modal when connected. When connected, hide the options.
-- [ ] Update MixxxDatabaseStatus component to have configure database button. On click, show the modal.
+- [x] Show the database disconnet button in the modal when connected. When connected, hide the options.
+- [x] Update MixxxDatabaseStatus component to have configure database button. On click, show the modal.
 - [x] Make the database icon in the StatusBar component clickable. 
 - [x] clicking the database icon brings up modal that contains the MixxxDatabaseStatus component
 ## TODOS for setting up a test suite
+- [ ] Setup playwright
+- [ ] Write test for connecting to mixxx database
+- [ ] write test for disconnecting from mixx database
 ## TODOs for Feature: Settings Foundation (Phase 2)
-### TODO: Move existing components to Settings view
+### DONE: Move existing components to Settings view
 - [x] Relocate SystemInformation component from main view to SettingsView.jsx
 - [x] Relocate MixxxDatabaseStatus component from main view to SettingsView.jsx
-- [ ] Create proper Settings layout with organized sections
 ### TODO: Update Library view
 - [x] Relocate TrackList and LibraryStatistics to LibraryView
 - [ ] Move datafetching from App.jsx to LibarayView.jsx
-### TODO: Add manual database file selection to Settings
-- [ ] Implement file browser dialog for selecting mixxxdb.sqlite manually
-- [ ] Add database path validation and connection testing
-- [ ] Provide clear feedback on connection success/failure
 ### TODO: Implement API key management in Settings
 - [ ] Add secure storage for Anthropic API key using Electron’s safeStorage API
 - [ ] Create input field with validation for API key entry
 - [ ] Add connection testing to verify API key validity
 - [ ] Ensure no plaintext storage of API credentials
 ## TODOs for Feature: Playlist generation (Phase 1)
-- [ ] TODO: build module to making requests to Anthropic's claude. Add @anthropic-ai/sdk npm package
+### TODO: build module to making requests to Anthropic's claude. Add @anthropic-ai/sdk npm package
+- [ ] Make request with list of tracks fetched from the Mixxx database
+- [ ] Include a system message for instructing LLM to generate smart playlists
+- [ ] Include the user's custom free text instructions
+- [ ] Instruct LLM to return a sequence of tracks by track ID.
+### TODO: persist playlist in app database
+Note, this app might one day support Rekordbox libraries. We might want to consider that now when creating the schema. The app might need to know when a playlist was create for Mixxx vs Rekordbox
+- [ ] create playlists table
+- [ ] create playlists tracks table
+- [ ] Store the LLM response as playlist
+### TODO: Implement fields for user to filter tracks eligible for playlist creation
+Note this filtering should be built in such a way that it can be resued in the playlists view. Also these filter criteria are multiselect for which a "tag" based UX might be appropriate. Given there could be many options per filter criteria, a type ahead UX would be nice. The filter criteria will be used to perform a database query to retrieve tracks to be passed to the LLM for playlist generation.
+- [ ] Filter by genres
+- [ ] Filter by crates
+- [ ] Filter by Groups
+- [ ] Filter by Artists
+- [ ] Filter by musicl key
+- [ ] Filter by BPM range
+- [ ] Filter by Year range
+- [ ] Filter by date added range
+- [ ] Free text for custom instructions
 ## TODOs for Feature: Playlist generation (Phase 2)
+### TODO export m3u file
+- [ ] User clicks a button to export to m3u file and is prompted for where on the local file system to save.
+### TODO edit playlist manually
+- [ ] Remove track
+- [ ] Change order
+- [ ] Add track
+### TODO add ability to play audio to preview track while editing
 ## TODOs for Feature: Enahanced library view
 - [ ] TODO: More stats
 - [ ] TODO: search

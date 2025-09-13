@@ -174,7 +174,7 @@ function App() {
     }
   }
 
-  const handleStatusBarClick = () => {
+  const handleShowConnectionModal = () => {
     setShowConnectionModal(!showConnectionModal)
   }
 
@@ -195,6 +195,7 @@ function App() {
             mixxxStatus={mixxxStatus}
             onConnect={handleConnectToMixxx}
             onDisconnect={handleDisconnect}
+            handleShowConnectionModal={handleShowConnectionModal}
             loading={loading}
           />
         )
@@ -252,6 +253,7 @@ function App() {
         onHide={handleConnectionModalHide}
         onConnect={handleConnectionModalConnect}
         onManualSelect={handleManualDatabaseFileSelect}
+        onDisconnect={handleDisconnect}
         mixxxStatus={mixxxStatus}
         loading={loading}
       />
@@ -260,7 +262,7 @@ function App() {
         mixxxStatus={mixxxStatus}
         loading={loading}
         appInfo={appInfo}
-        handleStatusBarClick={handleStatusBarClick}
+        handleShowConnectionModal={handleShowConnectionModal}
       />
     </div>
   )
