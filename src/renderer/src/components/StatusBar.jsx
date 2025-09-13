@@ -7,7 +7,7 @@ import {
 } from 'react-bootstrap-icons';
 import propTypes from 'prop-types'
 
-const StatusBar = ({ mixxxStatus, loading, appInfo }) => {
+const StatusBar = ({ mixxxStatus, loading, appInfo, handleStatusBarClick }) => {
   const getStatusContent = () => {
     // Loading/retry state
     if (loading) {
@@ -52,14 +52,8 @@ const StatusBar = ({ mixxxStatus, loading, appInfo }) => {
 
   const statusContent = getStatusContent()
 
-  const handleDatabaseClick = () => {
-    // This could open the connection modal or navigate to settings
-    // logging for now
-    console.log('Database status clicked')
-  }
-
   return (
-    <Navbar fixed="bottom" bg="light" variant="light" className="border-top shadow-sm">
+    <Navbar fixed="bottom" bg="light" variant="light" className="border-top shadow-sm status-bar">
       <Container fluid className="px-4">
         <OverlayTrigger
           placement="top"
@@ -70,10 +64,14 @@ const StatusBar = ({ mixxxStatus, loading, appInfo }) => {
           }
         >
           <small className={`d-flex align-items-center text-${statusContent.variant}`}>
-            <Button variant="outline-light" size="sm" onClick={handleDatabaseClick}>
+            <Button variant="outline-light"
+                    size="sm"
+                    className="database-connection-modal-opener"
+                    onClick={handleStatusBarClick}
+            >
               {statusContent.icon}
+              <span className="ms-2">{statusContent.text}</span>
             </Button>
-            <span>{statusContent.text}</span>
           </small>
         </OverlayTrigger>
         <small className="text-muted">

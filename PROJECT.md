@@ -379,9 +379,10 @@ proper cleanup on app exit
 - [x] Have checkbox to "remember my choice" / "do not prompt again", If
       selected, store the choice in the application database and use that to
       autmatically connect to the database.
-- [ ] Update MixxxDatabaseStatus component to allow to changing database. This is used on the Settings View. If the user dismisses the modal, they can still go to settings to set it up.
+- [ ] Show the database disconnet button in the modal when connected. When connected, hide the options.
+- [ ] Update MixxxDatabaseStatus component to have configure database button. On click, show the modal.
 - [x] Make the database icon in the StatusBar component clickable. 
-- [ ] clicking the database icon brings up modal that contains the MixxxDatabaseStatus component
+- [x] clicking the database icon brings up modal that contains the MixxxDatabaseStatus component
 ## TODOS for setting up a test suite
 ## TODOs for Feature: Settings Foundation (Phase 2)
 ### TODO: Move existing components to Settings view

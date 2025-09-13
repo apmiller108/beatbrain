@@ -27,7 +27,7 @@ function App() {
   const [mixxxStats, setMixxxStats] = useState(null)
   const [sampleTracks, setSampleTracks] = useState([])
   const [loading, setLoading] = useState(false)
-  const [showAlert, setShowAlert] = useState(true)
+  const [showAlert, setShowAlert] = useState(false)
   const [showConnectionModal, setShowConnectionModal] = useState(false);
 
   useEffect(() => {
@@ -174,6 +174,10 @@ function App() {
     }
   }
 
+  const handleStatusBarClick = () => {
+    setShowConnectionModal(!showConnectionModal)
+  }
+
   // Render current view
   const renderCurrentView = () => {
     switch (currentView) {
@@ -252,7 +256,12 @@ function App() {
         loading={loading}
       />
 
-      <StatusBar mixxxStatus={mixxxStatus} loading={loading} appInfo={appInfo} />
+      <StatusBar
+        mixxxStatus={mixxxStatus}
+        loading={loading}
+        appInfo={appInfo}
+        handleStatusBarClick={handleStatusBarClick}
+      />
     </div>
   )
 }
