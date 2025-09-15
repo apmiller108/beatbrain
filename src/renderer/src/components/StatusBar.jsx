@@ -1,4 +1,4 @@
-import { Navbar, Container, OverlayTrigger, Tooltip, Button } from 'react-bootstrap'
+import { Navbar, Container, Button } from 'react-bootstrap'
 import {
   CheckCircleFill,
   XCircleFill,
@@ -78,7 +78,7 @@ StatusBar.propTypes = {
   appInfo: propTypes.shape({
     version: propTypes.string.isRequired,
   }).isRequired,
-  handleShowDatabaseConnectionModal: propTypes.func.required
+  handleShowConnectionModal: propTypes.func.required
 };
 
 export default StatusBar;

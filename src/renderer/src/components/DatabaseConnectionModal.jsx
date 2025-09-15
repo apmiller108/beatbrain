@@ -200,6 +200,7 @@ DatabaseConnectionModal.propTypes = {
   show: PropTypes.bool.isRequired,
   onHide: PropTypes.func.isRequired,
   onConnect: PropTypes.func.isRequired,
+  onDisconnect: PropTypes.func.isRequired,
   onManualSelect: PropTypes.func.isRequired,
   mixxxStatus: PropTypes.object.isRequired,
   loading: PropTypes.bool

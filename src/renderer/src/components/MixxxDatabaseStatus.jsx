@@ -1,4 +1,4 @@
-import { Card, Button, Alert, Spinner } from 'react-bootstrap'
+import { Card, Button, Alert } from 'react-bootstrap'
 import propTypes from 'prop-types'
 
 function MixxxDatabaseStatus({
