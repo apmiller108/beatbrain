@@ -338,8 +338,22 @@ decimal.
 9 directories, 29 files
 ```
 
-## Progress
+## Core Features
+- Settings management UI - Create interface for API keys and
+  database preferences
+- Claude AI integration - Add API integration for natural language
+  queries
+- Playlist generation - Implement AI-powered playlist creation
+- M3U export functionality - Generate and export playlists in M3U
+  format. Edit playlists after they are generated. Regenerate playlist.
+  Music player to preview tracks
+- Library table display - Show tracks, crates, and playlists from
+  Mixxx database
+- Search and filtering - Implement library browsing with sort/filter
+  capabilities
+- Play audio files
 
+## POC
 ### \<2025-08-01 Fri\> Proof of concept 1
 
 Used Claude to produce a hypnotic techno playlist. It was good.
@@ -349,26 +363,17 @@ Used Claude to produce a hypnotic techno playlist. It was good.
 Used Claude to produce another techno playlist with a custom system
 message that contained instructions for harmonic mixing.
 
-### \<2025-08-08 Fri\> Scafolded Electon app
-setup Electron desktop application using React, Bootstrap, and Vite.
-
-### \<2025-08-10 Sun\> Added ESlint and Prettier
-
-### \<2025-08-10 Sun\> Application Database Setup
-
-- Implemented application SQLite database using better-sqlite3 library
-for storing user preferences and settings
-- Created `appDatabase.js` class
-with methods for managing settings and user preferences across two
-tables (`app_settings` and `user_preferences`)
-- Integrated database initialization into Electron main process with
-proper cleanup on app exit
-
-### \<2025-09-04 Fri\> Mixxx Database module
-- Created mixxxDatabase.js module for connecting and reading from the mixxx database.
-
 # TODOS
 
+## TODOs for initial project setup
+### DONE: Setup Electron app
+- [x] setup Electron desktop application using React, Bootstrap, and Vite.
+- [x] add eslint and prettier
+## TODOs for Database modules
+### DONE: create database modules and initialize them on application startup
+- [x] Create `appDatabase.js` class with methods for managing settings and user preferences across two tables (`app_settings` and `user_preferences`)
+- [x] Integrated App database initialization into Electron main process with proper cleanup on app exit
+- [x] Created `mixxxDatabase.js` module for connecting and reading from the mixxx database.
 ## TODOs for Feature: Core Navigation & Status (Phase 1)
 ### DONE: Create view routing system
 - [x] Add navigation state management to App.jsx with default view as ‘playlist’
@@ -394,12 +399,15 @@ proper cleanup on app exit
       autmatically connect to the database.
 - [x] Show the database disconnet button in the modal when connected. When connected, hide the options.
 - [x] Update MixxxDatabaseStatus component to have configure database button. On click, show the modal.
-- [x] Make the database icon in the StatusBar component clickable. 
+- [x] Make the database icon in the StatusBar component clickable.
 - [x] clicking the database icon brings up modal that contains the MixxxDatabaseStatus component
 ## TODOS for setting up a test suite
+### Setup end-to-end testing
 - [ ] Setup playwright
 - [ ] Write test for connecting to mixxx database
 - [ ] write test for disconnecting from mixx database
+### Setup unit testing framework
+- [ ] Setup vitest
 ## TODOs for Feature: Settings Foundation (Phase 2)
 ### DONE: Move existing components to Settings view
 - [x] Relocate SystemInformation component from main view to SettingsView.jsx
@@ -447,24 +455,8 @@ Note this filtering should be built in such a way that it can be resued in the p
 - [ ] TODO: search
 - [ ] TODO: filter tracks
 - [ ] TODO: data visulization (show how library has evolved over time)
+## TODOs for UI polish
 
-# Core Features (Future Phases)
-
-- Real-time database monitoring - Auto-refresh when Mixxx database
-  changes
-- Settings management UI - Create interface for API keys and
-  preferences
-- Claude AI integration - Add API integration for natural language
-  queries
-- Playlist generation - Implement AI-powered playlist creation
-- M3U export functionality - Generate and export playlists in M3U
-  format. Edit playlists after they are generated. Regenerate playlist.
-  Music player to preview tracks
-- Library table display - Show tracks, crates, and playlists from
-  Mixxx database
-- Search and filtering - Implement library browsing with sort/filter
-  capabilities
-- Play audio files
 
 # Notes
 ## Smart play list system message WIP
