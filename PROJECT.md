@@ -468,6 +468,7 @@ Note this filtering should be built in such a way that it can be resued in the p
 
 # Notes
 ## Smart play list system message WIP
+
 ```md
   # DJ Assistant
 
@@ -509,6 +510,7 @@ Note this filtering should be built in such a way that it can be resued in the p
 
 ```
 ## Database query that converts to camelot notation
+This query selects tracks from the mixxx database and normalilzes the keys to Camelot notation.
 ```sql
 SELECT DISTINCT
     l.title,
@@ -558,4 +560,31 @@ FROM
     JOIN crate_tracks ct ON ct.track_id = l.id
     JOIN crates c ON c.id = ct.crate_id
     JOIN track_locations tl ON tl.id = l."location"
+```
+## Sample user request
+
+
+I’d like to create a playlist of 20 tracks. Here are some rules:
+
+- gradually increase the energy level as the set progresses. You can determine the energy level of a track by the “color” field. The mapping of color to energy level is provided below
+- The first half should be tracks in the “Techno (Raw / Deep / Hypnotic)” genre
+- The 2nd half should be tracks in the “Techno (Peak Time / Driving)” genre
+- The track order must follow harmonic mixing rules.
+- Favor selecting with datetime_added in the years 2024 and 2025.
+- Select tracks with BPMs between 135 and 145
+- Select some tracks by Bartig Move
+
+```
+| Color | Energy Level |
+|:------|:-------------|
+| 34952 | Low          |
+| 35071 | Medium       |
+| 255   | High         |
+| 136   | Very High    |
+```
+
+Here are the tracks:
+
+```csv
+insert tracks from query here
 ```
