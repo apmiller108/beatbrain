@@ -412,9 +412,6 @@ message that contained instructions for harmonic mixing.
 ### DONE: Move existing components to Settings view
 - [x] Relocate SystemInformation component from main view to SettingsView.jsx
 - [x] Relocate MixxxDatabaseStatus component from main view to SettingsView.jsx
-### TODO: Update Library view
-- [x] Relocate TrackList and LibraryStatistics to LibraryView
-- [ ] Move datafetching from App.jsx to LibarayView.jsx
 ### TODO: Implement API key management in Settings
 - [ ] Add secure storage for Anthropic API key using Electron’s safeStorage API
 - [ ] Create input field with validation for API key entry
@@ -455,6 +452,8 @@ Note this filtering should be built in such a way that it can be resued in the p
 - [ ] TODO: search
 - [ ] TODO: filter tracks
 - [ ] TODO: data visulization (show how library has evolved over time)
+- [x] TODO: Relocate TrackList and LibraryStatistics to LibraryView
+- [ ] TODO: Move datafetching from App.jsx to LibarayView.jsx
 ## TODOs for UI polish
 
 
