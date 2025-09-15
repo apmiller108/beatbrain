@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import appDatabase from './database/appDatabase'
 import mixxxDatabase from './database/mixxxDatabase'
-// import icon from '../../resources/icon.png?asset'
+import icon from '../renderer/src/assets/beatbrain_logo.png?v=0.0.1'
 
 function createWindow() {
   // Create the browser window.
@@ -11,7 +11,7 @@ function createWindow() {
     height: 800,
     show: false,
     autoHideMenuBar: true,
-    // ...(process.platform === 'linux' ? { icon } : {}),
+    ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.mjs'),
       sandbox: false,
