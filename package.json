@@ -12,7 +12,8 @@
     "dev": "electron-vite dev",
     "build": "electron-vite build",
     "rebuild": "electron-rebuild",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "audit": "npm audit"
   },
   "repository": {
     "type": "git",
