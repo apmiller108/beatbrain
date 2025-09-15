@@ -299,12 +299,13 @@ decimal.
 ├── electron.vite.config.js
 ├── eslint.config.js
 ├── launch.json
-├── package.json
 ├── package-lock.json
+├── package.json
 ├── PROJECT.md
 ├── PROJECT.txt
 ├── README.md
 └── src
+    ├── assets
     ├── main
     │   ├── database
     │   │   ├── appDatabase.js
@@ -313,6 +314,7 @@ decimal.
     ├── preload
     │   └── index.mjs
     └── renderer
+        ├── assets
         ├── index.html
         └── src
             ├── App.jsx
@@ -335,7 +337,7 @@ decimal.
                 ├── PlaylistsView.jsx
                 └── SettingsView.jsx
 
-9 directories, 29 files
+12 directories, 29 files
 ```
 
 ## Core Features
@@ -455,7 +457,6 @@ Note this filtering should be built in such a way that it can be resued in the p
 - [x] TODO: Relocate TrackList and LibraryStatistics to LibraryView
 - [ ] TODO: Move datafetching from App.jsx to LibarayView.jsx
 ## TODOs for UI polish
-
 
 # Notes
 ## Smart play list system message WIP
