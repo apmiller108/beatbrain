@@ -45,66 +45,49 @@ function App() {
       }
     }
 
-    const connectToMixxx = async (dbPath) => {
-      try {
-        setLoading(true)
-        const result = await window.api.mixxx.connect(dbPath)
-        return result.success
-      } catch (error) {
-        console.error('Failed to connect to Mixxx:', error)
-        return false
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    const loadMixxxStatus = async () => {
-      try {
-        const status = await window.api.mixxx.getStatus()
-        setMixxxStatus(status)
-      } catch (error) {
-        console.error('Failed to load Mixxx status:', error)
-      }
-    }
-
-    const loadDatabasePreference = async () => {
-      try {
-        const preferences = await window.api.getUserPreferencesForCategory('database')
-        setDatabasePreferences(preferences)
-      } catch (error) {
-        console.error('Failed to load database preference:', error)
-      }
-    }
-
     async function initialize() {
-      loadAppInfo()
-      loadDatabasePreference()
-      loadMixxxStatus()
+      await loadAppInfo()
+
+      const databasePreferences = await loadDatabasePreferences()
+
+      await loadMixxxStatus()
 
       // Check if user has a saved preference for auto-connecting
-      const autoConnect = await window.api.getUserPreference('database', 'auto_connect')
-      const savedDbPath = await window.api.getUserPreference('database', 'path')
+      const autoConnect = databasePreferences.auto_connect
+      const savedDbPath = databasePreferences.path
 
       if (autoConnect === 'true') {
-        // User chose to remember their choice - auto connect
-        const success = await connectToMixxx(savedDbPath || null)
-        if (success) {
-          loadMixxxData()
-        } else {
-          // Auto-connect failed, show modal
-          setShowConnectionModal(true)
-        }
-      } else if (autoConnect === 'false' || autoConnect === null) {
-        // User chose not to connect automatically or first time user
+        handleConnectToMixxx(savedDbPath)
+      } else {
         setShowConnectionModal(true)
       }
 
-      loadMixxxStatus()
+      await loadMixxxStatus()
     }
 
     initialize()
 
   }, [])
+
+  const loadMixxxStatus = async () => {
+    try {
+      const status = await window.api.mixxx.getStatus()
+      setMixxxStatus(status)
+      return status
+    } catch (error) {
+      console.error('Failed to load Mixxx status:', error)
+    }
+  }
+
+  const loadDatabasePreferences = async () => {
+    try {
+      const prefs = await window.api.getUserPreferencesForCategory('database')
+      setDatabasePreferences(prefs)
+      return prefs
+    } catch (error) {
+      console.error('Failed to load database preferences:', error)
+    }
+  }
 
   const loadMixxxData = async () => {
     const status = await window.api.mixxx.getStatus()
@@ -115,20 +98,20 @@ function App() {
     setSampleTracks(tracks)
   }
 
-  const handleConnectToMixxx = async () => {
+  const handleConnectToMixxx = async (dbPath) => {
     try {
       setLoading(true)
-      await window.api.mixxx.connect()
-
-      const status = await window.api.mixxx.getStatus()
-      setMixxxStatus(status)
-      const stats = await window.api.mixxx.getStats()
-      setMixxxStats(stats)
-      const tracks = await window.api.mixxx.getSampleTracks(5)
-      setSampleTracks(tracks)
+      const result = await window.api.mixxx.connect(dbPath || null)
+      if (result.success) {
+        loadMixxxData()
+      } else {
+        setShowConnectionModal(true)
+      }
+      return result
     } catch (error) {
       console.error('Failed to connect to Mixxx:', error)
     } finally {
+      loadMixxxStatus()
       setLoading(false)
     }
   }
@@ -146,31 +129,22 @@ function App() {
   }
 
   const handleConnectionModalConnect = async (dbPath, rememberChoice) => {
-    try {
-      setLoading(true)
-      const result = await window.api.mixxx.connect(dbPath)
+    const result = await handleConnectToMixxx(dbPath)
 
-      if (result.success) {
-        if (rememberChoice) {
-          await window.api.setUserPreference('database', 'auto_connect', 'true')
-          await window.api.setUserPreference('database', 'path', result.path || '')
-        } else {
-          await window.api.setUserPreference('database', 'auto_connect', 'false')
-          await window.api.setUserPreference('database', 'path', '')
-        }
-
-        await loadMixxxData()
-        return true
+    if (result.success) {
+      if (rememberChoice) {
+        await window.api.setUserPreference('database', 'auto_connect', 'true')
+        await window.api.setUserPreference('database', 'path', result.path || '')
       } else {
-        const status = await window.api.mixxx.getStatus()
-        setMixxxStatus(status)
-        return false
+        await window.api.setUserPreference('database', 'auto_connect', 'false')
+        await window.api.setUserPreference('database', 'path', '')
       }
-    } catch (error) {
-      console.error('Failed to connect to Mixxx:', error)
+
+      loadDatabasePreferences()
+
+      return true
+    } else {
       return false
-    } finally {
-      setLoading(false)
     }
   }
 

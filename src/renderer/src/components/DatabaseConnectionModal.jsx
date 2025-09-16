@@ -19,7 +19,8 @@ function DatabaseConnectionModal({
   const [manualPath, setManualPath] = useState('')
 
   useEffect(() => {
-    if (mixxxStatus.defaultPathExists) {
+    // If there is a default path and the user hasn't manually set a different one, select 'auto'
+    if (mixxxStatus.defaultPathExists && !(databasePreferences.path && databasePreferences.path !== mixxxStatus.defaultPath)) {
       setSelectedOption('auto')
     } else {
       setSelectedOption('manual')
@@ -27,6 +28,10 @@ function DatabaseConnectionModal({
 
     if (databasePreferences.auto_connect !== undefined) {
       setRememberChoice(databasePreferences.auto_connect === 'true' ? true : false)
+    }
+
+    if (databasePreferences.path && databasePreferences.path !== mixxxStatus.defaultPath) {
+      setManualPath(databasePreferences.path)
     }
 
   }, [mixxxStatus, databasePreferences])
