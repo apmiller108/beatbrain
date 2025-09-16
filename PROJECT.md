@@ -304,40 +304,46 @@ decimal.
 ├── PROJECT.md
 ├── PROJECT.txt
 ├── README.md
-└── src
-    ├── assets
-    ├── main
-    │   ├── database
-    │   │   ├── appDatabase.js
-    │   │   └── mixxxDatabase.js
-    │   └── index.js
-    ├── preload
-    │   └── index.mjs
-    └── renderer
-        ├── assets
-        ├── index.html
-        └── src
-            ├── App.jsx
-            ├── assets
-            │   ├── beatbrain_logo.png
-            │   ├── beatbrain_logo.svg
-            │   └── index.css
-            ├── components
-            │   ├── DatabaseConnectionModal.jsx
-            │   ├── LibraryStats.jsx
-            │   ├── MixxxDatabaseStatus.jsx
-            │   ├── Navigation.jsx
-            │   ├── StatusBar.jsx
-            │   ├── SystemInformation.jsx
-            │   └── TrackList.jsx
-            ├── main.jsx
-            ├── utilities.js
-            └── views
-                ├── LibraryView.jsx
-                ├── PlaylistsView.jsx
-                └── SettingsView.jsx
+├── spec
+│   ├── main
+│   │   └── database
+│   │       └── appDatabase.spec.js
+│   └── setup.js
+├── src
+│   ├── assets
+│   ├── main
+│   │   ├── database
+│   │   │   ├── appDatabase.js
+│   │   │   └── mixxxDatabase.js
+│   │   └── index.js
+│   ├── preload
+│   │   └── index.mjs
+│   └── renderer
+│       ├── assets
+│       ├── index.html
+│       └── src
+│           ├── App.jsx
+│           ├── assets
+│           │   ├── beatbrain_logo.png
+│           │   ├── beatbrain_logo.svg
+│           │   └── index.css
+│           ├── components
+│           │   ├── DatabaseConnectionModal.jsx
+│           │   ├── LibraryStats.jsx
+│           │   ├── MixxxDatabaseStatus.jsx
+│           │   ├── Navigation.jsx
+│           │   ├── StatusBar.jsx
+│           │   ├── SystemInformation.jsx
+│           │   └── TrackList.jsx
+│           ├── main.jsx
+│           ├── utilities.js
+│           └── views
+│               ├── LibraryView.jsx
+│               ├── PlaylistsView.jsx
+│               └── SettingsView.jsx
+└── vitest.config.js
 
-12 directories, 29 files
+15 directories, 32 files
 ```
 
 ## Core Features
@@ -404,12 +410,15 @@ message that contained instructions for harmonic mixing.
 - [x] Make the database icon in the StatusBar component clickable.
 - [x] clicking the database icon brings up modal that contains the MixxxDatabaseStatus component
 ## TODOS for setting up a test suite
-### Setup end-to-end testing
+### TODO: Setup end-to-end testing
 - [ ] Setup playwright
 - [ ] Write test for connecting to mixxx database
 - [ ] write test for disconnecting from mixx database
-### Setup unit testing framework
-- [ ] Setup vitest
+### TODO: Setup unit testing framework
+- [x] Setup vitest
+- [x] Write test for appDatabase.js
+- [ ] Write test for mixxxDatabase.js
+
 ## TODOs for Feature: Settings Foundation (Phase 2)
 ### DONE: Move existing components to Settings view
 - [x] Relocate SystemInformation component from main view to SettingsView.jsx
