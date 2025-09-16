@@ -67,8 +67,8 @@ function App() {
     }
 
     async function initialize() {
-      await loadAppInfo()
-      await loadMixxxStatus()
+      loadAppInfo()
+      loadMixxxStatus()
 
       // Check if user has a saved preference for auto-connecting
       const autoConnect = await window.api.getUserPreference('database', 'auto_connect')
@@ -78,7 +78,7 @@ function App() {
         // User chose to remember their choice - auto connect
         const success = await connectToMixxx(savedDbPath || null)
         if (success) {
-          await loadMixxxData()
+          loadMixxxData()
         } else {
           // Auto-connect failed, show modal
           setShowConnectionModal(true)
@@ -88,7 +88,7 @@ function App() {
         setShowConnectionModal(true)
       }
 
-      await loadMixxxStatus()
+      loadMixxxStatus()
     }
 
     initialize()
@@ -143,6 +143,9 @@ function App() {
         if (rememberChoice) {
           await window.api.setUserPreference('database', 'auto_connect', 'true')
           await window.api.setUserPreference('database', 'path', result.path || '')
+        } else {
+          await window.api.setUserPreference('database', 'auto_connect', 'false')
+          await window.api.setUserPreference('database', 'path', '')
         }
 
         await loadMixxxData()
