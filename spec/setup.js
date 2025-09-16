@@ -15,8 +15,16 @@ vi.mock('electron', () => ({
   }
 }))
 
-// Clean up test databases after each test
-afterEach(() => {
+// Create test databases directory before all tests
+beforeAll(() => {
+  const testDbPath = path.join(os.tmpdir(), 'beatbrain-test')
+  if (!fs.existsSync(testDbPath)) {
+    fs.mkdirSync(testDbPath, { recursive: true })
+  }
+})
+
+// Clean up test databases after all tests
+afterAll(() => {
   const testDbPath = path.join(os.tmpdir(), 'beatbrain-test')
   if (fs.existsSync(testDbPath)) {
     fs.rmSync(testDbPath, { recursive: true, force: true })
