@@ -1,5 +1,6 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
+import fs from 'fs'
 import appDatabase from './database/appDatabase'
 import mixxxDatabase from './database/mixxxDatabase'
 import icon from '../renderer/src/assets/beatbrain_logo.png?v=0.0.1'
@@ -38,12 +39,21 @@ function createWindow() {
   }
 }
 
+function initializeAppDataDir() {
+  const userDataPath = app.getPath('userData')
+
+  if (!fs.existsSync(userDataPath)) {
+    fs.mkdirSync(userDataPath, { recursive: true })
+  }
+}
+
 app.whenReady().then(() => {
   if (process.platform === 'win32') {
     app.setAppUserModelId('com.beatbrain')
   }
 
   try {
+    initializeAppDataDir()
     appDatabase.initialize()
     console.log('Application database initialized successfully')
   } catch (error) {

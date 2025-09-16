@@ -1,31 +1,20 @@
 import Database from 'better-sqlite3'
 import path from 'path'
 import { app } from 'electron'
-import fs from 'fs'
 
 class AppDatabase {
   constructor() {
-    this.db = null
-    this.dbPath = null
+    const userDataPath = app.getPath('userData')
+
+    this.dbPath = path.join(userDataPath, 'beatbrain.sqlite')
+    this.db = new Database(this.dbPath, { verbose: console.log })
+
+    this.db.pragma('journal_mode = WAL')
+    console.log('Connected to the BeatBrain database successfully.')
   }
 
   initialize() {
     try {
-      const userDataPath = app.getPath('userData')
-
-      console.log('User data path: ', userDataPath)
-
-      if (!fs.existsSync(userDataPath)) {
-        fs.mkdirSync(userDataPath, { recursive: true })
-      }
-
-      this.dbPath = path.join(userDataPath, 'beatbrain.sqlite')
-      console.log('Initializing database at:', this.dbPath)
-
-      this.db = new Database(this.dbPath, { verbose: console.log })
-      this.db.pragma('journal_mode = WAL')
-      console.log('Connected to the BeatBrain database successfully.')
-
       this.createTables()
       return true
     } catch (error) {
