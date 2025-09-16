@@ -12,6 +12,7 @@ const api = {
   setUserPreference: (category, key, value) => {
     ipcRenderer.invoke('app:setUserPreference', category, key, value)
   },
+  getUserPreferencesForCategory: (category) => ipcRenderer.invoke('app:getUserPreferencesForCategory', category),
 
   selectDatabaseFile: () => ipcRenderer.invoke('app:selectDatabaseFile'),
   mixxx: {

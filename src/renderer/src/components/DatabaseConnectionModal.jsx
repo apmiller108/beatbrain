@@ -11,6 +11,7 @@ function DatabaseConnectionModal({
   onManualSelect,
   onDisconnect,
   mixxxStatus,
+  databasePreferences,
   loading = false
 }) {
   const [rememberChoice, setRememberChoice] = useState(false)
@@ -23,7 +24,12 @@ function DatabaseConnectionModal({
     } else {
       setSelectedOption('manual')
     }
-  }, [mixxxStatus])
+
+    if (databasePreferences.auto_connect !== undefined) {
+      setRememberChoice(databasePreferences.auto_connect === 'true' ? true : false)
+    }
+
+  }, [mixxxStatus, databasePreferences])
 
 
   const handleConnect = async () => {
@@ -203,6 +209,7 @@ DatabaseConnectionModal.propTypes = {
   onDisconnect: PropTypes.func.isRequired,
   onManualSelect: PropTypes.func.isRequired,
   mixxxStatus: PropTypes.object.isRequired,
+  databasePreferences: PropTypes.object.isRequired,
   loading: PropTypes.bool
 }
 

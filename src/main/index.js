@@ -121,6 +121,10 @@ app.whenReady().then(() => {
     return appDatabase.getUserPreference(category, key)
   })
 
+  ipcMain.handle('app:getUserPreferencesForCategory', async (_, category) => {
+    return appDatabase.getUserPreferencesForCategory(category)
+  })
+
   ipcMain.handle('app:setUserPreference', async (_, category, key, value) => {
     return appDatabase.setUserPreference(category, key, value)
   })

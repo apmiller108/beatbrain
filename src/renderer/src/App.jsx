@@ -28,7 +28,8 @@ function App() {
   const [sampleTracks, setSampleTracks] = useState([])
   const [loading, setLoading] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
-  const [showConnectionModal, setShowConnectionModal] = useState(false);
+  const [showConnectionModal, setShowConnectionModal] = useState(false)
+  const [databasePreferences, setDatabasePreferences] = useState({})
 
   useEffect(() => {
     const loadAppInfo = async () => {
@@ -66,8 +67,18 @@ function App() {
       }
     }
 
+    const loadDatabasePreference = async () => {
+      try {
+        const preferences = await window.api.getUserPreferencesForCategory('database')
+        setDatabasePreferences(preferences)
+      } catch (error) {
+        console.error('Failed to load database preference:', error)
+      }
+    }
+
     async function initialize() {
       loadAppInfo()
+      loadDatabasePreference()
       loadMixxxStatus()
 
       // Check if user has a saved preference for auto-connecting
@@ -258,6 +269,7 @@ function App() {
         onManualSelect={handleManualDatabaseFileSelect}
         onDisconnect={handleDisconnect}
         mixxxStatus={mixxxStatus}
+        databasePreferences={databasePreferences}
         loading={loading}
       />
 
