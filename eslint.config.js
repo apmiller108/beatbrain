@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
+import vitest from '@vitest/eslint-plugin-vitest';
 
 export default [
   js.configs.recommended,
@@ -10,7 +11,8 @@ export default [
     plugins: {
       react,
       'react-hooks': reactHooks,
-      'jsx-a11y': jsxA11y
+      'jsx-a11y': jsxA11y,
+      vitest
     },
     languageOptions: {
       ecmaVersion: 'latest',
@@ -44,7 +46,10 @@ export default [
       // JSX accessibility rules
       ...jsxA11y.configs.recommended.rules,
 
-      // General JavaScript rules
+      // Vitest rules
+      ...vitest.configs.recommended.rules,
+
+      // Overrides
       'no-unused-vars': 'warn',
       'no-console': 'off',
       'prefer-const': 'error',
@@ -69,6 +74,7 @@ export default [
         process: 'readonly',
         Buffer: 'readonly',
         global: 'readonly',
+        ...vitest.environments.env.globals
       },
     },
     rules: {
