@@ -5,6 +5,7 @@
                          (setq-local flycheck-javascript-eslint-executable eslint-path)
                          (setq-local flycheck-eslint-executable eslint-path))))
                    (add-to-list 'lsp-enabled-clients 'ts-ls)
+                   (add-to-list 'lsp-enabled-clients 'sql-ls)
                    (add-to-list 'lsp-enabled-clients 'json-ls)))))
  (js-mode . ((flycheck-checker . javascript-eslint)))
  (js2-mode . ((flycheck-checker . javascript-eslint)))
