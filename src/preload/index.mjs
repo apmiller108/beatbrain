@@ -8,11 +8,13 @@ const api = {
   getPath: name => ipcRenderer.invoke('app:getPath', name),
 
   // User preferences
-  getUserPreference: (category, key) => ipcRenderer.invoke('app:getUserPreference', category, key),
+  getUserPreference: (category, key) =>
+    ipcRenderer.invoke('app:getUserPreference', category, key),
   setUserPreference: (category, key, value) => {
     ipcRenderer.invoke('app:setUserPreference', category, key, value)
   },
-  getUserPreferencesForCategory: (category) => ipcRenderer.invoke('app:getUserPreferencesForCategory', category),
+  getUserPreferencesForCategory: category =>
+    ipcRenderer.invoke('app:getUserPreferencesForCategory', category),
 
   selectDatabaseFile: () => ipcRenderer.invoke('app:selectDatabaseFile'),
   mixxx: {
@@ -20,9 +22,10 @@ const api = {
     connect: dbPath => ipcRenderer.invoke('mixxx:connect', dbPath),
     disconnect: () => ipcRenderer.invoke('mixxx:disconnect'),
     getStats: () => ipcRenderer.invoke('mixxx:getStats'),
-    getSampleTracks: (limit = 10) => ipcRenderer.invoke('mixxx:getSampleTracks', limit),
-    testConnection: () => ipcRenderer.invoke('mixxx:testConnection')
-  }
+    getSampleTracks: (limit = 10) =>
+      ipcRenderer.invoke('mixxx:getSampleTracks', limit),
+    testConnection: () => ipcRenderer.invoke('mixxx:testConnection'),
+  },
 
   // Future Claude API operations
   // sendQuery: (query) => ipcRenderer.invoke('claude:query', query),

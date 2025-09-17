@@ -49,7 +49,6 @@ class AppDatabase {
 
       this.db.exec(createSettingsTable)
       this.db.exec(createUserPreferencesTable)
-
     } catch (error) {
       console.error('Error creating tables:', error)
       throw error
@@ -181,10 +180,7 @@ class AppDatabase {
   }
 
   getInfo() {
-    return {
-      dbPath: this.dbPath,
-      isOpen: this.db !== null,
-    }
+    return { dbPath: this.dbPath, isOpen: this.db !== null }
   }
 }
 

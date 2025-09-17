@@ -20,11 +20,29 @@ class MixxxDatabase {
 
     switch (platform) {
       case 'win32':
-        return path.join('C:', 'Users', username, 'AppData', 'Local', 'Mixxx', 'mixxxdb.sqlite')
+        return path.join(
+          'C:',
+          'Users',
+          username,
+          'AppData',
+          'Local',
+          'Mixxx',
+          'mixxxdb.sqlite'
+        )
       case 'darwin':
-        return path.join(os.homedir(), 'Library', 'Containers', 'org.mixxx.mixxx', 'Data', 'Library', 'Application Support', 'Mixxx', 'mixxxdb.sqlite')
+        return path.join(
+          os.homedir(),
+          'Library',
+          'Containers',
+          'org.mixxx.mixxx',
+          'Data',
+          'Library',
+          'Application Support',
+          'Mixxx',
+          'mixxxdb.sqlite'
+        )
       case 'linux':
-        return  path.join(os.homedir(), '.mixxx', 'mixxxdb.sqlite')
+        return path.join(os.homedir(), '.mixxx', 'mixxxdb.sqlite')
       default:
         return ''
     }
@@ -84,7 +102,6 @@ class MixxxDatabase {
 
       console.log(`Connected to Mixxx database: ${dbPath}`)
       return { success: true, path: dbPath }
-
     } catch (error) {
       this.lastError = error.message
       this.isConnected = false
@@ -105,45 +122,62 @@ class MixxxDatabase {
       const stats = {}
 
       // Total tracks
-      const trackCount = this.db.prepare('SELECT COUNT(*) as count FROM library').get()
+      const trackCount = this.db
+        .prepare('SELECT COUNT(*) as count FROM library')
+        .get()
       stats.totalTracks = trackCount.count
 
       // Total crates
-      const crateCount = this.db.prepare('SELECT COUNT(*) as count FROM crates').get()
+      const crateCount = this.db
+        .prepare('SELECT COUNT(*) as count FROM crates')
+        .get()
       stats.totalCrates = crateCount.count
 
       // Total playlists
-      const playlistCount = this.db.prepare('SELECT COUNT(*) as count FROM Playlists').get()
+      const playlistCount = this.db
+        .prepare('SELECT COUNT(*) as count FROM Playlists')
+        .get()
       stats.totalPlaylists = playlistCount.count
 
       // Total duration (in seconds)
-      const duration = this.db.prepare('SELECT SUM(duration) as total FROM library WHERE duration IS NOT NULL').get()
+      const duration = this.db
+        .prepare(
+          'SELECT SUM(duration) as total FROM library WHERE duration IS NOT NULL'
+        )
+        .get()
       stats.totalDurationSeconds = duration.total || 0
 
       // Most common genres (top 5)
-      const genres = this.db.prepare(`
+      const genres = this.db
+        .prepare(
+          `
         SELECT genre, COUNT(*) as count
         FROM library
         WHERE genre IS NOT NULL AND genre != ''
         GROUP BY genre
         ORDER BY count DESC
         LIMIT 5
-      `).all()
+      `
+        )
+        .all()
       stats.topGenres = genres
 
       // BPM range
-      const bpmRange = this.db.prepare(`
+      const bpmRange = this.db
+        .prepare(
+          `
         SELECT
           MIN(bpm) as minBpm,
           MAX(bpm) as maxBpm,
           AVG(bpm) as avgBpm
         FROM library
         WHERE bpm IS NOT NULL AND bpm > 0
-      `).get()
+      `
+        )
+        .get()
       stats.bpmRange = bpmRange
 
       return stats
-
     } catch (error) {
       console.error('Error getting library stats:', error)
       throw error
@@ -159,7 +193,9 @@ class MixxxDatabase {
     }
 
     try {
-      const tracks = this.db.prepare(`
+      const tracks = this.db
+        .prepare(
+          `
         SELECT
           artist,
           title,
@@ -174,7 +210,9 @@ class MixxxDatabase {
         WHERE artist IS NOT NULL AND title IS NOT NULL
         ORDER BY RANDOM()
         LIMIT ?
-      `).all(limit)
+      `
+        )
+        .all(limit)
 
       return tracks
     } catch (error) {
@@ -193,17 +231,23 @@ class MixxxDatabase {
 
     try {
       // Test basic queries
-      const libraryTest = this.db.prepare('SELECT COUNT(*) as count FROM library').get()
-      const cratesTest = this.db.prepare('SELECT COUNT(*) as count FROM crates').get()
-      const playlistsTest = this.db.prepare('SELECT COUNT(*) as count FROM Playlists').get()
+      const libraryTest = this.db
+        .prepare('SELECT COUNT(*) as count FROM library')
+        .get()
+      const cratesTest = this.db
+        .prepare('SELECT COUNT(*) as count FROM crates')
+        .get()
+      const playlistsTest = this.db
+        .prepare('SELECT COUNT(*) as count FROM Playlists')
+        .get()
 
       return {
         success: true,
         tests: {
           library: libraryTest.count,
           crates: cratesTest.count,
-          playlists: playlistsTest.count
-        }
+          playlists: playlistsTest.count,
+        },
       }
     } catch (error) {
       return { success: false, error: error.message }
@@ -219,7 +263,7 @@ class MixxxDatabase {
       dbPath: this.dbPath,
       lastError: this.lastError,
       defaultPath: this.getDefaultPath(),
-      defaultPathExists: fs.existsSync(this.getDefaultPath())
+      defaultPathExists: fs.existsSync(this.getDefaultPath()),
     }
   }
 

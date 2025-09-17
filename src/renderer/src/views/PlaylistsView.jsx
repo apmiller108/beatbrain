@@ -1,4 +1,4 @@
-import { MusicNoteList } from "react-bootstrap-icons"
+import { MusicNoteList } from 'react-bootstrap-icons'
 
 const PlaylistsView = () => (
   <div>

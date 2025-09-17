@@ -12,7 +12,9 @@ function LibraryStatistics({ mixxxStats }) {
         <Row className="g-4">
           <Col md={3}>
             <div className="text-center">
-              <h3 className="text-primary">{mixxxStats.totalTracks.toLocaleString()}</h3>
+              <h3 className="text-primary">
+                {mixxxStats.totalTracks.toLocaleString()}
+              </h3>
               <p className="text-muted mb-0">Total Tracks</p>
             </div>
           </Col>
@@ -30,7 +32,9 @@ function LibraryStatistics({ mixxxStats }) {
           </Col>
           <Col md={3}>
             <div className="text-center">
-              <h3 className="text-info">{formatDuration(mixxxStats.totalDurationSeconds)}</h3>
+              <h3 className="text-info">
+                {formatDuration(mixxxStats.totalDurationSeconds)}
+              </h3>
               <p className="text-muted mb-0">Total Duration</p>
             </div>
           </Col>
@@ -53,8 +57,9 @@ function LibraryStatistics({ mixxxStats }) {
           <div className="mt-3">
             <h6>BPM Range:</h6>
             <p className="mb-0">
-              {Math.round(mixxxStats.bpmRange.minBpm)} - {Math.round(mixxxStats.bpmRange.maxBpm)} BPM
-              (avg: {Math.round(mixxxStats.bpmRange.avgBpm)})
+              {Math.round(mixxxStats.bpmRange.minBpm)} -{' '}
+              {Math.round(mixxxStats.bpmRange.maxBpm)} BPM (avg:{' '}
+              {Math.round(mixxxStats.bpmRange.avgBpm)})
             </p>
           </div>
         )}
@@ -80,7 +85,7 @@ LibraryStatistics.propTypes = {
       maxBpm: propTypes.number,
       avgBpm: propTypes.number,
     }),
-  })
+  }),
 }
 
 export default LibraryStatistics

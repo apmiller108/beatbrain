@@ -1,11 +1,5 @@
 import { useState, useEffect } from 'react'
-import {
-  Container,
-  Navbar,
-  Alert,
-  Row,
-  Col
-} from 'react-bootstrap'
+import { Container, Navbar, Alert, Row, Col } from 'react-bootstrap'
 
 import PlaylistsView from './views/PlaylistsView'
 import LibraryView from './views/LibraryView'
@@ -66,7 +60,6 @@ function App() {
     }
 
     initialize()
-
   }, [])
 
   const loadMixxxStatus = async () => {
@@ -98,7 +91,7 @@ function App() {
     setSampleTracks(tracks)
   }
 
-  const handleConnectToMixxx = async (dbPath) => {
+  const handleConnectToMixxx = async dbPath => {
     try {
       setLoading(true)
       const result = await window.api.mixxx.connect(dbPath || null)
@@ -134,7 +127,11 @@ function App() {
     if (result.success) {
       if (rememberChoice) {
         await window.api.setUserPreference('database', 'auto_connect', 'true')
-        await window.api.setUserPreference('database', 'path', result.path || '')
+        await window.api.setUserPreference(
+          'database',
+          'path',
+          result.path || ''
+        )
       } else {
         await window.api.setUserPreference('database', 'auto_connect', 'false')
         await window.api.setUserPreference('database', 'path', '')
@@ -170,10 +167,9 @@ function App() {
   const renderCurrentView = () => {
     switch (currentView) {
       case 'library':
-        return <LibraryView
-                 mixxxStats={mixxxStats}
-                 sampleTracks={sampleTracks}
-               />
+        return (
+          <LibraryView mixxxStats={mixxxStats} sampleTracks={sampleTracks} />
+        )
       case 'playlists':
         return <PlaylistsView />
       case 'settings':
@@ -201,11 +197,20 @@ function App() {
           </Col>
           <Col md={10}>
             <Container className="mt-3">
-              <Navbar bg="dark" variant="dark" expand="md" className="shadow mb-4">
+              <Navbar
+                bg="dark"
+                variant="dark"
+                expand="md"
+                className="shadow mb-4"
+              >
                 <Container>
                   <Navbar.Brand className="p-2">
                     <div className="d-flex justify-content-start align-items-center">
-                      <img className="beatbrain-logo" src={logo} alt="BeatBrain"/>
+                      <img
+                        className="beatbrain-logo"
+                        src={logo}
+                        alt="BeatBrain"
+                      />
                       <span className="ms-4">BeatBrain</span>
                     </div>
                   </Navbar.Brand>
@@ -217,14 +222,14 @@ function App() {
                   variant="success"
                   dismissible
                   onClose={() => setShowAlert(false)}
-                  className="shadow-sm">
+                  className="shadow-sm"
+                >
                   <Alert.Heading>🎉 Welcome to BeatBrain!</Alert.Heading>
                   <p>
                     Your AI-powered DJ library management tool is ready to go!
-                    {mixxxStatus.isConnected ?
-                      " We've successfully connected to your Mixxx database!" :
-                      " Let's connect to your Mixxx database to get started."
-                    }
+                    {mixxxStatus.isConnected
+                      ? " We've successfully connected to your Mixxx database!"
+                      : " Let's connect to your Mixxx database to get started."}
                   </p>
                 </Alert>
               )}

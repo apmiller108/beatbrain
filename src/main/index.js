@@ -61,7 +61,6 @@ app.whenReady().then(() => {
     app.quit()
   }
 
-
   // IPC handlers
   ipcMain.handle('app:getVersion', () => {
     return app.getVersion()
@@ -80,19 +79,19 @@ app.whenReady().then(() => {
     return mixxxDatabase.getStatus()
   })
 
-  ipcMain.handle('mixxx:connect', async(_, dbPath) => {
+  ipcMain.handle('mixxx:connect', async (_, dbPath) => {
     return mixxxDatabase.connect(dbPath)
   })
 
-  ipcMain.handle('mixxx:disconnect', async() => {
+  ipcMain.handle('mixxx:disconnect', async () => {
     return mixxxDatabase.disconnect()
   })
 
-  ipcMain.handle('mixxx:getStats', async() => {
+  ipcMain.handle('mixxx:getStats', async () => {
     return mixxxDatabase.getLibraryStats()
   })
 
-  ipcMain.handle('mixxx:getSampleTracks', async(_, limit = 10) => {
+  ipcMain.handle('mixxx:getSampleTracks', async (_, limit = 10) => {
     return mixxxDatabase.getSampleTracks(limit)
   })
 
@@ -105,9 +104,9 @@ app.whenReady().then(() => {
       title: 'Select Mixxx Database File',
       filters: [
         { name: 'SQLite Database', extensions: ['sqlite', 'db'] },
-        { name: 'All Files', extensions: ['*'] }
+        { name: 'All Files', extensions: ['*'] },
       ],
-      properties: ['openFile']
+      properties: ['openFile'],
     })
 
     if (!result.canceled && result.filePaths.length > 0) {
@@ -140,4 +139,3 @@ app.on('before-quit', () => {
 app.on('window-all-closed', () => {
   app.quit()
 })
-

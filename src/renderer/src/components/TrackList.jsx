@@ -7,7 +7,9 @@ function TrackList({ tracks }) {
   return (
     <Card className="mt-4 shadow-sm">
       <Card.Header className="bg-dark text-white">
-        <h5 className="mb-0"><MusicNoteBeamed className="me-2" /> Sample Tracks</h5>
+        <h5 className="mb-0">
+          <MusicNoteBeamed className="me-2" /> Sample Tracks
+        </h5>
       </Card.Header>
       <Card.Body>
         <Table responsive striped hover>
@@ -29,14 +31,16 @@ function TrackList({ tracks }) {
                 <td>{track.genre || 'N/A'}</td>
                 <td>{track.bpm ? Math.round(track.bpm) : 'N/A'}</td>
                 <td>{track.key || 'N/A'}</td>
-                <td>{track.duration ? formatDuration(track.duration) : 'N/A'}</td>
+                <td>
+                  {track.duration ? formatDuration(track.duration) : 'N/A'}
+                </td>
               </tr>
             ))}
           </tbody>
         </Table>
       </Card.Body>
     </Card>
-  );
+  )
 }
 
 TrackList.propTypes = {
@@ -47,9 +51,9 @@ TrackList.propTypes = {
       genre: propTypes.string,
       bpm: propTypes.number,
       key: propTypes.string,
-      duration: propTypes.number
+      duration: propTypes.number,
     })
-  ).isRequired
+  ).isRequired,
 }
 
 export default TrackList
