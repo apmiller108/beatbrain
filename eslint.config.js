@@ -2,7 +2,7 @@ import js from '@eslint/js';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
-import vitest from '@vitest/eslint-plugin-vitest';
+import vitest from '@vitest/eslint-plugin';
 
 export default [
   js.configs.recommended,
@@ -31,6 +31,7 @@ export default [
         __filename: 'readonly',
         Buffer: 'readonly',
         global: 'readonly',
+        ...vitest.environments.env.globals
       },
     },
     settings: {
