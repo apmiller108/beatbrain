@@ -16,7 +16,6 @@ class AppDatabase {
     this.db = new Database(this.dbPath, { verbose: this.verbose })
 
     this.db.pragma('journal_mode = WAL')
-    console.log('Connected to the BeatBrain database successfully.')
 
     try {
       this.createTables()
@@ -49,11 +48,8 @@ class AppDatabase {
       `
 
       this.db.exec(createSettingsTable)
-      console.log('Created app_settings table.')
       this.db.exec(createUserPreferencesTable)
-      console.log('Created user_preferences table.')
 
-      console.log('Database tables created or verified successfully.')
     } catch (error) {
       console.error('Error creating tables:', error)
       throw error
@@ -180,7 +176,6 @@ class AppDatabase {
   close() {
     if (this.db) {
       this.db.close()
-      console.log('Database connection closed.')
       this.db = null
     }
   }

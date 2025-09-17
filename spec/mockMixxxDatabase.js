@@ -18,6 +18,7 @@ export const createMockMixxxDatabase = () => {
 
   try {
     testDb.exec(mixxxSchema);
+    console.log(`Mock Mixxx database created at ${dbPath}`);
     return dbPath
   } catch (error) {
     console.log(error)
@@ -42,46 +43,58 @@ const processTrack = ( track) => {
   return processed;
 }
 
-// TODO: insert proper track_locations.
-// TODO: add more library tracks
+// TODO: add crates.
+// TODO: add add crate_tracks
 export const seedMixxxDatabase = (mockDbPath) => {
   const testDb = new Database(mockDbPath)
   const seedData = JSON.parse(fs.readFileSync('spec/fixtures/mixxxData.json', 'utf-8'))
-  const insertLibrary = testDb.prepare(`
-    INSERT INTO library (
-      "id", "artist", "title", "album", "year", "genre", "tracknumber",
-      "location", "comment", "url", "duration", "bitrate", "samplerate",
-      "cuepoint", "bpm", "wavesummaryhex", "channels", "datetime_added",
-      "mixxx_deleted", "played", "header_parsed", "filetype", "replaygain",
-      "timesplayed", "rating", "key", "beats", "beats_version", "composer",
-      "bpm_lock", "beats_sub_version", "keys", "keys_version", "keys_sub_version",
-      "key_id", "grouping", "album_artist", "coverart_source", "coverart_type",
-      "coverart_location", "coverart_hash", "replaygain_peak", "tracktotal",
-      "color", "coverart_color", "coverart_digest", "last_played_at",
-      "source_synchronized_ms"
-    ) VALUES (
-      @id, @artist, @title, @album, @year, @genre, @tracknumber,
-      @location, @comment, @url, @duration, @bitrate, @samplerate,
-      @cuepoint, @bpm, @wavesummaryhex, @channels, @datetime_added,
-      @mixxx_deleted, @played, @header_parsed, @filetype, @replaygain,
-      @timesplayed, @rating, @key, @beats, @beats_version, @composer,
-      @bpm_lock, @beats_sub_version, @keys, @keys_version, @keys_sub_version,
-      @key_id, @grouping, @album_artist, @coverart_source, @coverart_type,
-      @coverart_location, @coverart_hash, @replaygain_peak, @tracktotal,
-      @color, @coverart_color, @coverart_digest, @last_played_at,
-      @source_synchronized_ms
-    )
-  `);
 
   try {
-    const insertTracks = testDb.transaction((tracks) => {
-      tracks.forEach((track) => {
-        const processedTrack = processTrack(track);
-        insertLibrary.run(processedTrack);
-      })
-    });
+    // Insert track_locations
+    seedData.track_locations.forEach((location) => {
+      testDb.prepare(`
+        INSERT INTO track_locations (
+          "id", "location", "filename", "directory", "filesize", "fs_deleted", "needs_verification"
+        ) VALUES (
+          @id, @location, @filename, @directory, @filesize, @fs_deleted, @needs_verification
+        )
+      `).run(location);
+    })
 
-    insertTracks(seedData.library);
+    const locCount = testDb.prepare('SELECT count(*) AS count FROM track_locations').get()['count'];
+    console.log(`Inserted ${locCount} track locations successfully`);
+
+    // Insert library tracks
+    seedData.library.forEach((track) => {
+      const processedTrack = processTrack(track);
+
+      testDb.prepare(`
+        INSERT INTO library (
+          "artist", "title", "album", "year", "genre", "tracknumber",
+          "location", "comment", "url", "duration", "bitrate", "samplerate",
+          "cuepoint", "bpm", "wavesummaryhex", "channels", "datetime_added",
+          "mixxx_deleted", "played", "header_parsed", "filetype", "replaygain",
+          "timesplayed", "rating", "key", "beats", "beats_version", "composer",
+          "bpm_lock", "beats_sub_version", "keys", "keys_version", "keys_sub_version",
+          "key_id", "grouping", "album_artist", "coverart_source", "coverart_type",
+          "coverart_location", "coverart_hash", "replaygain_peak", "tracktotal",
+          "color", "coverart_color", "coverart_digest", "last_played_at",
+          "source_synchronized_ms"
+        ) VALUES (
+          @artist, @title, @album, @year, @genre, @tracknumber,
+          @location, @comment, @url, @duration, @bitrate, @samplerate,
+          @cuepoint, @bpm, @wavesummaryhex, @channels, @datetime_added,
+          @mixxx_deleted, @played, @header_parsed, @filetype, @replaygain,
+          @timesplayed, @rating, @key, @beats, @beats_version, @composer,
+          @bpm_lock, @beats_sub_version, @keys, @keys_version, @keys_sub_version,
+          @key_id, @grouping, @album_artist, @coverart_source, @coverart_type,
+          @coverart_location, @coverart_hash, @replaygain_peak, @tracktotal,
+          @color, @coverart_color, @coverart_digest, @last_played_at,
+          @source_synchronized_ms
+        )
+      `).run(processedTrack);
+    })
+
     console.log(`Inserted ${seedData.library.length} tracks successfully`);
   } catch (error) {
     console.error('Error inserting data:', error);

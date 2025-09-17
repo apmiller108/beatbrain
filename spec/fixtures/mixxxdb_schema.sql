@@ -1,8 +1,8 @@
 CREATE TABLE settings (
-          name TEXT UNIQUE NOT NULL,
-          value TEXT,
-          locked INTEGER DEFAULT 0,
-          hidden INTEGER DEFAULT 0);
+        name TEXT UNIQUE NOT NULL,
+        value TEXT,
+        locked INTEGER DEFAULT 0,
+        hidden INTEGER DEFAULT 0);
 CREATE TABLE track_locations (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         location varchar(512) UNIQUE,

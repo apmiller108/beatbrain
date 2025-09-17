@@ -33,6 +33,12 @@ describe('MixxxDatabase', () => {
   })
 
   describe('getDefaultPath', () => {
+    const originalPlatform = process.platform;
+
+    afterAll(() => {
+      Object.defineProperty(process, 'platform', { value: originalPlatform });
+    })
+
     it('should return correct path for Linux', () => {
       Object.defineProperty(process, 'platform', { value: 'linux' });
       vi.spyOn(os, 'homedir').mockReturnValue('/home/testuser');
