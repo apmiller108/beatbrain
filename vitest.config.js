@@ -16,7 +16,8 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, 'src'),
       '@main': resolve(__dirname, 'src/main'),
-      '@renderer': resolve(__dirname, 'src/renderer/src')
+      '@renderer': resolve(__dirname, 'src/renderer/src'),
+      '@spec': resolve(__dirname, 'spec'),
     }
   }
 })
