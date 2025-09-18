@@ -14,7 +14,8 @@ CREATE TABLE track_locations (
 CREATE TABLE LibraryHashes (
         directory_path VARCHAR(256) primary key,
         hash INTEGER,
-        directory_deleted INTEGER, needs_verification INTEGER DEFAULT 0);
+        directory_deleted INTEGER,
+        needs_verification INTEGER DEFAULT 0);
 CREATE TABLE Playlists (
         id INTEGER primary key,
         name varchar(48),
@@ -34,12 +35,15 @@ CREATE TABLE cues (
         position integer DEFAULT -1 NOT NULL,
         length integer DEFAULT 0 NOT NULL,
         hotcue integer DEFAULT -1 NOT NULL,
-        label text DEFAULT '' NOT NULL, color INTEGER DEFAULT 4294901760 NOT NULL);
+        label text DEFAULT '' NOT NULL,
+        color INTEGER DEFAULT 4294901760 NOT NULL);
 CREATE TABLE crates (
         id integer PRIMARY KEY AUTOINCREMENT,
         name varchar(48) UNIQUE NOT NULL,
         count integer DEFAULT 0,
-        show integer DEFAULT 1, locked integer DEFAULT 0, autodj_source integer DEFAULT 0);
+        show integer DEFAULT 1,
+        locked integer DEFAULT 0,
+        autodj_source integer DEFAULT 0);
 CREATE TABLE crate_tracks (
         crate_id integer NOT NULL REFERENCES crates(id),
         track_id integer NOT NULL REFERENCES "library_old"(id),
@@ -65,7 +69,34 @@ CREATE TABLE library (
         datetime_added DEFAULT CURRENT_TIMESTAMP,
         mixxx_deleted integer,
         played integer,
-        header_parsed integer DEFAULT 0, filetype varchar(8) DEFAULT "?", replaygain float DEFAULT 0, timesplayed integer DEFAULT 0, rating integer DEFAULT 0, key varchar(8) DEFAULT "", beats BLOB, beats_version TEXT, composer varchar(64) DEFAULT "", bpm_lock INTEGER DEFAULT 0, beats_sub_version TEXT DEFAULT '', keys BLOB, keys_version TEXT, keys_sub_version TEXT, key_id INTEGER DEFAULT 0, grouping TEXT DEFAULT "", album_artist TEXT DEFAULT "", coverart_source INTEGER DEFAULT 0, coverart_type INTEGER DEFAULT 0, coverart_location TEXT DEFAULT "", coverart_hash INTEGER DEFAULT 0, replaygain_peak REAL DEFAULT -1.0, tracktotal TEXT DEFAULT '//', color INTEGER, coverart_color INTEGER, coverart_digest BLOB, last_played_at DATETIME DEFAULT NULL, source_synchronized_ms INTEGER DEFAULT NULL);
+        header_parsed integer DEFAULT 0,
+        filetype varchar(8) DEFAULT "?",
+        replaygain float DEFAULT 0,
+        timesplayed integer DEFAULT 0,
+        rating integer DEFAULT 0,
+        key varchar(8) DEFAULT "",
+        beats BLOB,
+        beats_version TEXT,
+        composer varchar(64) DEFAULT "",
+        bpm_lock INTEGER DEFAULT 0,
+        beats_sub_version TEXT DEFAULT '',
+        keys BLOB,
+        keys_version TEXT,
+        keys_sub_version TEXT,
+        key_id INTEGER DEFAULT 0,
+        grouping TEXT DEFAULT "",
+        album_artist TEXT DEFAULT "",
+        coverart_source INTEGER DEFAULT 0,
+        coverart_type INTEGER DEFAULT 0,
+        coverart_location TEXT DEFAULT "",
+        coverart_hash INTEGER DEFAULT 0,
+        replaygain_peak REAL DEFAULT -1.0,
+        tracktotal TEXT DEFAULT '//',
+        color INTEGER,
+        coverart_color INTEGER,
+        coverart_digest BLOB,
+        last_played_at DATETIME DEFAULT NULL,
+        source_synchronized_ms INTEGER DEFAULT NULL);
 CREATE TABLE itunes_library (
         id INTEGER primary key,
         artist varchar(48), title varchar(48),
@@ -76,14 +107,17 @@ CREATE TABLE itunes_library (
         duration integer,
         bitrate integer,
         bpm integer,
-        rating integer, grouping TEXT DEFAULT "", album_artist TEXT DEFAULT "");
+        rating integer,
+        grouping TEXT DEFAULT "",
+        album_artist TEXT DEFAULT "");
 CREATE TABLE itunes_playlists (
         id INTEGER primary key,
         name varchar(100) UNIQUE);
 CREATE TABLE itunes_playlist_tracks (
         id INTEGER primary key AUTOINCREMENT,
         playlist_id INTEGER REFERENCES itunes_playlist(id),
-        track_id INTEGER REFERENCES itunes_library(id), position INTEGER DEFAULT 0);
+        track_id INTEGER REFERENCES itunes_library(id),
+        position INTEGER DEFAULT 0);
 CREATE TABLE traktor_library (
         id INTEGER primary key AUTOINCREMENT,
         artist varchar(48), title varchar(48),
@@ -104,8 +138,8 @@ CREATE TABLE traktor_playlists (
 CREATE TABLE traktor_playlist_tracks (
         id INTEGER primary key AUTOINCREMENT,
         playlist_id INTEGER REFERENCES traktor_playlist(id),
-        track_id INTEGER REFERENCES traktor_library(id)
-        , position INTEGER DEFAULT 0);
+        track_id INTEGER REFERENCES traktor_library(id),
+        position INTEGER DEFAULT 0);
 CREATE TABLE rhythmbox_library (
         id INTEGER primary key AUTOINCREMENT,
         artist varchar(48), title varchar(48),

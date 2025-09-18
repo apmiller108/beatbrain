@@ -177,5 +177,37 @@
       "fs_deleted": 0,
       "needs_verification": 0
     }
+  ],
+  "crates": [
+    {
+      "id": 1,
+      "name": "Crate 1",
+      "show": 1,
+      "locked": 0,
+      "count": 2,
+      "autodj_source": 0
+    },
+    {
+      "id": 2,
+      "name": "Crate 2",
+      "show": 1,
+      "locked": 0,
+      "count": 1,
+      "autodj_source": 0
+    }
+  ],
+  "crate_tracks": [
+    {
+      "crate_id": 1,
+      "track_id": 1
+    },
+    {
+      "crate_id": 1,
+      "track_id": 2
+    },
+    {
+      "crate_id": 2,
+      "track_id": 3
+    }
   ]
 }

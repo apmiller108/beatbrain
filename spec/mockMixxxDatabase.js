@@ -43,14 +43,12 @@ const processTrack = ( track) => {
   return processed;
 }
 
-// TODO: add crates.
-// TODO: add add crate_tracks
 export const seedMixxxDatabase = (mockDbPath) => {
   const testDb = new Database(mockDbPath)
   const seedData = JSON.parse(fs.readFileSync('spec/fixtures/mixxxData.json', 'utf-8'))
 
   // The library.location column is INT but the FK references
-  // track_location.location (varchar)!
+  // track_location(location)!
   testDb.pragma('foreign_keys = OFF')
 
   try {
@@ -99,7 +97,40 @@ export const seedMixxxDatabase = (mockDbPath) => {
       `).run(processedTrack);
     })
 
-    console.log(`Inserted ${seedData.library.length} tracks successfully`);
+    const trackCount = testDb.prepare('SELECT count(*) AS count FROM library').get()['count'];
+    console.log(`Inserted ${trackCount} tracks successfully`);
+
+    // Insert crates
+
+    seedData.crates.forEach((crate) => {
+      testDb.prepare(`
+        INSERT INTO crates (
+          "id", "name", "count", "show", "autodj_source", "locked"
+        ) VALUES (
+          @id, @name, @count, @show, @autodj_source, @locked
+        )
+      `).run(crate);
+    })
+
+    const crateCount = testDb.prepare('SELECT count(*) AS count FROM crates').get()['count'];
+    console.log(`Inserted ${crateCount} crates successfully`);
+
+    // Insert crate_tracks
+
+    seedData.crate_tracks.forEach((ct) => {
+      testDb.prepare(`
+        INSERT INTO crate_tracks (
+          "crate_id", "track_id"
+        ) VALUES (
+          @crate_id, @track_id
+        )
+      `).run(ct);
+    })
+
+    const crateTrackCount = testDb.prepare(
+      'SELECT count(*) AS count FROM crate_tracks'
+    ).get()['count'];
+    console.log(`Inserted ${crateTrackCount} crate tracks successfully`);
   } catch (error) {
     console.error('Error inserting data:', error);
   } finally {
