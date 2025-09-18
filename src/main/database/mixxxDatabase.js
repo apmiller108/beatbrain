@@ -86,7 +86,6 @@ class MixxxDatabase {
       try {
         fs.accessSync(dbPath, fs.constants.R_OK)
       } catch (error) {
-        console.error(error)
         throw new Error(`Cannot read database file: ${dbPath}`)
       }
 

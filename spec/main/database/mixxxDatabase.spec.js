@@ -28,6 +28,8 @@ describe('MixxxDatabase', () => {
   })
 
   afterEach(() => {
+    // Suppress console.log output for cleaner test output
+    vi.spyOn(console, 'log').mockImplementationOnce(() => {})
     mixxxDatabase.disconnect()
     vi.clearAllMocks()
   })
@@ -73,6 +75,9 @@ describe('MixxxDatabase', () => {
 
     it('return an error result if database file does not exist', () => {
       const badPath = '/non/existent/path/mixxxdb.sqlite'
+      // Suppress console.error output for cleaner test output
+      vi.spyOn(console, 'error').mockImplementationOnce(() => {})
+
       const result = mixxxDatabase.connect(badPath)
       expect(mixxxDatabase.isConnected).toBe(false)
       expect(result).toEqual({
@@ -86,6 +91,10 @@ describe('MixxxDatabase', () => {
       vi.spyOn(fs, 'accessSync').mockImplementationOnce(() => {
         throw new Error('Permission denied')
       })
+
+      // Suppress console.error output for cleaner test output
+      vi.spyOn(console, 'error').mockImplementationOnce(() => {})
+
       const result = mixxxDatabase.connect(mockDbPath)
       expect(result).toEqual({
         success: false,
