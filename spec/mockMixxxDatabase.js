@@ -49,6 +49,10 @@ export const seedMixxxDatabase = (mockDbPath) => {
   const testDb = new Database(mockDbPath)
   const seedData = JSON.parse(fs.readFileSync('spec/fixtures/mixxxData.json', 'utf-8'))
 
+  // The library.location column is INT but the FK references
+  // track_location.location (varchar)!
+  testDb.pragma('foreign_keys = OFF')
+
   try {
     // Insert track_locations
     seedData.track_locations.forEach((location) => {
