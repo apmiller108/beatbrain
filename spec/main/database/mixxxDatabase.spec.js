@@ -39,20 +39,20 @@ describe('MixxxDatabase', () => {
       Object.defineProperty(process, 'platform', { value: originalPlatform });
     })
 
-    it('should return correct path for Linux', () => {
+    it('returns the correct path for Linux', () => {
       Object.defineProperty(process, 'platform', { value: 'linux' });
       vi.spyOn(os, 'homedir').mockReturnValue('/home/testuser');
       expect(mixxxDatabase.getDefaultPath()).toBe('/home/testuser/.mixxx/mixxxdb.sqlite');
     })
 
-    it('should return correct path for Windows', () => {
+    it('returns the correct path for Windows', () => {
       Object.defineProperty(process, 'platform', { value: 'win32' });
       vi.spyOn(os, 'userInfo').mockReturnValue({ username: 'testuser' });
       const expectedPath = path.join('C:', 'Users', 'testuser', 'AppData', 'Local', 'Mixxx', 'mixxxdb.sqlite');
       expect(mixxxDatabase.getDefaultPath()).toBe(expectedPath);
     })
 
-    it('should return correct path for macOS', () => {
+    it('returns the correct path for macOS', () => {
       Object.defineProperty(process, 'platform', { value: 'darwin' });
       vi.spyOn(os, 'homedir').mockReturnValue('/Users/testuser');
       const expectedPath = path.join('/Users/testuser', 'Library', 'Containers', 'org.mixxx.mixxx',
@@ -61,40 +61,48 @@ describe('MixxxDatabase', () => {
     })
   })
 
-  // describe('connect', () => {
-  //   it('should connect successfully to a valid database file', () => {
-  //     const result = mixxxDatabase.connect(mockDbPath)
-  //     expect(result.success).toBe(true)
-  //     expect(result.path).toBe(mockDbPath)
-  //     expect(mixxxDatabase.isConnected).toBe(true)
-  //   })
+  describe('connect', () => {
+    it('connects successfully to a valid database file', () => {
+      const result = mixxxDatabase.connect(mockDbPath)
+      expect(mixxxDatabase.isConnected).toBe(true)
+      expect(result).toEqual({
+        success: true,
+        path: mockDbPath,
+      })
+    })
 
-  //   it('should fail if database file does not exist', () => {
-  //     const badPath = '/non/existent/path/mixxxdb.sqlite'
-  //     const result = mixxxDatabase.connect(badPath)
-  //     expect(result.success).toBe(false)
-  //     expect(result.error).toContain('Database file not found')
-  //     expect(mixxxDatabase.isConnected).toBe(false)
-  //   })
+    it('return an error result if database file does not exist', () => {
+      const badPath = '/non/existent/path/mixxxdb.sqlite'
+      const result = mixxxDatabase.connect(badPath)
+      expect(mixxxDatabase.isConnected).toBe(false)
+      expect(result).toEqual({
+        success: false,
+        error: `Database file not found: ${badPath}`,
+      })
+    })
 
-  //   it('should fail if database file is not readable', () => {
-  //     // Mock fs.accessSync to throw an error
-  //     vi.spyOn(fs, 'accessSync').mockImplementationOnce(() => {
-  //       throw new Error('Permission denied')
-  //     })
-  //     const result = mixxxDatabase.connect(mockDbPath)
-  //     expect(result.success).toBe(false)
-  //     expect(result.error).toContain('Cannot read database file')
-  //   })
+    it('returns an error result if database file is not readable', () => {
+      // Mock fs.accessSync to throw an error
+      vi.spyOn(fs, 'accessSync').mockImplementationOnce(() => {
+        throw new Error('Permission denied')
+      })
+      const result = mixxxDatabase.connect(mockDbPath)
+      expect(result).toEqual({
+        success: false,
+        error: `Cannot read database file: ${mockDbPath}`
+      })
+    })
 
-  //   it('should auto-detect and connect if path is not provided', () => {
-  //     vi.spyOn(mixxxDatabase, 'getDefaultPath').mockReturnValue(mockDbPath)
-  //     const result = mixxxDatabase.connect()
-  //     expect(result.success).toBe(true)
-  //     expect(result.path).toBe(mockDbPath)
-  //     expect(mixxxDatabase.isConnected).toBe(true)
-  //   })
-  // })
+    it('should auto-detect and connect if path is not provided', () => {
+      vi.spyOn(mixxxDatabase, 'getDefaultPath').mockReturnValue(mockDbPath)
+      const result = mixxxDatabase.connect()
+      expect(mixxxDatabase.isConnected).toBe(true)
+      expect(result).toEqual({
+        success: true,
+        path: mockDbPath,
+      })
+    })
+  })
 
   // describe('Operations on a connected database', () => {
   //   beforeEach(() => {
@@ -130,7 +138,7 @@ describe('MixxxDatabase', () => {
   // })
 
   // describe('getStatus', () => {
-  //   it('should return correct status when disconnected', () => {
+  //   it('returns the correct status when disconnected', () => {
   //     vi.spyOn(mixxxDatabase, 'getDefaultPath').mockReturnValue(mockDbPath)
   //     vi.spyOn(fs, 'existsSync').mockReturnValue(true)
 
@@ -140,7 +148,7 @@ describe('MixxxDatabase', () => {
   //     expect(status.defaultPathExists).toBe(true)
   //   })
 
-  //   it('should return correct status when connected', () => {
+  //   it('returns the correct status when connected', () => {
   //     mixxxDatabase.connect(mockDbPath)
   //     const status = mixxxDatabase.getStatus()
   //     expect(status.isConnected).toBe(true)
