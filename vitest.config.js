@@ -1,12 +1,14 @@
 import { defineConfig } from 'vitest/config'
+import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 
 export default defineConfig({
+  plugins: [react()],
   test: {
-    environment: 'node',
+    environment: 'jsdom',
     globals: true,
     setupFiles: ['./spec/setup.js'],
-    include: ['spec/**/*.{test,spec}.{js,mjs,ts}'],
+    include: ['spec/**/*.{test,spec}.{js,mjs,ts,jsx}'],
     exclude: ['node_modules', 'out', 'dist'],
     // Mock Electron APIs
     mockReset: true,
