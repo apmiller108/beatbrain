@@ -305,9 +305,14 @@ decimal.
 ├── PROJECT.txt
 ├── README.md
 ├── spec
+│   ├── fixtures
+│   │   ├── mixxxData.json
+│   │   └── mixxxdb_schema.sql
 │   ├── main
 │   │   └── database
-│   │       └── appDatabase.spec.js
+│   │       ├── appDatabase.spec.js
+│   │       └── mixxxDatabase.spec.js
+│   ├── mockMixxxDatabase.js
 │   └── setup.js
 ├── src
 │   ├── assets
@@ -343,7 +348,7 @@ decimal.
 │               └── SettingsView.jsx
 └── vitest.config.js
 
-15 directories, 32 files
+16 directories, 36 files
 ```
 
 ## Core Features
@@ -490,6 +495,7 @@ Note this filtering should be built in such a way that it can be resued in the p
   4. **Relative Major/Minor (scale change)**: 8A ↔ 8B, 5A ↔ 5B
   3. **Adjacent Keys (-1)**: 8A → 7A → 6A
   5. **+2 (Energy Boost)**: 8A → 10A
+  6. ** Go up a semitone (+7 or -5)**: This is a bold energy boost. For example, 8A → 3A (8+7 = 15, which becomes 3 on the 12-section wheel). 
 
   ### Key Compatibility Matrix
   For any starting key X:
@@ -500,7 +506,6 @@ Note this filtering should be built in such a way that it can be resued in the p
   - **Wrap around**: 12A → 1A, 1A → 12A
 
   ### Critical Rules
-  - **NEVER** jump more than 2 steps on the wheel (e.g., 8A → 11A is forbidden)
   - **ALWAYS** verify each transition is compatible before adding a track
   - **USE** relative major/minor switches to add variety without breaking harmony
   - **ALWAYS** pay carefuyl attention to the user's requirements track selection criteria
@@ -509,6 +514,7 @@ Note this filtering should be built in such a way that it can be resued in the p
 
   Always prioritize the user's specific requirements while leveraging your knowledge of music structure and DJ techniques to create cohesive, engaging playlists.
 
+  Return the results in the format an extended m3u.
 ```
 ## Database query that converts to camelot notation
 This query selects tracks from the mixxx database and normalilzes the keys to Camelot notation.
@@ -565,15 +571,13 @@ FROM
 ## Sample user request
 
 
-I’d like to create a playlist of 20 tracks. Here are some rules:
+I’d like to create a playlist of 25 tracks. Here are some rules:
 
 - gradually increase the energy level as the set progresses. You can determine the energy level of a track by the “color” field. The mapping of color to energy level is provided below
-- The first half should be tracks in the “Techno (Raw / Deep / Hypnotic)” genre
-- The 2nd half should be tracks in the “Techno (Peak Time / Driving)” genre
+- The first half should be tracks in the "Techno (Raw / Deep / Hypnotic)" genre
+- The 2nd half should be tracks in the "Techno" and "Techno (Peak Time / Driving)" genres
 - The track order must follow harmonic mixing rules.
-- Favor selecting with datetime_added in the years 2024 and 2025.
 - Select tracks with BPMs between 135 and 145
-- Select some tracks by Bartig Move
 
 ```
 | Color | Energy Level |
