@@ -105,6 +105,7 @@ class MixxxDatabase {
       this.lastError = error.message
       this.isConnected = false
       console.error('Failed to connect to Mixxx database:', error.message)
+
       return { success: false, error: error.message }
     }
   }
@@ -217,39 +218,6 @@ class MixxxDatabase {
     } catch (error) {
       console.error('Error getting sample tracks:', error)
       throw error
-    }
-  }
-
-  /**
-   * Test database connection and schema
-   */
-  testConnection() {
-    if (!this.isConnected || !this.db) {
-      return { success: false, error: 'Not connected' }
-    }
-
-    try {
-      // Test basic queries
-      const libraryTest = this.db
-        .prepare('SELECT COUNT(*) as count FROM library')
-        .get()
-      const cratesTest = this.db
-        .prepare('SELECT COUNT(*) as count FROM crates')
-        .get()
-      const playlistsTest = this.db
-        .prepare('SELECT COUNT(*) as count FROM Playlists')
-        .get()
-
-      return {
-        success: true,
-        tests: {
-          library: libraryTest.count,
-          crates: cratesTest.count,
-          playlists: playlistsTest.count,
-        },
-      }
-    } catch (error) {
-      return { success: false, error: error.message }
     }
   }
 

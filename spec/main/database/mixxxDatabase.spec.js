@@ -2,7 +2,6 @@ import fs from 'fs'
 import path from 'path'
 import os from 'os'
 import mixxxDatabase from '@main/database/mixxxDatabase.js'
-import Database from 'better-sqlite3'
 import { createMockMixxxDatabase, seedMixxxDatabase } from '@spec/mockMixxxDatabase.js'
 
 vi.mock('os', async (importOriginal) => {
@@ -113,67 +112,58 @@ describe('MixxxDatabase', () => {
     })
   })
 
-  // describe('Operations on a connected database', () => {
-  //   beforeEach(() => {
-  //     // Ensure we are connected before each test in this block
-  //     const result = mixxxDatabase.connect(mockDbPath)
-  //     if (!result.success) {
-  //       throw new Error('Failed to connect to mock DB for testing')
-  //     }
-  //   })
+  describe('queries on a connected database', () => {
+    const seedData = JSON.parse(fs.readFileSync('spec/fixtures/mixxxData.json', 'utf-8'))
 
-  //   it('should get library stats', () => {
-  //     const stats = mixxxDatabase.getLibraryStats()
-  //     expect(stats.totalTracks).toBe(3)
-  //     expect(stats.totalCrates).toBe(1)
-  //     expect(stats.totalPlaylists).toBe(1)
-  //     expect(stats.totalDurationSeconds).toBe(180 + 240 + 200)
-  //   })
+    beforeEach(() => {
+      // Ensure connection to DB before each test in this block
+      const result = mixxxDatabase.connect(mockDbPath)
+      if (!result.success) {
+        throw new Error('Failed to connect to mock DB for testing')
+      }
+    })
 
-  //   it('should get a sample of tracks', () => {
-  //     const tracks = mixxxDatabase.getSampleTracks(2)
-  //     expect(tracks.length).toBe(2)
-  //     expect(tracks[0]).toHaveProperty('artist')
-  //     expect(tracks[0]).toHaveProperty('title')
-  //   })
 
-  //   it('should test the connection successfully', () => {
-  //     const result = mixxxDatabase.testConnection()
-  //     expect(result.success).toBe(true)
-  //     expect(result.tests.library).toBe(3)
-  //     expect(result.tests.crates).toBe(1)
-  //     expect(result.tests.playlists).toBe(1)
-  //   })
-  // })
+    describe('getLibraryStats', () => {
+      it('returns the correct stats', () => {
+        const stats = mixxxDatabase.getLibraryStats()
+        expect(stats.totalTracks).toBe(seedData.library.length)
+        expect(stats.totalCrates).toBe(seedData.crates.length)
+        expect(stats.totalPlaylists).toBe(seedData.playlists.length)
+        expect(stats.totalDurationSeconds).toBe(
+          seedData.library.reduce((sum, track) => sum + (track.duration || 0), 0)
+        )
+      })
+    })
+  })
 
-  // describe('getStatus', () => {
-  //   it('returns the correct status when disconnected', () => {
-  //     vi.spyOn(mixxxDatabase, 'getDefaultPath').mockReturnValue(mockDbPath)
-  //     vi.spyOn(fs, 'existsSync').mockReturnValue(true)
+  describe('getStatus', () => {
+    it('returns the correct status when disconnected', () => {
+      vi.spyOn(mixxxDatabase, 'getDefaultPath').mockReturnValue(mockDbPath)
+      vi.spyOn(fs, 'existsSync').mockReturnValue(true)
 
-  //     const status = mixxxDatabase.getStatus()
-  //     expect(status.isConnected).toBe(false)
-  //     expect(status.dbPath).toBeNull()
-  //     expect(status.defaultPathExists).toBe(true)
-  //   })
+      const status = mixxxDatabase.getStatus()
+      expect(status.isConnected).toBe(false)
+      expect(status.dbPath).toBeNull()
+      expect(status.defaultPathExists).toBe(true)
+    })
 
-  //   it('returns the correct status when connected', () => {
-  //     mixxxDatabase.connect(mockDbPath)
-  //     const status = mixxxDatabase.getStatus()
-  //     expect(status.isConnected).toBe(true)
-  //     expect(status.dbPath).toBe(mockDbPath)
-  //   })
-  // })
+    it('returns the correct status when connected', () => {
+      mixxxDatabase.connect(mockDbPath)
+      const status = mixxxDatabase.getStatus()
+      expect(status.isConnected).toBe(true)
+      expect(status.dbPath).toBe(mockDbPath)
+    })
+  })
 
-  // describe('disconnect', () => {
-  //   it('should disconnect and reset the state', () => {
-  //     mixxxDatabase.connect(mockDbPath)
-  //     expect(mixxxDatabase.isConnected).toBe(true)
+  describe.skip('disconnect', () => {
+    it('should disconnect and reset the state', () => {
+      mixxxDatabase.connect(mockDbPath)
 
-  //     const status = mixxxDatabase.disconnect()
-  //     expect(status.isConnected).toBe(false)
-  //     expect(status.dbPath).toBeNull()
-  //     expect(mixxxDatabase.db).toBeNull()
-  //   })
-  // })
+      const status = mixxxDatabase.disconnect()
+      expect(status.isConnected).toBe(false)
+      expect(status.dbPath).toBeNull()
+      expect(mixxxDatabase.db).toBeNull()
+    })
+  })
 })

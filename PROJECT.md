@@ -415,14 +415,15 @@ message that contained instructions for harmonic mixing.
 - [x] Make the database icon in the StatusBar component clickable.
 - [x] clicking the database icon brings up modal that contains the MixxxDatabaseStatus component
 ## TODOS for setting up a test suite
+### TODO: Setup unit testing framework
+- [x] Setup vitest
+- [x] Write test for appDatabase.js
+- [x] Write test for mixxxDatabase.js
+- [ ] Write test for DatabaseConnectionModal.jsx
 ### TODO: Setup end-to-end testing
 - [ ] Setup playwright
 - [ ] Write test for connecting to mixxx database
 - [ ] write test for disconnecting from mixx database
-### TODO: Setup unit testing framework
-- [x] Setup vitest
-- [x] Write test for appDatabase.js
-- [ ] Write test for mixxxDatabase.js
 
 ## TODOs for Feature: Settings Foundation (Phase 2)
 ### DONE: Move existing components to Settings view

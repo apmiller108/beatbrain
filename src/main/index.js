@@ -95,10 +95,6 @@ app.whenReady().then(() => {
     return mixxxDatabase.getSampleTracks(limit)
   })
 
-  ipcMain.handle('mixxx:testConnection', () => {
-    return mixxxDatabase.testConnection()
-  })
-
   ipcMain.handle('app:selectDatabaseFile', async () => {
     const result = await dialog.showOpenDialog({
       title: 'Select Mixxx Database File',

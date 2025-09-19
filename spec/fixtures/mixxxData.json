@@ -10,44 +10,44 @@
       "location": 1,
       "comment": "Good Stuff",
       "url": "",
-      "duration": "322.429387755",
-      "bitrate": "320",
-      "samplerate": "44100",
+      "duration": 322.429387755,
+      "bitrate": 320,
+      "samplerate": 44100,
       "cuepoint": "1260",
-      "bpm": "134.0",
+      "bpm": 134.0,
       "wavesummaryhex": "",
-      "channels": "2",
+      "channels": 2,
       "datetime_added": "2025-09-06T21:40:04.794Z",
-      "mixxx_deleted": "0",
-      "played": "0",
-      "header_parsed": "1",
+      "mixxx_deleted": 0,
+      "played": 0,
+      "header_parsed": 1,
       "filetype": "mp3",
-      "replaygain": "0.328308095148529",
-      "timesplayed": "1",
-      "rating": "0",
+      "replaygain": 0.328308095148529,
+      "timesplayed": 1,
+      "rating": 0,
       "key": "Emin",
       "beats": "0a09090000000000c06040120308a408",
       "beats_version": "BeatGrid-2.0",
       "composer": "",
-      "bpm_lock": "0",
+      "bpm_lock": 0,
       "beats_sub_version": "rounding=V4|vamp_plugin_id=qm-tempotracker:0",
       "keys": "Emin ",
       "keys_version": "KeyMap-1.0",
       "keys_sub_version": "",
-      "key_id": "17",
+      "key_id": 17,
       "grouping": "Nachtstrom Schallplatten",
       "album_artist": "Bartig Move",
-      "coverart_source": "1",
-      "coverart_type": "1",
+      "coverart_source": 1,
+      "coverart_type": 1,
       "coverart_location": "",
-      "coverart_hash": "33390",
+      "coverart_hash": 33390,
       "replaygain_peak": "-1.0",
       "tracktotal": "",
-      "color": "255",
-      "coverart_color": "9144709",
+      "color": 255,
+      "coverart_color": 9144709,
       "coverart_digest": "1e3befe718254fab11146a53a429d2af7bdcda8c2ec4bbeebc8cad304558afe4",
       "last_played_at": "2025-09-07 21:04:28",
-      "source_synchronized_ms": "1757194695997"
+      "source_synchronized_ms": 1757194695997
     },
     {
       "artist": "Logotech",
@@ -208,6 +208,30 @@
     {
       "crate_id": 2,
       "track_id": 3
+    }
+  ],
+  "playlists": [
+    {
+      "name": "test playlist",
+      "position": 1,
+      "hidden": 0,
+      "date_created": "2025-08-01 23:53:35",
+      "date_modified": "2025-08-01 23:53:35",
+      "locked": 0
+    }
+  ],
+  "playlistTracks": [
+    {
+      "playlist_id": 1,
+      "track_id": 1,
+      "position": 1,
+      "pl_datetime_added": "2021-09-20 02:04:13"
+    },
+    {
+      "playlist_id": 1,
+      "track_id": 2,
+      "position": 2,
+      "pl_datetime_added": "2021-09-20 02:04:13"
     }
   ]
 }

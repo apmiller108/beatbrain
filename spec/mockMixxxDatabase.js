@@ -131,6 +131,38 @@ export const seedMixxxDatabase = (mockDbPath) => {
       'SELECT count(*) AS count FROM crate_tracks'
     ).get()['count'];
     console.log(`Inserted ${crateTrackCount} crate tracks successfully`);
+
+    // Insert Playlists
+
+    seedData.playlists.forEach((pl) => {
+      testDb.prepare(`
+        INSERT INTO Playlists (
+          "name", "position", "hidden", "date_created", "date_modified", "locked"
+        ) VALUES (
+          @name, @position, @hidden, @date_created, @date_modified, @locked
+        )
+      `).run(pl);
+    })
+
+    const playlistCount = testDb.prepare('SELECT count(*) AS count FROM Playlists').get()['count'];
+    console.log(`Inserted ${playlistCount} playlists successfully`);
+
+    // Insert PlaylistTracks
+    seedData.playlistTracks.forEach((pt) => {
+      testDb.prepare(`
+        INSERT INTO PlaylistTracks (
+          "playlist_id", "track_id", "position", "pl_datetime_added"
+        ) VALUES (
+          @playlist_id, @track_id, @position, @pl_datetime_added
+        )
+      `).run(pt);
+    })
+
+    const playlistTrackCount = testDb.prepare(
+      'SELECT count(*) AS count FROM PlaylistTracks'
+    ).get()['count'];
+    console.log(`Inserted ${playlistTrackCount} playlist tracks successfully`);
+
   } catch (error) {
     console.error('Error inserting data:', error);
   } finally {
