@@ -1,6 +1,6 @@
-import { Nav } from 'react-bootstrap';
-import propTypes from 'prop-types';
-import { Gear, CollectionPlay, MusicNoteList } from 'react-bootstrap-icons';
+import { Nav } from 'react-bootstrap'
+import propTypes from 'prop-types'
+import { Gear, CollectionPlay, MusicNoteList } from 'react-bootstrap-icons'
 
 const Navigation = ({ view, setView }) => {
   return (
@@ -8,7 +8,7 @@ const Navigation = ({ view, setView }) => {
       variant="pills"
       className="flex-column bg-light p-3"
       activeKey={view}
-      onSelect={(selectedKey) => setView(selectedKey)}
+      onSelect={selectedKey => setView(selectedKey)}
     >
       <Nav.Item>
         <Nav.Link eventKey="library">
@@ -26,12 +26,12 @@ const Navigation = ({ view, setView }) => {
         </Nav.Link>
       </Nav.Item>
     </Nav>
-  );
-};
+  )
+}
 
 Navigation.propTypes = {
   view: propTypes.string.isRequired,
   setView: propTypes.func.isRequired,
-};
+}
 
-export default Navigation;
+export default Navigation

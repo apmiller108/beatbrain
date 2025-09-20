@@ -1,9 +1,15 @@
 import { Card, Badge, Row, Col } from 'react-bootstrap'
 import propTypes from 'prop-types'
-import { Apple, InfoCircle, Laptop, Microsoft, Tux } from 'react-bootstrap-icons'
+import {
+  Apple,
+  InfoCircle,
+  Laptop,
+  Microsoft,
+  Tux,
+} from 'react-bootstrap-icons'
 
 function SystemInformation({ appInfo }) {
-  const getPlatformIcon = (platform) => {
+  const getPlatformIcon = platform => {
     switch (platform) {
       case 'win32':
         return <Microsoft className="me-2" />
@@ -69,8 +75,8 @@ SystemInformation.propTypes = {
     version: propTypes.string.isRequired,
     platform: propTypes.string.isRequired,
     userDataPath: propTypes.string.isRequired,
-    error: propTypes.string
-  }).isRequired
+    error: propTypes.string,
+  }).isRequired,
 }
 
 export default SystemInformation

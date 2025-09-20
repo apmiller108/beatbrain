@@ -1,31 +1,23 @@
 import Database from 'better-sqlite3'
 import path from 'path'
 import { app } from 'electron'
-import fs from 'fs'
 
 class AppDatabase {
-  constructor() {
-    this.db = null
+  constructor(debug = false) {
     this.dbPath = null
+    this.db = null
+    this.verbose = debug ? console.log : null
   }
 
   initialize() {
+    const userDataPath = app.getPath('userData')
+
+    this.dbPath = path.join(userDataPath, 'beatbrain.sqlite')
+    this.db = new Database(this.dbPath, { verbose: this.verbose })
+
+    this.db.pragma('journal_mode = WAL')
+
     try {
-      const userDataPath = app.getPath('userData')
-
-      console.log('User data path: ', userDataPath)
-
-      if (!fs.existsSync(userDataPath)) {
-        fs.mkdirSync(userDataPath, { recursive: true })
-      }
-
-      this.dbPath = path.join(userDataPath, 'beatbrain.sqlite')
-      console.log('Initializing database at:', this.dbPath)
-
-      this.db = new Database(this.dbPath, { verbose: console.log })
-      this.db.pragma('journal_mode = WAL')
-      console.log('Connected to the BeatBrain database successfully.')
-
       this.createTables()
       return true
     } catch (error) {
@@ -56,11 +48,7 @@ class AppDatabase {
       `
 
       this.db.exec(createSettingsTable)
-      console.log('Created app_settings table.')
       this.db.exec(createUserPreferencesTable)
-      console.log('Created user_preferences table.')
-
-      console.log('Database tables created or verified successfully.')
     } catch (error) {
       console.error('Error creating tables:', error)
       throw error
@@ -106,7 +94,6 @@ class AppDatabase {
           updated_at = CURRENT_TIMESTAMP;
       `)
       stmt.run(key, value)
-      console.log(`Setting updated: ${key} = ${value}`)
     } catch (error) {
       console.error('Error setting setting:', error)
       throw error
@@ -117,7 +104,6 @@ class AppDatabase {
     try {
       const stmt = this.db.prepare('DELETE FROM app_settings WHERE key = ?')
       stmt.run(key)
-      console.log(`Setting deleted: ${key}`)
     } catch (error) {
       console.error('Error deleting setting:', error)
       throw error
@@ -166,7 +152,6 @@ class AppDatabase {
           updated_at = CURRENT_TIMESTAMP;
       `)
       stmt.run(category, key, value)
-      console.log(`User preference updated: ${category}.${key} = ${value}`)
     } catch (error) {
       console.error('Error setting user preference:', error)
       throw error
@@ -190,16 +175,12 @@ class AppDatabase {
   close() {
     if (this.db) {
       this.db.close()
-      console.log('Database connection closed.')
       this.db = null
     }
   }
 
   getInfo() {
-    return {
-      dbPath: this.dbPath,
-      isOpen: this.db !== null,
-    }
+    return { dbPath: this.dbPath, isOpen: this.db !== null }
   }
 }
 

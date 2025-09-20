@@ -299,45 +299,60 @@ decimal.
 ├── electron.vite.config.js
 ├── eslint.config.js
 ├── launch.json
-├── package-lock.json
 ├── package.json
+├── package-lock.json
 ├── PROJECT.md
 ├── PROJECT.txt
 ├── README.md
-└── src
-    ├── assets
-    ├── main
-    │   ├── database
-    │   │   ├── appDatabase.js
-    │   │   └── mixxxDatabase.js
-    │   └── index.js
-    ├── preload
-    │   └── index.mjs
-    └── renderer
-        ├── assets
-        ├── index.html
-        └── src
-            ├── App.jsx
-            ├── assets
-            │   ├── beatbrain_logo.png
-            │   ├── beatbrain_logo.svg
-            │   └── index.css
-            ├── components
-            │   ├── DatabaseConnectionModal.jsx
-            │   ├── LibraryStats.jsx
-            │   ├── MixxxDatabaseStatus.jsx
-            │   ├── Navigation.jsx
-            │   ├── StatusBar.jsx
-            │   ├── SystemInformation.jsx
-            │   └── TrackList.jsx
-            ├── main.jsx
-            ├── utilities.js
-            └── views
-                ├── LibraryView.jsx
-                ├── PlaylistsView.jsx
-                └── SettingsView.jsx
+├── spec
+│   ├── fixtures
+│   │   ├── mixxxData.json
+│   │   └── mixxxdb_schema.sql
+│   ├── main
+│   │   └── database
+│   │       ├── appDatabase.spec.js
+│   │       └── mixxxDatabase.spec.js
+│   ├── mockMixxxDatabase.js
+│   ├── renderer
+│   │   └── src
+│   │       └── components
+│   │           └── DatabaseConnectionModal.test.jsx
+│   └── setup.js
+├── src
+│   ├── main
+│   │   ├── assets
+│   │   │   └── beatbrain_logo.png
+│   │   ├── database
+│   │   │   ├── appDatabase.js
+│   │   │   └── mixxxDatabase.js
+│   │   └── index.js
+│   ├── preload
+│   │   └── index.mjs
+│   └── renderer
+│       ├── index.html
+│       └── src
+│           ├── App.jsx
+│           ├── assets
+│           │   ├── beatbrain_logo.png
+│           │   ├── beatbrain_logo.svg
+│           │   └── index.css
+│           ├── components
+│           │   ├── DatabaseConnectionModal.jsx
+│           │   ├── LibraryStats.jsx
+│           │   ├── MixxxDatabaseStatus.jsx
+│           │   ├── Navigation.jsx
+│           │   ├── StatusBar.jsx
+│           │   ├── SystemInformation.jsx
+│           │   └── TrackList.jsx
+│           ├── main.jsx
+│           ├── utilities.js
+│           └── views
+│               ├── LibraryView.jsx
+│               ├── PlaylistsView.jsx
+│               └── SettingsView.jsx
+└── vitest.config.js
 
-12 directories, 29 files
+17 directories, 38 files
 ```
 
 ## Core Features
@@ -404,12 +419,16 @@ message that contained instructions for harmonic mixing.
 - [x] Make the database icon in the StatusBar component clickable.
 - [x] clicking the database icon brings up modal that contains the MixxxDatabaseStatus component
 ## TODOS for setting up a test suite
-### Setup end-to-end testing
+### DONE: Setup unit testing framework
+- [x] Setup vitest
+- [x] Write test for appDatabase.js
+- [x] Write test for mixxxDatabase.js
+- [x] Write test for DatabaseConnectionModal.jsx
+### TODO: Setup end-to-end testing
 - [ ] Setup playwright
 - [ ] Write test for connecting to mixxx database
 - [ ] write test for disconnecting from mixx database
-### Setup unit testing framework
-- [ ] Setup vitest
+
 ## TODOs for Feature: Settings Foundation (Phase 2)
 ### DONE: Move existing components to Settings view
 - [x] Relocate SystemInformation component from main view to SettingsView.jsx
@@ -419,6 +438,8 @@ message that contained instructions for harmonic mixing.
 - [ ] Create input field with validation for API key entry
 - [ ] Add connection testing to verify API key validity
 - [ ] Ensure no plaintext storage of API credentials
+### TODO: Write tests for setting feature
+- [ ] end to end test
 ## TODOs for Feature: Playlist generation (Phase 1)
 ### TODO: build module to making requests to Anthropic's claude. Add @anthropic-ai/sdk npm package
 - [ ] Make request with list of tracks fetched from the Mixxx database
@@ -481,6 +502,7 @@ Note this filtering should be built in such a way that it can be resued in the p
   4. **Relative Major/Minor (scale change)**: 8A ↔ 8B, 5A ↔ 5B
   3. **Adjacent Keys (-1)**: 8A → 7A → 6A
   5. **+2 (Energy Boost)**: 8A → 10A
+  6. ** Go up a semitone (+7 or -5)**: This is a bold energy boost. For example, 8A → 3A (8+7 = 15, which becomes 3 on the 12-section wheel). 
 
   ### Key Compatibility Matrix
   For any starting key X:
@@ -491,7 +513,6 @@ Note this filtering should be built in such a way that it can be resued in the p
   - **Wrap around**: 12A → 1A, 1A → 12A
 
   ### Critical Rules
-  - **NEVER** jump more than 2 steps on the wheel (e.g., 8A → 11A is forbidden)
   - **ALWAYS** verify each transition is compatible before adding a track
   - **USE** relative major/minor switches to add variety without breaking harmony
   - **ALWAYS** pay carefuyl attention to the user's requirements track selection criteria
@@ -500,6 +521,7 @@ Note this filtering should be built in such a way that it can be resued in the p
 
   Always prioritize the user's specific requirements while leveraging your knowledge of music structure and DJ techniques to create cohesive, engaging playlists.
 
+  Return the results in the format an extended m3u.
 ```
 ## Database query that converts to camelot notation
 This query selects tracks from the mixxx database and normalilzes the keys to Camelot notation.
@@ -556,15 +578,13 @@ FROM
 ## Sample user request
 
 
-I’d like to create a playlist of 20 tracks. Here are some rules:
+I’d like to create a playlist of 25 tracks. Here are some rules:
 
 - gradually increase the energy level as the set progresses. You can determine the energy level of a track by the “color” field. The mapping of color to energy level is provided below
-- The first half should be tracks in the “Techno (Raw / Deep / Hypnotic)” genre
-- The 2nd half should be tracks in the “Techno (Peak Time / Driving)” genre
+- The first half should be tracks in the "Techno (Raw / Deep / Hypnotic)" genre
+- The 2nd half should be tracks in the "Techno" and "Techno (Peak Time / Driving)" genres
 - The track order must follow harmonic mixing rules.
-- Favor selecting with datetime_added in the years 2024 and 2025.
 - Select tracks with BPMs between 135 and 145
-- Select some tracks by Bartig Move
 
 ```
 | Color | Energy Level |

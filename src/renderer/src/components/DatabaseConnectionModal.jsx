@@ -11,20 +11,40 @@ function DatabaseConnectionModal({
   onManualSelect,
   onDisconnect,
   mixxxStatus,
-  loading = false
+  databasePreferences,
+  loading = false,
 }) {
   const [rememberChoice, setRememberChoice] = useState(false)
   const [selectedOption, setSelectedOption] = useState('auto') // 'auto' or 'manual'
   const [manualPath, setManualPath] = useState('')
 
   useEffect(() => {
-    if (mixxxStatus.defaultPathExists) {
+    // If there is a default path and the user hasn't manually set a different one, select 'auto'
+    if (
+      mixxxStatus.defaultPathExists &&
+      !(
+        databasePreferences.path &&
+        databasePreferences.path !== mixxxStatus.defaultPath
+      )
+    ) {
       setSelectedOption('auto')
     } else {
       setSelectedOption('manual')
     }
-  }, [mixxxStatus])
 
+    if (databasePreferences.auto_connect !== undefined) {
+      setRememberChoice(
+        databasePreferences.auto_connect === 'true' ? true : false
+      )
+    }
+
+    if (
+      databasePreferences.path &&
+      databasePreferences.path !== mixxxStatus.defaultPath
+    ) {
+      setManualPath(databasePreferences.path)
+    }
+  }, [mixxxStatus, databasePreferences])
 
   const handleConnect = async () => {
     let dbPath = null
@@ -59,8 +79,10 @@ function DatabaseConnectionModal({
     >
       <Modal.Header>
         <Modal.Title className="d-flex align-items-center">
-          <MusicNote className='me-2'/>
-          {mixxxStatus.isConnected ? 'Mixxx Database' : 'Connect to Mixxx Database'}
+          <MusicNote className="me-2" />
+          {mixxxStatus.isConnected
+            ? 'Mixxx Database'
+            : 'Connect to Mixxx Database'}
         </Modal.Title>
       </Modal.Header>
 
@@ -68,16 +90,17 @@ function DatabaseConnectionModal({
         <div className="mb-4">
           {mixxxStatus.isConnected ? (
             <Alert variant="success">
-              <div className="d-flex align-items-center"/>
-                <CheckCircleFill className="text-success me-2"/>
-                BeatBrain is currently connected to your Mixxx database at
+              <div className="d-flex align-items-center" />
+              <CheckCircleFill className="text-success me-2" />
+              BeatBrain is currently connected to your Mixxx database at
               <div className="mt-2">
                 <code>{mixxxStatus.dbPath}</code>
               </div>
             </Alert>
           ) : (
             <p className="text-muted">
-              BeatBrain needs to connect to your Mixxx database to access your music library.
+              BeatBrain needs to connect to your Mixxx database to access your
+              music library.
             </p>
           )}
         </div>
@@ -122,7 +145,7 @@ function DatabaseConnectionModal({
                       type="text"
                       placeholder="Select mixxxdb.sqlite file..."
                       value={manualPath}
-                      onChange={(e) => setManualPath(e.target.value)}
+                      onChange={e => setManualPath(e.target.value)}
                       readOnly
                     />
                     <Button
@@ -134,7 +157,8 @@ function DatabaseConnectionModal({
                     </Button>
                   </div>
                   <div className="small text-muted">
-                    Look for <code>mixxxdb.sqlite</code> in your Mixxx installation directory
+                    Look for <code>mixxxdb.sqlite</code> in your Mixxx
+                    installation directory
                   </div>
                 </div>
               )}
@@ -151,7 +175,7 @@ function DatabaseConnectionModal({
               id="remember-choice"
               label="Remember my choice and don't ask again"
               checked={rememberChoice}
-              onChange={(e) => setRememberChoice(e.target.checked)}
+              onChange={e => setRememberChoice(e.target.checked)}
               className="mb-3"
             />
 
@@ -161,12 +185,13 @@ function DatabaseConnectionModal({
             </div>
           </div>
         )}
-
       </Modal.Body>
 
       {mixxxStatus.isConnected ? (
         <Modal.Footer className="disconnect-button">
-          <Button variant="secondary" onClick={onHide}>Cancel</Button>
+          <Button variant="secondary" onClick={onHide}>
+            Cancel
+          </Button>
           <Button variant="primary" onClick={onDisconnect}>
             Disconnect
           </Button>
@@ -179,7 +204,9 @@ function DatabaseConnectionModal({
           <Button
             variant="primary"
             onClick={handleConnect}
-            disabled={loading || (selectedOption === 'manual' && !manualPath.trim())}
+            disabled={
+              loading || (selectedOption === 'manual' && !manualPath.trim())
+            }
           >
             {loading ? (
               <>
@@ -203,7 +230,8 @@ DatabaseConnectionModal.propTypes = {
   onDisconnect: PropTypes.func.isRequired,
   onManualSelect: PropTypes.func.isRequired,
   mixxxStatus: PropTypes.object.isRequired,
-  loading: PropTypes.bool
+  databasePreferences: PropTypes.object.isRequired,
+  loading: PropTypes.bool,
 }
 
 export default DatabaseConnectionModal
