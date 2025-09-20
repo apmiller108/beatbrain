@@ -3,7 +3,6 @@ import { join } from 'path'
 import fs from 'fs'
 import appDatabase from './database/appDatabase'
 import mixxxDatabase from './database/mixxxDatabase'
-import icon from '../renderer/src/assets/beatbrain_logo.png?v=0.0.1'
 
 function createWindow() {
   // Create the browser window.
@@ -12,7 +11,7 @@ function createWindow() {
     height: 800,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    ...(process.platform === 'linux' ? { icon: join(__dirname, './assets/beatbrain_logo.png') } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.mjs'),
       sandbox: false,
