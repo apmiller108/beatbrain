@@ -16,6 +16,9 @@
     "test:ui": "npm rebuild && vitest --ui",
     "test:watch": "npm rebuild && vitest",
     "test:coverage": "npm rebuild && vitest run --coverage",
+    "test:e2e": "npm rebuild && playwright test",
+    "test:e2e:ui": "npm rebuild && playwright test --ui",
+    "test:e2e:debug": "npm rebuild && playwright test --debug",
     "audit": "npm audit"
   },
   "repository": {
@@ -30,6 +33,7 @@
   "homepage": "https://github.com/apmiller108/beatbrain#readme",
   "devDependencies": {
     "@eslint/js": "^9.33.0",
+    "@playwright/test": "^1.55.0",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",

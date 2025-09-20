@@ -10,11 +10,16 @@ class AppDatabase {
   }
 
   initialize() {
-    const userDataPath = app.getPath('userData')
+    if (process.env.NODE_ENV === 'test' && process.env.BEATBRAIN_TEST_APP_DB) {
+      // In test mode, use a temporary database path if provided (for e2e testing)
+      this.dbPath = process.env.BEATBRAIN_TEST_APP_DB
+    } else {
+      // In production or development, use the standard user data path
+      const userDataPath = app.getPath('userData')
+      this.dbPath = path.join(userDataPath, 'beatbrain.sqlite')
+    }
 
-    this.dbPath = path.join(userDataPath, 'beatbrain.sqlite')
     this.db = new Database(this.dbPath, { verbose: this.verbose })
-
     this.db.pragma('journal_mode = WAL')
 
     try {

@@ -4,7 +4,6 @@ import path from 'path'
 import os from 'os'
 import { cleanup } from '@testing-library/react'
 import * as matchers from '@testing-library/jest-dom/matchers'
-import React from 'react'
 
 // Extend expect with testing-library matchers
 expect.extend(matchers)

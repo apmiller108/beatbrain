@@ -301,10 +301,16 @@ decimal.
 ├── launch.json
 ├── package.json
 ├── package-lock.json
+├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
 ├── README.md
 ├── spec
+│   ├── e2e
+│   │   ├── database-connection.spec.js
+│   │   └── helpers
+│   │       ├── electronApp.js
+│   │       └── testDatabase.js
 │   ├── fixtures
 │   │   ├── mixxxData.json
 │   │   └── mixxxdb_schema.sql
@@ -352,7 +358,7 @@ decimal.
 │               └── SettingsView.jsx
 └── vitest.config.js
 
-17 directories, 38 files
+19 directories, 42 files
 ```
 
 ## Core Features
@@ -425,9 +431,10 @@ message that contained instructions for harmonic mixing.
 - [x] Write test for mixxxDatabase.js
 - [x] Write test for DatabaseConnectionModal.jsx
 ### TODO: Setup end-to-end testing
-- [ ] Setup playwright
+- [x] Setup playwright
 - [ ] Write test for connecting to mixxx database
 - [ ] write test for disconnecting from mixx database
+- [ ] Cache sqlite3 builds
 
 ## TODOs for Feature: Settings Foundation (Phase 2)
 ### DONE: Move existing components to Settings view
