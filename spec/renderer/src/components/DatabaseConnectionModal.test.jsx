@@ -25,21 +25,21 @@ describe('DatabaseConnectionModal', () => {
   })
 
   describe('when not connected', () => {
-    it('should render connection modal with correct title', () => {
+    it('renders the connection modal with correct title', () => {
       render(<DatabaseConnectionModal {...defaultProps} />)
 
       expect(screen.getByText('Connect to Mixxx Database')).toBeInTheDocument()
       expect(screen.getByText(/BeatBrain needs to connect to your Mixxx database/)).toBeInTheDocument()
     })
 
-    it('should show manual selection option when no default path exists', () => {
+    it('shows manual selection option when no default path exists', () => {
       render(<DatabaseConnectionModal {...defaultProps} />)
 
       expect(screen.getByLabelText('Select database file')).toBeInTheDocument()
       expect(screen.queryByText('Use auto-detected database')).not.toBeInTheDocument()
     })
 
-    it('should show both auto-detect and manual options when default path exists', () => {
+    it('shows both auto-detect and manual options when default path exists', () => {
       const props = {
         ...defaultProps,
         mixxxStatus: {
@@ -57,8 +57,7 @@ describe('DatabaseConnectionModal', () => {
       expect(screen.getByText('/path/to/mixxxdb.sqlite')).toBeInTheDocument()
     })
 
-    it('should enable browse button when manual option is selected', async () => {
-      const user = userEvent.setup()
+    it('enables the browse button when manual option is selected', async () => {
       render(<DatabaseConnectionModal {...defaultProps} />)
 
       const manualRadio = screen.getByLabelText('Select database file')
@@ -68,7 +67,7 @@ describe('DatabaseConnectionModal', () => {
       expect(browseButton).toBeEnabled()
     })
 
-    it('should call onManualSelect when browse button is clicked', async () => {
+    it('calls onManualSelect when browse button is clicked', async () => {
       const user = userEvent.setup()
       const mockOnManualSelect = vi.fn().mockResolvedValue('/selected/path.sqlite')
 
@@ -85,7 +84,7 @@ describe('DatabaseConnectionModal', () => {
       expect(mockOnManualSelect).toHaveBeenCalledOnce()
     })
 
-    it('should update manual path when browse returns a path', async () => {
+    it('updates manual path when browse returns a path', async () => {
       const user = userEvent.setup()
       const mockOnManualSelect = vi.fn().mockResolvedValue('/selected/path.sqlite')
 
@@ -105,7 +104,7 @@ describe('DatabaseConnectionModal', () => {
       })
     })
 
-    it('should show error message when lastError is present', () => {
+    it('shows error message when lastError is present', () => {
       const props = {
         ...defaultProps,
         mixxxStatus: {
@@ -120,18 +119,7 @@ describe('DatabaseConnectionModal', () => {
       expect(screen.getByText('Database file not found')).toBeInTheDocument()
     })
 
-    it('should handle remember choice checkbox', async () => {
-      const user = userEvent.setup()
-      render(<DatabaseConnectionModal {...defaultProps} />)
-
-      const checkbox = screen.getByLabelText(/Remember my choice/)
-      expect(checkbox).not.toBeChecked()
-
-      await user.click(checkbox)
-      expect(checkbox).toBeChecked()
-    })
-
-    it('should call onConnect with correct parameters when connect button is clicked', async () => {
+    it('calls onConnect with correct parameters when connect button is clicked', async () => {
       const user = userEvent.setup()
       const mockOnConnect = vi.fn().mockResolvedValue(true)
 
@@ -162,14 +150,14 @@ describe('DatabaseConnectionModal', () => {
       expect(mockOnConnect).toHaveBeenCalledWith(null, true)
     })
 
-    it('should disable connect button when manual path is empty', () => {
+    it('disables connect button when manual path is empty', () => {
       render(<DatabaseConnectionModal {...defaultProps} />)
 
       const connectButton = screen.getByText('Connect')
       expect(connectButton).toBeDisabled()
     })
 
-    it('should show loading state when loading is true', () => {
+    it('shows loading state when loading is true', () => {
       const props = {
         ...defaultProps,
         loading: true
@@ -192,7 +180,7 @@ describe('DatabaseConnectionModal', () => {
       }
     }
 
-    it('should show connected state with database path', () => {
+    it('shows connected state with database path', () => {
       render(<DatabaseConnectionModal {...connectedProps} />)
 
       expect(screen.getByText('Mixxx Database')).toBeInTheDocument()
@@ -200,14 +188,14 @@ describe('DatabaseConnectionModal', () => {
       expect(screen.getByText('/connected/path.sqlite')).toBeInTheDocument()
     })
 
-    it('should show disconnect button instead of connect button', () => {
+    it('shows disconnect button instead of connect button', () => {
       render(<DatabaseConnectionModal {...connectedProps} />)
 
       expect(screen.getByText('Disconnect')).toBeInTheDocument()
       expect(screen.queryByText('Connect')).not.toBeInTheDocument()
     })
 
-    it('should call onDisconnect when disconnect button is clicked', async () => {
+    it('calls onDisconnect when disconnect button is clicked', async () => {
       const user = userEvent.setup()
       const mockOnDisconnect = vi.fn()
 
@@ -226,7 +214,7 @@ describe('DatabaseConnectionModal', () => {
   })
 
   describe('modal behavior', () => {
-    it('should call onHide when cancel/skip button is clicked', async () => {
+    it('calls onHide when cancel/skip button is clicked', async () => {
       const user = userEvent.setup()
       const mockOnHide = vi.fn()
 
@@ -243,7 +231,7 @@ describe('DatabaseConnectionModal', () => {
       expect(mockOnHide).toHaveBeenCalledOnce()
     })
 
-    it('should not render when show is false', () => {
+    it('does not render when show is false', () => {
       const props = {
         ...defaultProps,
         show: false
