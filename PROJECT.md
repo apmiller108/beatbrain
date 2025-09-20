@@ -299,8 +299,8 @@ decimal.
 ├── electron.vite.config.js
 ├── eslint.config.js
 ├── launch.json
-├── package-lock.json
 ├── package.json
+├── package-lock.json
 ├── PROJECT.md
 ├── PROJECT.txt
 ├── README.md
@@ -313,10 +313,15 @@ decimal.
 │   │       ├── appDatabase.spec.js
 │   │       └── mixxxDatabase.spec.js
 │   ├── mockMixxxDatabase.js
+│   ├── renderer
+│   │   └── src
+│   │       └── components
+│   │           └── DatabaseConnectionModal.test.jsx
 │   └── setup.js
 ├── src
-│   ├── assets
 │   ├── main
+│   │   ├── assets
+│   │   │   └── beatbrain_logo.png
 │   │   ├── database
 │   │   │   ├── appDatabase.js
 │   │   │   └── mixxxDatabase.js
@@ -324,7 +329,6 @@ decimal.
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
-│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -348,7 +352,7 @@ decimal.
 │               └── SettingsView.jsx
 └── vitest.config.js
 
-16 directories, 36 files
+17 directories, 38 files
 ```
 
 ## Core Features
@@ -415,11 +419,11 @@ message that contained instructions for harmonic mixing.
 - [x] Make the database icon in the StatusBar component clickable.
 - [x] clicking the database icon brings up modal that contains the MixxxDatabaseStatus component
 ## TODOS for setting up a test suite
-### TODO: Setup unit testing framework
+### DONE: Setup unit testing framework
 - [x] Setup vitest
 - [x] Write test for appDatabase.js
 - [x] Write test for mixxxDatabase.js
-- [ ] Write test for DatabaseConnectionModal.jsx
+- [x] Write test for DatabaseConnectionModal.jsx
 ### TODO: Setup end-to-end testing
 - [ ] Setup playwright
 - [ ] Write test for connecting to mixxx database
@@ -434,6 +438,8 @@ message that contained instructions for harmonic mixing.
 - [ ] Create input field with validation for API key entry
 - [ ] Add connection testing to verify API key validity
 - [ ] Ensure no plaintext storage of API credentials
+### TODO: Write tests for setting feature
+- [ ] end to end test
 ## TODOs for Feature: Playlist generation (Phase 1)
 ### TODO: build module to making requests to Anthropic's claude. Add @anthropic-ai/sdk npm package
 - [ ] Make request with list of tracks fetched from the Mixxx database
