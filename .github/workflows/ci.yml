@@ -42,12 +42,17 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
+      - name: Install xvfb
+        run: sudo apt-get install -y xvfb
+
       - name: Install dependencies
         run: npm install
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+      - name: Build the app
+        run: npm run build
 
       - name: Run E2E tests
-        run: npm run test:e2e
+        env:
+          CI: 'true'
+        run: xvfb-run npm run test:e2e
 

@@ -54,7 +54,9 @@ export class ElectronAppHelper {
     // Launch Electron app with test database paths
     this.app = await electron.launch({
       args: [
-        path.join(process.cwd(), 'out/main/index.js'), '--test-mode'
+        path.join(process.cwd(), 'out/main/index.js'),
+        '--test-mode',
+        process.env.CI === 'true' ? '--no-sandbox' : ''
       ],
       env: {
         ...process.env,
