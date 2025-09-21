@@ -140,5 +140,5 @@ vite.config.ts.timestamp-*
 
 !.dir-locals.el
 
-playwright-report
-test-results
+playwright-report/
+test-results/
