@@ -3,9 +3,9 @@ import path from 'path'
 import os from 'os'
 import fs from 'fs'
 
-export const createMockMixxxDatabase = () => {
+export const createMockMixxxDatabase = (dir = null) => {
   // Create temp dir to put mock Mixxx DB
-  const tempDir = path.join(os.tmpdir(), 'beatbrain-mixxx-test')
+  const tempDir = dir || path.join(os.tmpdir(), 'beatbrain-mixxx-test')
   // Remove any existing mock datbase if exists
   if (fs.existsSync(tempDir)) {
     fs.rmSync(tempDir, { recursive: true, force: true });

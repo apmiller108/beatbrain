@@ -450,9 +450,9 @@ message that contained instructions for harmonic mixing.
 - [ ] end to end test
 
 ## TODOs continue e2e testing
-### TODO figure out how to seed the appDatabase with user preferences and settings
-### TODO Cache sqlite3 builds
-### TODO write e2e test for configuring the mixxx database
+### DONE: figure out how to seed the appDatabase with user preferences and settings
+### TODO: Cache sqlite3 builds
+### TODO: write e2e test for configuring the mixxx database
 
 ## TODOs for Feature: Playlist generation (Phase 1)
 ### TODO: build module to making requests to Anthropic's claude. Add @anthropic-ai/sdk npm package
