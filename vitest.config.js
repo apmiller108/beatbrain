@@ -9,7 +9,7 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./spec/setup.js'],
     include: ['spec/**/*.{test,spec}.{js,mjs,ts,jsx}'],
-    exclude: ['node_modules', 'out', 'dist'],
+    exclude: ['node_modules', 'out', 'dist', 'spec/e2e'],
     // Mock Electron APIs
     mockReset: true,
     clearMocks: true,
