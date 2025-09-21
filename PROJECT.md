@@ -392,11 +392,13 @@ message that contained instructions for harmonic mixing.
 ### DONE: Setup Electron app
 - [x] setup Electron desktop application using React, Bootstrap, and Vite.
 - [x] add eslint and prettier
+
 ## TODOs for Database modules
 ### DONE: create database modules and initialize them on application startup
 - [x] Create `appDatabase.js` class with methods for managing settings and user preferences across two tables (`app_settings` and `user_preferences`)
 - [x] Integrated App database initialization into Electron main process with proper cleanup on app exit
 - [x] Created `mixxxDatabase.js` module for connecting and reading from the mixxx database.
+
 ## TODOs for Feature: Core Navigation & Status (Phase 1)
 ### DONE: Create view routing system
 - [x] Add navigation state management to App.jsx with default view as ‘playlist’
@@ -424,17 +426,16 @@ message that contained instructions for harmonic mixing.
 - [x] Update MixxxDatabaseStatus component to have configure database button. On click, show the modal.
 - [x] Make the database icon in the StatusBar component clickable.
 - [x] clicking the database icon brings up modal that contains the MixxxDatabaseStatus component
+
 ## TODOS for setting up a test suite
 ### DONE: Setup unit testing framework
 - [x] Setup vitest
 - [x] Write test for appDatabase.js
 - [x] Write test for mixxxDatabase.js
 - [x] Write test for DatabaseConnectionModal.jsx
-### TODO: Setup end-to-end testing
+### DONE: Setup end-to-end testing
 - [x] Setup playwright
-- [ ] Write test for connecting to mixxx database
-- [ ] write test for disconnecting from mixx database
-- [ ] Cache sqlite3 builds
+- [x] Write basic test to verify the database connection modal is presented
 
 ## TODOs for Feature: Settings Foundation (Phase 2)
 ### DONE: Move existing components to Settings view
@@ -447,6 +448,12 @@ message that contained instructions for harmonic mixing.
 - [ ] Ensure no plaintext storage of API credentials
 ### TODO: Write tests for setting feature
 - [ ] end to end test
+
+## TODOs continue e2e testing
+### TODO figure out how to seed the appDatabase with user preferences and settings
+### TODO Cache sqlite3 builds
+### TODO write e2e test for configuring the mixxx database
+
 ## TODOs for Feature: Playlist generation (Phase 1)
 ### TODO: build module to making requests to Anthropic's claude. Add @anthropic-ai/sdk npm package
 - [ ] Make request with list of tracks fetched from the Mixxx database
@@ -469,6 +476,7 @@ Note this filtering should be built in such a way that it can be resued in the p
 - [ ] Filter by Year range
 - [ ] Filter by date added range
 - [ ] Free text for custom instructions
+
 ## TODOs for Feature: Playlist generation (Phase 2)
 ### TODO export m3u file
 - [ ] User clicks a button to export to m3u file and is prompted for where on the local file system to save.
@@ -477,6 +485,7 @@ Note this filtering should be built in such a way that it can be resued in the p
 - [ ] Change order
 - [ ] Add track
 ### TODO add ability to play audio to preview track while editing
+
 ## TODOs for Feature: Enahanced library view
 - [ ] TODO: More stats
 - [ ] TODO: search
@@ -484,6 +493,7 @@ Note this filtering should be built in such a way that it can be resued in the p
 - [ ] TODO: data visulization (show how library has evolved over time)
 - [x] TODO: Relocate TrackList and LibraryStatistics to LibraryView
 - [ ] TODO: Move datafetching from App.jsx to LibarayView.jsx
+
 ## TODOs for UI polish
 
 # Notes

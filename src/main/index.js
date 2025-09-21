@@ -53,7 +53,7 @@ app.whenReady().then(() => {
 
   try {
     initializeAppDataDir()
-    appDatabase.initialize()
+    appDatabase.initialize(app.getPath('userData'))
     console.log('Application database initialized successfully')
   } catch (error) {
     console.error('Failed to initialize application', error)

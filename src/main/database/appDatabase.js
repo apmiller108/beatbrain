@@ -1,6 +1,5 @@
 import Database from 'better-sqlite3'
 import path from 'path'
-import { app } from 'electron'
 
 class AppDatabase {
   constructor(debug = false) {
@@ -9,13 +8,12 @@ class AppDatabase {
     this.verbose = debug ? console.log : null
   }
 
-  initialize() {
+  initialize(userDataPath) {
     if (process.env.NODE_ENV === 'test' && process.env.BEATBRAIN_TEST_APP_DB) {
       // In test mode, use a temporary database path if provided (for e2e testing)
       this.dbPath = process.env.BEATBRAIN_TEST_APP_DB
     } else {
       // In production or development, use the standard user data path
-      const userDataPath = app.getPath('userData')
       this.dbPath = path.join(userDataPath, 'beatbrain.sqlite')
     }
 

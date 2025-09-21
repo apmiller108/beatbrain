@@ -1,11 +1,12 @@
 import appDatabase from '@main/database/appDatabase.js'
+import { app } from 'electron'
 
 describe('AppDatabase', () => {
-  // See setup.js for mock setup of application temp data directory
   let initializationResult;
 
   beforeAll(() => {
-    initializationResult = appDatabase.initialize()
+    // See setup.js for mock setup of application temp data directory
+    initializationResult = appDatabase.initialize(app.getPath('userData'))
   })
 
   describe('initialize', () => {
@@ -110,7 +111,7 @@ describe('AppDatabase', () => {
 
   describe('transaction', () => {
     it('should execute transaction successfully', () => {
-      const result = appDatabase.transaction(() => {
+      appDatabase.transaction(() => {
         appDatabase.setSetting('key1', 'value1')
         appDatabase.setSetting('key2', 'value2')
       })
@@ -131,7 +132,7 @@ describe('AppDatabase', () => {
 
   describe('close', () => {
     it('should close database connection', () => {
-      appDatabase.initialize()
+      appDatabase.initialize(app.getPath('userData'))
       expect(appDatabase.db).toBeTruthy()
 
       appDatabase.close()

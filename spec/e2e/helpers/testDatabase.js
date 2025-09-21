@@ -5,14 +5,15 @@ import { createMockMixxxDatabase, seedMixxxDatabase } from '../../mockMixxxDatab
 
 export class TestDatabaseHelper {
   constructor() {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'beatbrain-e2e'));
-    this.appDbPath = path.join(tempDir, 'beatbrain.sqlite');
+    this.tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'beatbrain-e2e'));
+    this.appDbPath = path.join(this.tempDir, 'beatbrain.sqlite');
   }
 
   createMixxxDatabase() {
     this.mixxxDbPath = createMockMixxxDatabase()
     seedMixxxDatabase(this.mixxxDbPath)
-    return this.mixxxDbPath;
+    return this.mixxxDbPath
+    ;
   }
 
   cleanup() {
@@ -27,6 +28,7 @@ export class TestDatabaseHelper {
   getMixxxDbPath() {
     return this.mixxxDbPath;
   }
+
 
   getAppDbPath() {
     return this.appDbPath;
