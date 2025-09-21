@@ -1,57 +1,26 @@
 import { _electron as electron } from 'playwright';
 import path from 'path';
-import { execSync } from 'child_process';
+import SqliteManager from './sqliteManager.js';
 
 export class ElectronAppHelper {
   constructor(testDb) {
     this.testDb = testDb;
     this.app = null;
     this.window = null;
+    this.sqliteManager = new SqliteManager();
   }
 
-  // Rebuild better-sqlite3 for Electron
-  // Running the test needs to have better-sqlite3 built for system version of Node
-  // but launching Electron needs it built for Electron's Node version.
-  // This is a huge pain in the ass and all I could figure out to do is
-  // rebuild before launching the app.
-  async rebuildForElectron() {
-    console.log('Rebuilding better-sqlite3 for Electron...');
-    try {
-      execSync('npm run rebuild', {
-        stdio: 'inherit',
-        cwd: process.cwd()
-      });
-
-      console.log('✅ Rebuilt better-sqlite3 for Electron');
-    } catch (error) {
-      console.error('Failed to rebuild for Electron:', error);
-      throw error;
-    }
-  }
-
-  async rebuildForNode() {
-    console.log('Rebuilding better-sqlite3 for system node...');
-    try {
-      execSync('npm rebuild', {
-        stdio: 'inherit',
-        cwd: process.cwd()
-      });
-
-      console.log('✅ Rebuilt better-sqlite3 for system node');
-    } catch (error) {
-      console.error('Failed to rebuild for system node:', error);
-      throw error;
-    }
-  }
-
+  // Running the test needs to have better-sqlite3 binary built for system
+  // version of Node, but launching Electron, which has its own built in node,
+  // needs it built for Electron's Node version. To solve this, better-sqlite3
+  // is built for both versions of node, cached and swapped as needed.
   async launch() {
-    // TODO: cache these better-sqlite3 builds and switch between them
-    // Create the test Mixxx database
-    await this.rebuildForNode()
+    await this.sqliteManager.switchToNode();
     this.testDb.createMixxxDatabase();
 
-    await this.rebuildForElectron();
-    // Launch Electron app with test database paths
+    await this.sqliteManager.switchToElectron();
+
+    // Launch Electron app with test database paths set via environment variables
     this.app = await electron.launch({
       args: [
         path.join(process.cwd(), 'out/main/index.js'),
