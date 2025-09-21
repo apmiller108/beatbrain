@@ -16,9 +16,6 @@ App Name: **BeatBrain**
   - **Read-only access** to `mixxxdb.sqlite`
   - **Auto-detection** of Mixxx database location by platform
   - **Manual file selection** as fallback option
-  - **Real-time monitoring** for database changes with automatic refresh
-  - **Lock contention handling** with retry logic and user error
-    notifications
   - Read and write access to an application database (also sqlite)
 
 ### 2\. Library Management
@@ -26,7 +23,6 @@ App Name: **BeatBrain**
   - Display tracks, crates, and playlists from Mixxx database
   - **Sortable table interface** with comprehensive track metadata
   - **Search and filtering** capabilities across all library content
-  - Real-time updates when Mixxx database changes
 
 ### 3\. Claude AI Integration
 
@@ -46,7 +42,7 @@ App Name: **BeatBrain**
 
 ### Technology Stack
 
-  - **Frontend**: React + Bootstrap for responsive UI
+  - **Frontend**: React + Bootstrap
   - **Backend**: Electron main process with Node.js
   - **Database**: SQLite3 with read-only access
   - **AI Integration**: Anthropic Claude API
@@ -72,7 +68,7 @@ CREATE TABLE user_preferences (
 CREATE TABLE sqlite_sequence(name,seq);
 ```
 
-2.  mixxxdb.sqlite
+2. Mixxx database (mixxxdb.sqlite)
 
     1.  Primary Tables
 
@@ -84,14 +80,6 @@ CREATE TABLE sqlite_sequence(name,seq);
           - **`Playlists`**: User playlists
           - **`PlaylistTracks`**: Playlist contents
 
-    2.  Metadata Available to Claude
-
-          - Track identification (artist, title, album)
-          - Technical specs (BPM, key, duration, bitrate)
-          - Categorization (genre, year, rating)
-          - User organization (crates, playlists)
-          - Play statistics (times played, last played)
-
 ### Platform-Specific Database Locations
 
 | Platform    | Default Path                                                                                 |
@@ -101,10 +89,19 @@ CREATE TABLE sqlite_sequence(name,seq);
 | **Linux**   | `~/.mixxx/mixxxdb.sqlite`                                                                    |
 
 ## Dependencies
-better-sqlite3 bootstrap chokidar react react-bootstrap react-bootstrap-icons react-dom
+- better-sqlite3
+- bootstrap
+- chokidar
+- react
+- react-bootstrap
+- react-bootstrap-icons
+- react-dom
 
 ## Dev Dependencies
-eslint, electron, electron-rebuild, electron-vite
+- eslint
+- electron
+- electron-rebuild
+- electron-vite
 
 ## User Interface Design
 
@@ -138,9 +135,9 @@ eslint, electron, electron-rebuild, electron-vite
       - **Features**: Click-to-sort, multi-column filtering, search bar
       - **Bootstrap Components**: Table, Form controls, Input groups
 
-2.  2\. Claude Chat Interface
+2.  2\. Smart playlist Interface
 
-      - **Chat-style interface** for natural language queries
+      - **custom instructions** for natural language queries
       - **Prompt examples** for playlist generation
       - **Response display** with formatted playlist suggestions
       - **Export buttons** for generated playlists
@@ -310,6 +307,7 @@ decimal.
 │   │   ├── database-connection.spec.js
 │   │   └── helpers
 │   │       ├── electronApp.js
+│   │       ├── sqliteManager.js
 │   │       └── testDatabase.js
 │   ├── fixtures
 │   │   ├── mixxxData.json
@@ -358,7 +356,7 @@ decimal.
 │               └── SettingsView.jsx
 └── vitest.config.js
 
-19 directories, 42 files
+19 directories, 43 files
 ```
 
 ## Core Features
@@ -451,7 +449,7 @@ message that contained instructions for harmonic mixing.
 
 ## TODOs continue e2e testing
 ### DONE: figure out how to seed the appDatabase with user preferences and settings
-### TODO: Cache sqlite3 builds
+### DONE: Cache sqlite3 builds
 ### TODO: write e2e test for configuring the mixxx database
 
 ## TODOs for Feature: Playlist generation (Phase 1)
@@ -519,7 +517,7 @@ Note this filtering should be built in such a way that it can be resued in the p
   4. **Relative Major/Minor (scale change)**: 8A ↔ 8B, 5A ↔ 5B
   3. **Adjacent Keys (-1)**: 8A → 7A → 6A
   5. **+2 (Energy Boost)**: 8A → 10A
-  6. ** Go up a semitone (+7 or -5)**: This is a bold energy boost. For example, 8A → 3A (8+7 = 15, which becomes 3 on the 12-section wheel). 
+  6. ** Go up a semitone (+7 or -5)**: This is a bold energy boost. For example, 8A → 3A (8+7 = 15, which becomes 3 on the 12-section wheel).
 
   ### Key Compatibility Matrix
   For any starting key X:
