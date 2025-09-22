@@ -16,9 +16,9 @@
     "test:ui": "npm rebuild && vitest --ui",
     "test:watch": "npm rebuild && vitest",
     "test:coverage": "npm rebuild && vitest run --coverage",
-    "test:e2e": "npm rebuild && playwright test",
-    "test:e2e:ui": "npm rebuild && playwright test --ui",
-    "test:e2e:debug": "npm rebuild && playwright test --debug",
+    "test:e2e": "npm rebuild && NODE_ENV=test playwright test",
+    "test:e2e:ui": "npm rebuild && NODE_ENV=test playwright test --ui",
+    "test:e2e:debug": "npm rebuild && NODE_ENV=test playwright test --debug",
     "audit": "npm audit"
   },
   "repository": {

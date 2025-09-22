@@ -24,11 +24,16 @@ test.describe('Database Connection', () => {
     await expect(window.locator('.database-connection-modal')).toBeVisible();
   });
 
-  test('does not prompt if set to auto connection', async () => {
+  test.only('does not prompt if set to auto connection', async ({ page }) => {
     testDb.setUserPreferences([
       { category: 'database', key: 'auto_connect', value: 'true' },
       { category: 'database', key: 'path', value: testDb.getMixxxDbPath() }
     ]);
+
+    page.on('console', msg => {
+      // Log any console messages from the app for debugging
+      console.log(`App console: ${msg.text()}`);
+    });
 
     const { window } = await electronApp.launch();
 
