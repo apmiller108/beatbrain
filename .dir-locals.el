@@ -3,13 +3,12 @@
                      (let ((eslint-path (expand-file-name "node_modules/.bin/eslint" project-root)))
                        (when (file-exists-p eslint-path)
                          (setq-local flycheck-javascript-eslint-executable eslint-path)
-                         (setq-local flycheck-eslint-executable eslint-path))))
-                   (add-hook 'lsp-mode-hook
-                             (lambda ()
-                               (add-to-list 'lsp-enabled-clients 'ts-ls)
-                               (add-to-list 'lsp-enabled-clients 'sql-ls)
-                               (add-to-list 'lsp-enabled-clients 'json-ls))
-                             nil t)))))
+                         (setq-local flycheck-eslint-executable eslint-path)))
+                     ;; Set lsp-enabled-clients
+                     (setq-local lsp-enabled-clients
+                                 (append '(ts-ls sql-ls json-ls) lsp-enabled-clients)))))
+
+         ))
  (js-mode . ((flycheck-checker . javascript-eslint)))
  (js2-mode . ((flycheck-checker . javascript-eslint)))
  (rjsx-mode . ((flycheck-checker . javascript-eslint)))
