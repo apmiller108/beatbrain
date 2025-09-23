@@ -3,15 +3,18 @@ import path from 'path';
 import os from 'os';
 import { createMockMixxxDatabase, seedMixxxDatabase } from '../../mockMixxxDatabase.js'
 import appDatabase from '../../../src/main/database/appDatabase.js';
+import SqliteManager from './sqliteManager.js';
 
 export class TestDatabaseHelper {
   constructor() {
     this.tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'beatbrain-e2e'));
     this.appDbPath = path.join(this.tempDir, 'beatbrain.sqlite');
     this.mixxxDbPath = path.join(this.tempDir, 'mixxxdb.sqlite');
+    this.sqliteManager = new SqliteManager();
   }
 
-  createMixxxDatabase() {
+  async createMixxxDatabase() {
+    await this.sqliteManager.switchToNode();
     createMockMixxxDatabase(this.tempDir);
     seedMixxxDatabase(this.mixxxDbPath)
   }
@@ -33,7 +36,8 @@ export class TestDatabaseHelper {
     return this.appDbPath;
   }
 
-  setUserPreferences(preferences) {
+  async setUserPreferences(preferences) {
+    await this.sqliteManager.switchToNode();
     appDatabase.initialize(this.tempDir)
     preferences.forEach(({ category, key, value }) => {
       appDatabase.setUserPreference(category, key, value);

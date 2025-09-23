@@ -18,6 +18,10 @@ class MixxxDatabase {
     const platform = process.platform
     const username = os.userInfo().username
 
+    if (process.env.NODE_ENV === 'test' && process.env.BEATBRAIN_TEST_MIXXX_DB) {
+      return process.env.BEATBRAIN_TEST_MIXXX_DB
+    }
+
     switch (platform) {
       case 'win32':
         return path.join(

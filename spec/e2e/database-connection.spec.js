@@ -17,27 +17,57 @@ test.describe('Database Connection', () => {
     }
   });
 
-  test('prompts to configure the Mixxx database connection', async () => {
-    const { window } = await electronApp.launch();
+  test.describe('when a Mixxx database exists at the default location', () => {
+    test.beforeEach(async () => {
+      await testDb.createMixxxDatabase();
+    })
 
-    // Wait for the database connection modal
-    await expect(window.locator('.database-connection-modal')).toBeVisible();
+    test('prompts to configure the Mixxx database connection', async ({ page }) => {
+      const { window } = await electronApp.launch();
+
+      // Wait for the database connection modal
+      await expect(window.locator('.database-connection-modal')).toBeVisible();
+      const modal = window.locator('.database-connection-modal');
+
+      page.on('console', msg => console.log(`App console: ${msg.text()}`));
+
+      // Verify modal contents
+      await expect(modal.locator('input#auto-detect')).toBeChecked();
+      await expect(modal.locator('code')).toHaveText(testDb.getMixxxDbPath());
+      await expect(modal.locator('input#remember-choice')).not.toBeChecked();
+
+      // Connect to the database
+      await modal.getByRole('button', { name: 'Connect' }).click();
+
+      await expect(window.locator('.database-connection-modal')).not.toBeVisible();
+      await expect(window.locator('.status-bar')).toContainText('Connected to Mixxx database')
+    });
+  })
+
+  // TODO: write test for manually selecting a Mixxx database file
+  test.describe('when no Mixxx database exists at the default location', () => {
+    // Auto-detect option should not be shown
+    // Should be able to manually select a Mixxx database file
   });
 
-  test.only('does not prompt if set to auto connection', async ({ page }) => {
-    testDb.setUserPreferences([
-      { category: 'database', key: 'auto_connect', value: 'true' },
-      { category: 'database', key: 'path', value: testDb.getMixxxDbPath() }
-    ]);
-
-    page.on('console', msg => {
-      // Log any console messages from the app for debugging
-      console.log(`App console: ${msg.text()}`);
+  test.describe('with user preference set to auto connect', () => {
+    test.beforeEach(async () => {
+      await testDb.setUserPreferences([
+        { category: 'database', key: 'auto_connect', value: 'true' },
+        { category: 'database', key: 'path', value: testDb.getMixxxDbPath() }
+      ]);
     });
 
-    const { window } = await electronApp.launch();
+    test('does not prompt if set to auto connection', async ({ page }) => {
+      page.on('console', msg => {
+        // Log any console messages from the app for debugging
+        console.log(`App console: ${msg.text()}`);
+      });
 
-    // Wait for the database connection modal
-    await expect(window.locator('.database-connection-modal')).not.toBeVisible();
-  })
+      const { window } = await electronApp.launch();
+
+      // Wait for the database connection modal
+      await expect(window.locator('.database-connection-modal')).not.toBeVisible();
+    })
+  });
 });

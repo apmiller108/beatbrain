@@ -15,9 +15,6 @@ export class ElectronAppHelper {
   // needs it built for Electron's Node version. To solve this, better-sqlite3
   // is built for both versions of node, cached and swapped as needed.
   async launch() {
-    await this.sqliteManager.switchToNode();
-    this.testDb.createMixxxDatabase();
-
     await this.sqliteManager.switchToElectron();
 
     // Launch Electron app with test database paths set via environment variables
