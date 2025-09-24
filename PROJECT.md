@@ -24,14 +24,18 @@ App Name: **BeatBrain**
   - **Sortable table interface** with comprehensive track metadata
   - **Search and filtering** capabilities across all library content
 
-### 3\. Claude AI Integration
+### 3\. Smart playlist generation
+  - Filter tracks
+  - harmonic mixing rules
+
+### 4\. Claude AI Integration (AI mode for playlist generation)
 
   - User-configurable API key storage in application settings
   - Natural language queries about music library content
   - **Intelligent playlist generation** based on user prompts
   - Context-aware responses using actual library data
 
-### 4\. Playlist Export
+### 5\. Playlist Export
 
   - Generate **Extended M3U format** playlists
   - Include track names and metadata in export
@@ -296,8 +300,8 @@ decimal.
 ├── electron.vite.config.js
 ├── eslint.config.js
 ├── launch.json
-├── package.json
 ├── package-lock.json
+├── package.json
 ├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
@@ -323,6 +327,7 @@ decimal.
 │   │           └── DatabaseConnectionModal.test.jsx
 │   └── setup.js
 ├── src
+│   ├── assets
 │   ├── main
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
@@ -333,6 +338,7 @@ decimal.
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
+│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -356,7 +362,7 @@ decimal.
 │               └── SettingsView.jsx
 └── vitest.config.js
 
-19 directories, 43 files
+22 directories, 43 files
 ```
 
 ## Core Features
@@ -435,36 +441,23 @@ message that contained instructions for harmonic mixing.
 - [x] Setup playwright
 - [x] Write basic test to verify the database connection modal is presented
 
-## TODOs for Feature: Settings Foundation (Phase 2)
-### DONE: Move existing components to Settings view
-- [x] Relocate SystemInformation component from main view to SettingsView.jsx
-- [x] Relocate MixxxDatabaseStatus component from main view to SettingsView.jsx
-### TODO: Implement API key management in Settings
-- [ ] Add secure storage for Anthropic API key using Electron’s safeStorage API
-- [ ] Create input field with validation for API key entry
-- [ ] Add connection testing to verify API key validity
-- [ ] Ensure no plaintext storage of API credentials
-### TODO: Write tests for setting feature
-- [ ] end to end test
-
 ## TODOs continue e2e testing
 ### DONE: figure out how to seed the appDatabase with user preferences and settings
 ### DONE: Cache sqlite3 builds
-### TODO: write e2e test for configuring the mixxx database
+### DONE: write e2e test for configuring the mixxx database
 
-## TODOs for Feature: Playlist generation (Phase 1)
-### TODO: build module to making requests to Anthropic's claude. Add @anthropic-ai/sdk npm package
-- [ ] Make request with list of tracks fetched from the Mixxx database
-- [ ] Include a system message for instructing LLM to generate smart playlists
-- [ ] Include the user's custom free text instructions
-- [ ] Instruct LLM to return a sequence of tracks by track ID.
-### TODO: persist playlist in app database
-Note, this app might one day support Rekordbox libraries. We might want to consider that now when creating the schema. The app might need to know when a playlist was create for Mixxx vs Rekordbox
-- [ ] create playlists table
-- [ ] create playlists tracks table
-- [ ] Store the LLM response as playlist
+## TODOs for Feature: Playlist generation (Phase 1: Basic UI)
+Build interface that allows users to filter the library to a subset of tracks
+that should be considered for smart playlist generation. The parametes will be
+used to perform a query against the Mixxx dabatase.
 ### TODO: Implement fields for user to filter tracks eligible for playlist creation
-Note this filtering should be built in such a way that it can be resued in the playlists view. Also these filter criteria are multiselect for which a "tag" based UX might be appropriate. Given there could be many options per filter criteria, a type ahead UX would be nice. The filter criteria will be used to perform a database query to retrieve tracks to be passed to the LLM for playlist generation.
+Note this filtering should be built in such a way that it can be resued in the
+playlists view. Also these filter criteria are multiselect for which a "tag"
+based UX might be appropriate. Given there could be many options per filter
+criteria, a type ahead UX would be nice. The filter criteria will be used to
+perform a database query to retrieve tracks to be passed to the LLM for playlist
+generation.
+- [ ] field: number of tracks for playlist (min: 1, max: number of tracks in library)
 - [ ] Filter by genres
 - [ ] Filter by crates
 - [ ] Filter by Groups
@@ -473,9 +466,23 @@ Note this filtering should be built in such a way that it can be resued in the p
 - [ ] Filter by BPM range
 - [ ] Filter by Year range
 - [ ] Filter by date added range
-- [ ] Free text for custom instructions
+- [ ] Cache the selections in appDatabase to be used a default
+### TODO: create app database playlist schema
+Note, this app might one day support Rekordbox libraries. We might want to
+consider that now when creating the schema. The app might need to know when a
+playlist was create for Mixxx vs Rekordbox
+- [ ] create playlists table
+- [ ] create playlists tracks table. Table should contain data required to generate an m3u file (name, duration, path)
+### TODO: generate playlist
+For now, the playlist can be the results from the query. Smart (AI gen) playlist can be built later.
+- [ ] Generate button submits the request.
+- [ ] Results are stored in appDatabase, playlists table.
+### TODO: playlist index
+- [ ] Provide playlist index component to select previously generated playlists
+### TODO: playlist show view
+- [ ] Show playlist in playlist show view
 
-## TODOs for Feature: Playlist generation (Phase 2)
+## TODOs for Feature: Playlist (Phase 2: edit and export)
 ### TODO export m3u file
 - [ ] User clicks a button to export to m3u file and is prompted for where on the local file system to save.
 ### TODO edit playlist manually
@@ -483,6 +490,25 @@ Note this filtering should be built in such a way that it can be resued in the p
 - [ ] Change order
 - [ ] Add track
 ### TODO add ability to play audio to preview track while editing
+
+## TODOs for Feature: Settings Foundation (Phase 2: API key management)
+### DONE: Move existing components to Settings view
+- [x] Relocate SystemInformation component from main view to SettingsView.jsx
+- [x] Relocate MixxxDatabaseStatus component from main view to SettingsView.jsx
+### TODO: Implement API key management in Settings
+- [ ] Add secure storage for Anthropic API key using Electron’s safeStorage API
+- [ ] Create input field with validation for API key entry
+- [ ] Ensure no plaintext storage of API credentials
+### TODO: Write tests for setting feature
+- [ ] end to end test
+
+## TODOs for Feature: Playlist generation (Phase 3: AI mode)
+### TODO: build module to making requests to Anthropic's claude. Add @anthropic-ai/sdk npm package
+- [ ] Make request with list of tracks fetched from the Mixxx database
+- [ ] Include a system message for instructing LLM to generate smart playlists
+- [ ] Include the user's custom free text instructions
+- [ ] Instruct LLM to return a sequence of tracks by track ID.
+- [ ] Add connection testing to verify API key validity
 
 ## TODOs for Feature: Enahanced library view
 - [ ] TODO: More stats
