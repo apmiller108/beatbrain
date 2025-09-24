@@ -25,9 +25,8 @@ test.describe('Configure Mixxx database connection', () => {
     test('connect to Mixxx database at default location', async ({ page }) => {
       const { window } = await electronApp.launch();
 
-      // Wait for the database connection modal
-      await expect(window.locator('.database-connection-modal')).toBeVisible();
       const modal = window.locator('.database-connection-modal');
+      await expect(modal).toBeVisible();
 
       // Verify modal contents
       await expect(modal.locator('input#auto-detect')).toBeChecked();
@@ -42,11 +41,31 @@ test.describe('Configure Mixxx database connection', () => {
     });
   })
 
-  // TODO: write test for manually selecting a Mixxx database file
   test.describe('when no Mixxx database exists at the default location', () => {
-    test('connect to Mixxx at custom location', ({ page }) => {
-      // Auto-detect option should not be shown
-      // Should be able to manually select a Mixxx database file
+    test('connect to Mixxx at custom location', async ({ page }) => {
+      await testDb.createCustomMixxxDatabase();
+      const { window } = await electronApp.launch();
+
+      const modal = window.locator('.database-connection-modal');
+      await expect(modal).toBeVisible();
+
+      await expect(modal.locator('input#auto-detect')).not.toBeVisible();
+      await expect(modal.locator('input#manual-select')).toBeChecked();
+      await expect(modal).toContainText('Look for mixxxdb.sqlite in your Mixxx installation directory');
+
+      // TODO: figure out how to test manual file selection. The following code does not work
+      // Simulate user manually entering the path to the custom Mixxx database file
+      // Playwright cannot interact with the OS dialogs, so we fill in the path directly
+      // modal.locator('input[type="text"]').evaluate((el, value) => {
+      //   el.value = value
+      //   el.dispatchEvent(new Event('change', { bubbles: true }))
+      // }, testDb.mixxxDbPathCustom);
+
+      // // Connect to the database
+      // await modal.getByRole('button', { name: 'Connect' }).click();
+
+      // await expect(window.locator('.database-connection-modal')).not.toBeVisible();
+      // await expect(window.locator('.status-bar')).toContainText('Connected to Mixxx database')
     })
   });
 
@@ -59,10 +78,7 @@ test.describe('Configure Mixxx database connection', () => {
     });
 
     test('does not prompt to configure database', async ({ page }) => {
-      page.on('console', msg => {
-        // Log any console messages from the app for debugging
-        console.log(`App console: ${msg.text()}`);
-      });
+      page.on('console', msg => console.log(`App console: ${msg.text()}`));
 
       const { window } = await electronApp.launch();
 

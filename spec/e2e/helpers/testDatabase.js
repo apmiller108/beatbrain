@@ -19,10 +19,25 @@ export class TestDatabaseHelper {
     seedMixxxDatabase(this.mixxxDbPath)
   }
 
+  // Create a Mixxx database with a custom filename for
+  // simulating a user selecting a Mixxx database file in a non-default location
+  async createCustomMixxxDatabase() {
+    const customDbFilename = 'custom_mixxxdb.sqlite';
+    this.mixxxDbPathCustom = path.join(this.tempDir, customDbFilename);
+
+    await this.sqliteManager.switchToNode();
+
+    createMockMixxxDatabase(this.tempDir, customDbFilename);
+    seedMixxxDatabase(this.mixxxDbPathCustom)
+  }
+
   cleanup() {
     try {
       fs.rmSync(this.appDbPath, { recursive: true, force: true });
       fs.rmSync(this.mixxxDbPath, { recursive: true, force: true });
+      if (this.mixxxDbPathCustom) {
+        fs.rmSync(this.mixxxDbPathCustom, { recursive: true, force: true });
+      }
     } catch (error) {
       console.warn('Failed to cleanup test database:', error);
     }

@@ -3,7 +3,7 @@ import path from 'path'
 import os from 'os'
 import fs from 'fs'
 
-export const createMockMixxxDatabase = (dir = null) => {
+export const createMockMixxxDatabase = (dir = null, filename = 'mixxxdb.sqlite') => {
   // Create temp dir to put mock Mixxx DB
   const tempDir = dir || path.join(os.tmpdir(), 'beatbrain-mixxx-test')
   // Remove any existing mock datbase if exists
@@ -12,7 +12,7 @@ export const createMockMixxxDatabase = (dir = null) => {
   }
   fs.mkdirSync(tempDir, { recursive: true });
 
-  const dbPath = path.join(tempDir, 'mixxxdb.sqlite')
+  const dbPath = path.join(tempDir, filename)
   const testDb = new Database(dbPath)
   const mixxxSchema = fs.readFileSync('spec/fixtures/mixxxdb_schema.sql', 'utf-8')
 
