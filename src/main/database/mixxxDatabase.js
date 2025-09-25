@@ -225,9 +225,31 @@ class MixxxDatabase {
     }
   }
 
-  /**
-   * Get connection status
-   */
+  getAvailableGenres() {
+    if (!this.isConnected || !this.db) {
+      throw new Error('Database not connected')
+    }
+
+    try {
+      const genres = this.db
+        .prepare(`
+        SELECT DISTINCT genre
+        FROM library
+        WHERE genre IS NOT NULL AND genre != ''
+        AND mixxx_deleted = 0
+        ORDER BY genre COLLATE NOCASE ASC
+       `)
+        .all()
+        .map(row => row.genre)
+
+      return genres
+    } catch (error) {
+      console.error('Error getting available genres:', error)
+      throw error
+    }
+  }
+
+
   getStatus() {
     return {
       isConnected: this.isConnected,
@@ -238,9 +260,6 @@ class MixxxDatabase {
     }
   }
 
-  /**
-   * Disconnect from database
-   */
   disconnect() {
     if (this.db) {
       this.db.close()
