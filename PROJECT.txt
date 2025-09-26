@@ -95,8 +95,8 @@ CREATE TABLE sqlite_sequence(name,seq);
 ## Dependencies
 - better-sqlite3
 - bootstrap
-- chokidar
 - react
+- react-select
 - react-bootstrap
 - react-bootstrap-icons
 - react-dom
@@ -301,8 +301,8 @@ decimal.
 ├── eslint.config.js
 ├── launch.json
 ├── NOTES.md
-├── package.json
 ├── package-lock.json
+├── package.json
 ├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
@@ -328,6 +328,7 @@ decimal.
 │   │           └── DatabaseConnectionModal.test.jsx
 │   └── setup.js
 ├── src
+│   ├── assets
 │   ├── main
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
@@ -338,6 +339,7 @@ decimal.
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
+│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -361,7 +363,7 @@ decimal.
 │               └── SettingsView.jsx
 └── vitest.config.js
 
-19 directories, 44 files
+22 directories, 44 files
 ```
 
 ## Core Features
@@ -456,9 +458,9 @@ based UX might be appropriate. Given there could be many options per filter
 criteria, a type ahead UX would be nice. The filter criteria will be used to
 perform a database query to retrieve tracks to be passed to the LLM for playlist
 generation.
-### **Setup & Dependencies**
-- [ ] Install react-select package (`npm install react-select`)
-- [ ] Add react-select to project dependencies
+### **DONE: Setup & Dependencies**
+- [x] Install react-select package (`npm install react-select`)
+- [x] Add react-select to project dependencies
 
 ### **Database Layer**
 - [ ] Add method to mixxxDatabase.js: `getAvailableGenres()` - return unique genres from library
