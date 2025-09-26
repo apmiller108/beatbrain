@@ -463,8 +463,8 @@ generation.
 - [x] Add react-select to project dependencies
 
 ### **Database Layer**
-- [ ] Add method to mixxxDatabase.js: `getAvailableGenres()` - return unique genres from library
-- [ ] Add method to mixxxDatabase.js: `getBpmRange()` - return min/max BPM values from library
+- [x] Add method to mixxxDatabase.js: `getAvailableGenres()` - return unique genres from library
+- [x] Add method to mixxxDatabase.js: `getBpmRange()` - return min/max BPM values from library
 - [ ] Add method to mixxxDatabase.js: `getFilteredTracks(filters)` - query tracks with genre OR, BPM range, and limit
 - [ ] Add method to appDatabase.js: `savePlaylistFilters(filters)` - store filter settings in app_settings
 - [ ] Add method to appDatabase.js: `getPlaylistFilters()` - retrieve saved filter settings

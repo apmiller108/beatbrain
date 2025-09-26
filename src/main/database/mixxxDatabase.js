@@ -249,6 +249,29 @@ class MixxxDatabase {
     }
   }
 
+  getBpmRange() {
+    if (!this.isConnected || !this.db) {
+      throw new Error('Database not connected')
+    }
+
+    try {
+      const bpmRange = this.db
+        .prepare(`
+        SELECT
+          FLOOR(MIN(bpm)) as minBpm,
+          CEILING(MAX(bpm)) as maxBpm
+        FROM library
+        WHERE bpm IS NOT NULL AND bpm > 0
+        AND mixxx_deleted = 0
+      `)
+        .get()
+
+      return bpmRange
+    } catch (error) {
+      console.error('Error getting BPM range:', error)
+      throw error
+    }
+  }
 
   getStatus() {
     return {
