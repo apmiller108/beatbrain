@@ -301,8 +301,8 @@ decimal.
 ├── eslint.config.js
 ├── launch.json
 ├── NOTES.md
-├── package-lock.json
 ├── package.json
+├── package-lock.json
 ├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
@@ -328,7 +328,6 @@ decimal.
 │   │           └── DatabaseConnectionModal.test.jsx
 │   └── setup.js
 ├── src
-│   ├── assets
 │   ├── main
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
@@ -339,7 +338,6 @@ decimal.
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
-│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -363,7 +361,7 @@ decimal.
 │               └── SettingsView.jsx
 └── vitest.config.js
 
-22 directories, 44 files
+19 directories, 44 files
 ```
 
 ## Core Features
@@ -465,7 +463,7 @@ generation.
 ### **Database Layer**
 - [x] Add method to mixxxDatabase.js: `getAvailableGenres()` - return unique genres from library
 - [x] Add method to mixxxDatabase.js: `getBpmRange()` - return min/max BPM values from library
-- [ ] Add method to mixxxDatabase.js: `getFilteredTracks(filters)` - query tracks with genre OR, BPM range, and limit
+- [x] Add method to mixxxDatabase.js: `getTracks(filters)` - query tracks with genre OR, BPM range, and limit
 - [ ] Add method to appDatabase.js: `savePlaylistFilters(filters)` - store filter settings in app_settings
 - [ ] Add method to appDatabase.js: `getPlaylistFilters()` - retrieve saved filter settings
 
