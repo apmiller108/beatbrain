@@ -127,7 +127,7 @@ class MixxxDatabase {
 
       // Total tracks
       const trackCount = this.db
-        .prepare('SELECT COUNT(*) as count FROM library')
+            .prepare('SELECT COUNT(*) as count FROM library where mixxx_deleted = 0')
         .get()
       stats.totalTracks = trackCount.count
 
