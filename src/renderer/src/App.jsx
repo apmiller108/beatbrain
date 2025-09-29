@@ -66,6 +66,9 @@ function App() {
     try {
       const status = await window.api.mixxx.getStatus()
       setMixxxStatus(status)
+      if (status.isConnected) {
+        loadMixxxData()
+      }
       return status
     } catch (error) {
       console.error('Failed to load Mixxx status:', error)
@@ -171,7 +174,7 @@ function App() {
           <LibraryView mixxxStats={mixxxStats} sampleTracks={sampleTracks} />
         )
       case 'playlists':
-        return <PlaylistsView />
+        return <PlaylistsView mixxxStats={mixxxStats} />
       case 'settings':
         return (
           <SettingsView
