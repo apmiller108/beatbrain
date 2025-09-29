@@ -347,6 +347,8 @@ decimal.
 │           │   └── index.css
 │           ├── components
 │           │   ├── DatabaseConnectionModal.jsx
+│           │   ├── filters
+│           │   │   └── TrackCountInput.jsx
 │           │   ├── LibraryStats.jsx
 │           │   ├── MixxxDatabaseStatus.jsx
 │           │   ├── Navigation.jsx
@@ -361,7 +363,7 @@ decimal.
 │               └── SettingsView.jsx
 └── vitest.config.js
 
-19 directories, 44 files
+20 directories, 45 files
 ```
 
 ## Core Features
@@ -464,14 +466,15 @@ generation.
 - [x] Add method to mixxxDatabase.js: `getAvailableGenres()` - return unique genres from library
 - [x] Add method to mixxxDatabase.js: `getBpmRange()` - return min/max BPM values from library
 - [x] Add method to mixxxDatabase.js: `getTracks(filters)` - query tracks with genre OR, BPM range, and limit
-- [ ] Add method to appDatabase.js: `savePlaylistFilters(filters)` - store filter settings in app_settings
-- [ ] Add method to appDatabase.js: `getPlaylistFilters()` - retrieve saved filter settings
+- [x] Add method to appDatabase.js: `saveTrackFilters(filters)` - store filter settings in app_settings
+- [x] Add method to appDatabase.js: `getTrackFilters()` - retrieve saved filter settings
 
 ### **Filter Components (Small, Focused Components)**
-- [ ] Create `src/renderer/src/components/filters/TrackCountInput.jsx` - simple number input with validation
+- [x] Create `src/renderer/src/components/filters/TrackCountInput.jsx` - simple number input with validation
 - [ ] Create `src/renderer/src/components/filters/BpmRangeInput.jsx` - min/max number inputs with validation
 - [ ] Create `src/renderer/src/components/filters/GenreMultiSelect.jsx` - react-select wrapper with Bootstrap styling
 - [ ] Create `src/renderer/src/components/filters/PlaylistFilters.jsx` - container component that combines all filters
+- [ ] On the PlaylistView, If mixxx database is not connected do not try to render any child components, show a message prompting the user to connect along with the MixxxDatabaseStatus component. Once connected, then show the full PlaylistView
 
 ### **Integration & State Management**
 - [ ] Update PlaylistsView.jsx: Add state for filter values (trackCount, genres, bpmMin, bpmMax)
@@ -483,6 +486,7 @@ generation.
 ### **Filter Persistence**
 - [ ] Implement auto-save of filter changes to app database (debounced)
 - [ ] Add loading states for filter options while data is being fetched
+- [ ] Store and retrieve trackCount
 - [ ] Add error handling for database operations
 
 ### **Basic Playlist Generation**
