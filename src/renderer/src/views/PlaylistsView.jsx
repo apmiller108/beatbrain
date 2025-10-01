@@ -4,11 +4,16 @@ import { MusicNoteList } from 'react-bootstrap-icons'
 import TrackCountInput from '../components/filters/TrackCountInput'
 
 const PlaylistsView = ({ mixxxStats }) => {
-  const [count, setCount] = useState(1)
-  const [maxCount, setMaxCount] = useState(25)
+  const [maxCount, setMaxCount] = useState(100)
+  const [filters, setFilters] = useState({
+    trackCount: 25,
+    minBpm: null,
+    maxBpm: null,
+    genres: [],
+  })
 
   useEffect(() => {
-    if (mixxxStats && mixxxStats.totalTracks) {
+    if (mixxxStats?.totalTracks) {
       setMaxCount(mixxxStats.totalTracks)
     }
   }, [mixxxStats])
@@ -19,7 +24,9 @@ const PlaylistsView = ({ mixxxStats }) => {
         <MusicNoteList className="me-2" />
         Playlists
       </h2>
-      <TrackCountInput value={count} onChange={setCount} max={maxCount} />
+      <TrackCountInput value={filters.trackCount}
+                       onChange={(value) => setFilters(prev => ({...prev, trackCount: value}))}
+                       max={maxCount} />
     </div>
   )
 }
