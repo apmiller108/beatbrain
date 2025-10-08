@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { MusicNoteList } from 'react-bootstrap-icons'
+import { Form } from 'react-bootstrap'
 import TrackCountInput from '../components/filters/TrackCountInput'
+import BpmRangeInput from '../components/filters/BpmRangeInput'
 
 const PlaylistsView = ({ mixxxStats }) => {
   const [maxCount, setMaxCount] = useState(100)
+  const [bpmRange, setBpmRange] = useState({ minBpm: 0, maxBpm: 300 })
   const [filters, setFilters] = useState({
     trackCount: 25,
     minBpm: null,
@@ -13,8 +16,12 @@ const PlaylistsView = ({ mixxxStats }) => {
   })
 
   useEffect(() => {
-    if (mixxxStats?.totalTracks) {
+    if (mixxxStats) {
       setMaxCount(mixxxStats.totalTracks)
+      setBpmRange({
+        minBpm: Math.floor(mixxxStats.bpmRange.minBpm),
+        maxBpm: Math.ceil(mixxxStats.bpmRange.maxBpm)
+      })
     }
   }, [mixxxStats])
 
@@ -24,9 +31,21 @@ const PlaylistsView = ({ mixxxStats }) => {
         <MusicNoteList className="me-2" />
         Playlists
       </h2>
-      <TrackCountInput value={filters.trackCount}
-                       onChange={(value) => setFilters(prev => ({...prev, trackCount: value}))}
-                       max={maxCount} />
+      <Form>
+        <TrackCountInput
+          value={filters.trackCount}
+          onChange={(value) => setFilters(prev => ({ ...prev, trackCount: value }))}
+          max={maxCount} />
+        <BpmRangeInput
+          minBpm={bpmRange.minBpm}
+          maxBpm={bpmRange.maxBpm}
+          minValue={filters.minBpm}
+          maxValue={filters.maxBpm}
+          onChange={(value) => {
+            console.log(value)
+            setFilters(prev => ({ ...prev, ...value }))
+          }} />
+      </Form>
     </div>
   )
 }
