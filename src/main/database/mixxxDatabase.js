@@ -167,19 +167,7 @@ class MixxxDatabase {
       stats.topGenres = genres
 
       // BPM range
-      const bpmRange = this.db
-        .prepare(
-          `
-        SELECT
-          MIN(bpm) as minBpm,
-          MAX(bpm) as maxBpm,
-          AVG(bpm) as avgBpm
-        FROM library
-        WHERE bpm IS NOT NULL AND bpm > 0
-      `
-        )
-        .get()
-      stats.bpmRange = bpmRange
+      stats.bpmRange = this.getBpmRange()
 
       return stats
     } catch (error) {
