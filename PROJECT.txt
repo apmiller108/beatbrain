@@ -351,10 +351,12 @@ decimal.
 │           │   ├── DatabaseConnectionModal.jsx
 │           │   ├── filters
 │           │   │   ├── BpmRangeInput.jsx
+│           │   │   ├── GenreMultiSelect.jsx
 │           │   │   └── TrackCountInput.jsx
 │           │   ├── LibraryStats.jsx
 │           │   ├── MixxxDatabaseStatus.jsx
 │           │   ├── Navigation.jsx
+│           │   ├── PlaylistFilters.jsx
 │           │   ├── StatusBar.jsx
 │           │   ├── SystemInformation.jsx
 │           │   └── TrackList.jsx
@@ -366,7 +368,7 @@ decimal.
 │               └── SettingsView.jsx
 └── vitest.config.js
 
-23 directories, 46 files
+23 directories, 48 files
 ```
 
 ## Core Features
@@ -475,24 +477,21 @@ generation.
 ### **Filter Components (Small, Focused Components)**
 - [x] Create `src/renderer/src/components/filters/TrackCountInput.jsx` - simple number input with validation
 - [x] Create `src/renderer/src/components/filters/BpmRangeInput.jsx` - min/max number inputs with validation
-- [ ] Create `src/renderer/src/components/filters/GenreMultiSelect.jsx` - react-select wrapper with Bootstrap styling
-- [ ] Create `src/renderer/src/components/filters/PlaylistFilters.jsx` - container component that combines all filters
-- [ ] On the PlaylistView, If mixxx database is not connected do not try to render any child components, show a message prompting the user to connect along with the MixxxDatabaseStatus component. Once connected, then show the full PlaylistView
-
-### **Integration & State Management**
-- [ ] Update PlaylistsView.jsx: Add state for filter values (trackCount, genres, bpmMin, bpmMax)
-- [ ] Update PlaylistsView.jsx: Load available genres and BPM range on component mount
-- [ ] Update PlaylistsView.jsx: Load saved filter settings from app database on mount
-- [ ] Update PlaylistsView.jsx: Add PlaylistFilters component to view
-- [ ] Update PlaylistsView.jsx: Add "Generate Playlist" button
+- [x] Create `src/renderer/src/components/filters/GenreMultiSelect.jsx` - react-select wrapper with Bootstrap styling
+- [x] Create `src/renderer/src/components/filters/PlaylistFilters.jsx` - container component that combines all filters
+- [x] On the PlaylistView, If mixxx database is not connected do not try to render any child components, show a message prompting the user to connect along with the MixxxDatabaseStatus component. Once connected, then show the full PlaylistView
+- [x] Update PlaylistsView.jsx: Add state for filter values (trackCount, genres, bpmMin, bpmMax)
+- [x] Update PlaylistsView.jsx: Load available genres and BPM range on component mount
 
 ### **Filter Persistence**
 - [ ] Implement auto-save of filter changes to app database (debounced)
-- [ ] Add loading states for filter options while data is being fetched
-- [ ] Store and retrieve trackCount
+- [ ] Store and retrieve bpm range, trackCount and genres
 - [ ] Add error handling for database operations
+- [ ] Add loading states for filter options while data is being fetched
+- [ ] Show the count of tracks that the playlist filters are expected to fetch. Update this count when the filters change.
 
 ### **Basic Playlist Generation**
+- [ ] Update PlaylistsView.jsx: Add "Generate Playlist" button
 - [ ] Add playlist generation logic: query filtered tracks when "Generate" button clicked
 - [ ] Add state to display generated track list in PlaylistsView
 - [ ] Add basic track list display component for generated playlist results

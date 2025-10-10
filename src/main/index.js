@@ -94,6 +94,10 @@ app.whenReady().then(() => {
     return mixxxDatabase.getSampleTracks(limit)
   })
 
+  ipcMain.handle('mixxx:getGenres', async () => {
+    return mixxxDatabase.getGenres()
+  })
+
   ipcMain.handle('app:selectDatabaseFile', async () => {
     const result = await dialog.showOpenDialog({
       title: 'Select Mixxx Database File',

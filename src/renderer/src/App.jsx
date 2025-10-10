@@ -174,7 +174,7 @@ function App() {
           <LibraryView mixxxStats={mixxxStats} sampleTracks={sampleTracks} />
         )
       case 'playlists':
-        return <PlaylistsView mixxxStats={mixxxStats} />
+      return <PlaylistsView mixxxStats={mixxxStats} mixxxStatus={mixxxStatus} handleShowConnectionModal={handleShowConnectionModal} />
       case 'settings':
         return (
           <SettingsView
