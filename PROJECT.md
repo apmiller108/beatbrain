@@ -301,8 +301,8 @@ decimal.
 ├── eslint.config.js
 ├── launch.json
 ├── NOTES.md
-├── package.json
 ├── package-lock.json
+├── package.json
 ├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
@@ -328,6 +328,7 @@ decimal.
 │   │           └── DatabaseConnectionModal.test.jsx
 │   └── setup.js
 ├── src
+│   ├── assets
 │   ├── main
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
@@ -338,6 +339,7 @@ decimal.
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
+│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -348,6 +350,7 @@ decimal.
 │           ├── components
 │           │   ├── DatabaseConnectionModal.jsx
 │           │   ├── filters
+│           │   │   ├── BpmRangeInput.jsx
 │           │   │   └── TrackCountInput.jsx
 │           │   ├── LibraryStats.jsx
 │           │   ├── MixxxDatabaseStatus.jsx
@@ -363,7 +366,7 @@ decimal.
 │               └── SettingsView.jsx
 └── vitest.config.js
 
-20 directories, 45 files
+23 directories, 46 files
 ```
 
 ## Core Features
@@ -471,7 +474,7 @@ generation.
 
 ### **Filter Components (Small, Focused Components)**
 - [x] Create `src/renderer/src/components/filters/TrackCountInput.jsx` - simple number input with validation
-- [ ] Create `src/renderer/src/components/filters/BpmRangeInput.jsx` - min/max number inputs with validation
+- [x] Create `src/renderer/src/components/filters/BpmRangeInput.jsx` - min/max number inputs with validation
 - [ ] Create `src/renderer/src/components/filters/GenreMultiSelect.jsx` - react-select wrapper with Bootstrap styling
 - [ ] Create `src/renderer/src/components/filters/PlaylistFilters.jsx` - container component that combines all filters
 - [ ] On the PlaylistView, If mixxx database is not connected do not try to render any child components, show a message prompting the user to connect along with the MixxxDatabaseStatus component. Once connected, then show the full PlaylistView
