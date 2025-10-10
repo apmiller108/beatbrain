@@ -97,6 +97,7 @@ class AppDatabase {
           updated_at = CURRENT_TIMESTAMP;
       `)
       stmt.run(key, value)
+      return true
     } catch (error) {
       console.error('Error setting setting:', error)
       throw error
@@ -111,6 +112,15 @@ class AppDatabase {
       console.error('Error deleting setting:', error)
       throw error
     }
+  }
+
+  saveTrackFilters(filters = {}) {
+    const filtersJson = JSON.stringify(filters)
+    return this.setSetting('trackFilters', filtersJson)
+  }
+
+  getTrackFilters() {
+    return this.getSetting('trackFilters')
   }
 
   getUserPreference(category, key) {

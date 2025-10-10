@@ -69,7 +69,7 @@ class MixxxDatabase {
 
   /**
    * Connect to Mixxx database (read-only)
-   * Returns { success: boolean, path?: string, error?: string }
+   * @returns { success: boolean, path?: string, error?: string }
    */
   connect(dbPath = null) {
     try {
@@ -90,7 +90,7 @@ class MixxxDatabase {
       try {
         fs.accessSync(dbPath, fs.constants.R_OK)
       } catch (error) {
-        throw new Error(`Cannot read database file: ${dbPath}`)
+        throw new Error(`Cannot read database file: ${dbPath} : ${error.message}`)
       }
 
       // Connect with read-only mode and test the connection
@@ -127,7 +127,7 @@ class MixxxDatabase {
 
       // Total tracks
       const trackCount = this.db
-        .prepare('SELECT COUNT(*) as count FROM library')
+            .prepare('SELECT COUNT(*) as count FROM library where mixxx_deleted = 0')
         .get()
       stats.totalTracks = trackCount.count
 
@@ -167,19 +167,7 @@ class MixxxDatabase {
       stats.topGenres = genres
 
       // BPM range
-      const bpmRange = this.db
-        .prepare(
-          `
-        SELECT
-          MIN(bpm) as minBpm,
-          MAX(bpm) as maxBpm,
-          AVG(bpm) as avgBpm
-        FROM library
-        WHERE bpm IS NOT NULL AND bpm > 0
-      `
-        )
-        .get()
-      stats.bpmRange = bpmRange
+      stats.bpmRange = this.getBpmRange()
 
       return stats
     } catch (error) {
@@ -192,14 +180,16 @@ class MixxxDatabase {
    * Get sample tracks for preview
    */
   getSampleTracks(limit = 10) {
+    return this.getTracks({ limit })
+  }
+
+  getTracks({ minBpm, maxBpm, genre, limit } = {}) {
     if (!this.isConnected || !this.db) {
       throw new Error('Database not connected')
     }
 
     try {
-      const tracks = this.db
-        .prepare(
-          `
+      let query = `
         SELECT
           artist,
           title,
@@ -209,25 +199,102 @@ class MixxxDatabase {
           duration,
           bpm,
           key,
-          rating
+          rating,
+          color
         FROM library
-        WHERE artist IS NOT NULL AND title IS NOT NULL
-        ORDER BY RANDOM()
-        LIMIT ?
+        WHERE mixxx_deleted = 0
       `
-        )
-        .all(limit)
+      const params = {}
 
+      if (minBpm !== undefined) {
+        query += ' AND bpm >= @minBpm'
+        params.minBpm = minBpm
+      }
+      if (maxBpm !== undefined) {
+        query += ' AND bpm <= @maxBpm'
+        params.maxBpm = maxBpm
+      }
+      // genre can be an array of genres
+      if (genre !== undefined) {
+        if (!Array.isArray(genre)) {
+          genre = [genre]
+        }
+        const genreNamedParams = []
+        genre.forEach((g, index) => {
+          const name = `genre${index}`
+          genreNamedParams.push(`@${name}`)
+          params[name] = g.toLowerCase()
+        })
+        query += ` AND LOWER(genre) IN (${genreNamedParams})`
+      }
+
+      query += ' ORDER BY RANDOM()'
+
+      if (limit !== undefined) {
+        query += ' LIMIT @limit'
+        params.limit = limit
+      }
+
+      const tracks = this.db.prepare(query).all(params)
       return tracks
     } catch (error) {
-      console.error('Error getting sample tracks:', error)
+      console.error('Error getting tracks:', error)
+      throw error
+    }
+  }
+
+  getGenres() {
+    if (!this.isConnected || !this.db) {
+      throw new Error('Database not connected')
+    }
+
+    try {
+      const genres = this.db
+        .prepare(`
+        SELECT DISTINCT genre
+        FROM library
+        WHERE genre IS NOT NULL AND genre != ''
+        AND mixxx_deleted = 0
+        ORDER BY genre COLLATE NOCASE ASC
+       `)
+        .all()
+        .map(row => row.genre)
+
+      return genres
+    } catch (error) {
+      console.error('Error getting available genres:', error)
       throw error
     }
   }
 
   /**
-   * Get connection status
+   * Get min and max BPM in the library
+   * @returns { minBpm: number, maxBpm: number }
    */
+  getBpmRange() {
+    if (!this.isConnected || !this.db) {
+      throw new Error('Database not connected')
+    }
+
+    try {
+      const bpmRange = this.db
+        .prepare(`
+        SELECT
+          FLOOR(MIN(bpm)) as minBpm,
+          CEILING(MAX(bpm)) as maxBpm
+        FROM library
+        WHERE bpm IS NOT NULL AND bpm > 0
+        AND mixxx_deleted = 0
+      `)
+        .get()
+
+      return bpmRange
+    } catch (error) {
+      console.error('Error getting BPM range:', error)
+      throw error
+    }
+  }
+
   getStatus() {
     return {
       isConnected: this.isConnected,
@@ -238,9 +305,6 @@ class MixxxDatabase {
     }
   }
 
-  /**
-   * Disconnect from database
-   */
   disconnect() {
     if (this.db) {
       this.db.close()

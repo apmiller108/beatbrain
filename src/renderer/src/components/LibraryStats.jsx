@@ -58,8 +58,7 @@ function LibraryStatistics({ mixxxStats }) {
             <h6>BPM Range:</h6>
             <p className="mb-0">
               {Math.round(mixxxStats.bpmRange.minBpm)} -{' '}
-              {Math.round(mixxxStats.bpmRange.maxBpm)} BPM (avg:{' '}
-              {Math.round(mixxxStats.bpmRange.avgBpm)})
+              {Math.round(mixxxStats.bpmRange.maxBpm)} BPM
             </p>
           </div>
         )}

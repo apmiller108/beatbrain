@@ -95,8 +95,8 @@ CREATE TABLE sqlite_sequence(name,seq);
 ## Dependencies
 - better-sqlite3
 - bootstrap
-- chokidar
 - react
+- react-select
 - react-bootstrap
 - react-bootstrap-icons
 - react-dom
@@ -349,9 +349,14 @@ decimal.
 │           │   └── index.css
 │           ├── components
 │           │   ├── DatabaseConnectionModal.jsx
+│           │   ├── filters
+│           │   │   ├── BpmRangeInput.jsx
+│           │   │   ├── GenreMultiSelect.jsx
+│           │   │   └── TrackCountInput.jsx
 │           │   ├── LibraryStats.jsx
 │           │   ├── MixxxDatabaseStatus.jsx
 │           │   ├── Navigation.jsx
+│           │   ├── PlaylistFilters.jsx
 │           │   ├── StatusBar.jsx
 │           │   ├── SystemInformation.jsx
 │           │   └── TrackList.jsx
@@ -363,7 +368,7 @@ decimal.
 │               └── SettingsView.jsx
 └── vitest.config.js
 
-22 directories, 44 files
+23 directories, 48 files
 ```
 
 ## Core Features
@@ -447,24 +452,66 @@ message that contained instructions for harmonic mixing.
 ### DONE: Cache sqlite3 builds
 ### DONE: write e2e test for configuring the mixxx database
 
-## TODOs for Feature: Playlist generation (Phase 1: Basic UI)
+## **TODO List: Playlist Generation (Phase 1: Basic UI - MVP)**
 Build interface that allows users to filter the library to a subset of tracks
 that should be considered for smart playlist generation. The parametes will be
 used to perform a query against the Mixxx dabatase.
-### TODO: Implement fields for user to filter tracks eligible for playlist creation
-Note this filtering should be built in such a way that it can be resued in the
-playlists view. Also these filter criteria are multiselect for which a "tag"
+
+Note filtering should be built in such a way that it can be resued in the
+library view. Also these filter criteria are multiselect for which a "tag"
 based UX might be appropriate. Given there could be many options per filter
 criteria, a type ahead UX would be nice. The filter criteria will be used to
 perform a database query to retrieve tracks to be passed to the LLM for playlist
 generation.
-- [ ] field: number of tracks for playlist (min: 1, max: number of tracks in library)
-- [ ] Filter by genres
+### **DONE: Setup & Dependencies**
+- [x] Install react-select package (`npm install react-select`)
+- [x] Add react-select to project dependencies
+
+### **Database Layer**
+- [x] Add method to mixxxDatabase.js: `getAvailableGenres()` - return unique genres from library
+- [x] Add method to mixxxDatabase.js: `getBpmRange()` - return min/max BPM values from library
+- [x] Add method to mixxxDatabase.js: `getTracks(filters)` - query tracks with genre OR, BPM range, and limit
+- [x] Add method to appDatabase.js: `saveTrackFilters(filters)` - store filter settings in app_settings
+- [x] Add method to appDatabase.js: `getTrackFilters()` - retrieve saved filter settings
+
+### **Filter Components (Small, Focused Components)**
+- [x] Create `src/renderer/src/components/filters/TrackCountInput.jsx` - simple number input with validation
+- [x] Create `src/renderer/src/components/filters/BpmRangeInput.jsx` - min/max number inputs with validation
+- [x] Create `src/renderer/src/components/filters/GenreMultiSelect.jsx` - react-select wrapper with Bootstrap styling
+- [x] Create `src/renderer/src/components/filters/PlaylistFilters.jsx` - container component that combines all filters
+- [x] On the PlaylistView, If mixxx database is not connected do not try to render any child components, show a message prompting the user to connect along with the MixxxDatabaseStatus component. Once connected, then show the full PlaylistView
+- [x] Update PlaylistsView.jsx: Add state for filter values (trackCount, genres, bpmMin, bpmMax)
+- [x] Update PlaylistsView.jsx: Load available genres and BPM range on component mount
+
+### **Filter Persistence**
+- [ ] Implement auto-save of filter changes to app database (debounced)
+- [ ] Store and retrieve bpm range, trackCount and genres
+- [ ] Add error handling for database operations
+- [ ] Add loading states for filter options while data is being fetched
+- [ ] Show the count of tracks that the playlist filters are expected to fetch. Update this count when the filters change.
+
+### **Basic Playlist Generation**
+- [ ] Update PlaylistsView.jsx: Add "Generate Playlist" button
+- [ ] Add playlist generation logic: query filtered tracks when "Generate" button clicked
+- [ ] Add state to display generated track list in PlaylistsView
+- [ ] Add basic track list display component for generated playlist results
+
+### **Testing**
+- [ ] Write unit tests for new database methods
+- [ ] Write unit tests for filter components
+- [ ] Write integration test for PlaylistsView filter functionality
+
+### **Polish & UX**
+- [ ] Style react-select to match Bootstrap theme
+- [ ] Add form validation and user feedback
+- [ ] Add loading spinner during playlist generation
+- [ ] Add empty state messaging when no filters are applied
+
+### TODO: Implement fields for user to filter tracks eligible for playlist creation
 - [ ] Filter by crates
 - [ ] Filter by Groups
 - [ ] Filter by Artists
 - [ ] Filter by musicl key
-- [ ] Filter by BPM range
 - [ ] Filter by Year range
 - [ ] Filter by date added range
 - [ ] Cache the selections in appDatabase to be used a default
