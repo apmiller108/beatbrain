@@ -127,6 +127,14 @@ app.whenReady().then(() => {
     return appDatabase.setUserPreference(category, key, value)
   })
 
+  ipcMain.handle('app:getTrackFilters', async () => {
+    return appDatabase.getTrackFilters()
+  })
+
+  ipcMain.handle('app:saveTrackFilters', async (_, filters) => {
+    return appDatabase.saveTrackFilters(filters)
+  })
+
   createWindow()
 })
 

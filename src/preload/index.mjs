@@ -17,6 +17,10 @@ const api = {
     ipcRenderer.invoke('app:getUserPreferencesForCategory', category),
 
   selectDatabaseFile: () => ipcRenderer.invoke('app:selectDatabaseFile'),
+
+  getTrackFilters: () => ipcRenderer.invoke('app:getTrackFilters'),
+  saveTrackFilters: filters => ipcRenderer.invoke('app:saveTrackFilters', filters),
+
   mixxx: {
     getStatus: () => ipcRenderer.invoke('mixxx:getStatus'),
     connect: dbPath => ipcRenderer.invoke('mixxx:connect', dbPath),

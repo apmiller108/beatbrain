@@ -301,8 +301,8 @@ decimal.
 ├── eslint.config.js
 ├── launch.json
 ├── NOTES.md
-├── package-lock.json
 ├── package.json
+├── package-lock.json
 ├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
@@ -328,7 +328,6 @@ decimal.
 │   │           └── DatabaseConnectionModal.test.jsx
 │   └── setup.js
 ├── src
-│   ├── assets
 │   ├── main
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
@@ -339,7 +338,6 @@ decimal.
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
-│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -368,7 +366,7 @@ decimal.
 │               └── SettingsView.jsx
 └── vitest.config.js
 
-23 directories, 48 files
+20 directories, 48 files
 ```
 
 ## Core Features
@@ -484,11 +482,11 @@ generation.
 - [x] Update PlaylistsView.jsx: Load available genres and BPM range on component mount
 
 ### **Filter Persistence**
-- [ ] Implement auto-save of filter changes to app database (debounced)
-- [ ] Store and retrieve bpm range, trackCount and genres
-- [ ] Add error handling for database operations
+- [x] Implement auto-save of filter changes to app database
+- [ ] retrieve bpm range, trackCount and genres from app database to initialize filter values
 - [ ] Add loading states for filter options while data is being fetched
-- [ ] Show the count of tracks that the playlist filters are expected to fetch. Update this count when the filters change.
+- [ ] Add error handling for filter fetching, log error and use defaults
+- [ ] Show the count of tracks that the playlist filters are expected to fetch. Update this count when the filters change (debounce this)
 
 ### **Basic Playlist Generation**
 - [ ] Update PlaylistsView.jsx: Add "Generate Playlist" button

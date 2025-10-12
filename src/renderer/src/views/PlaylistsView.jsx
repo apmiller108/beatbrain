@@ -15,9 +15,10 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
     genres: [],
   })
 
-  // TODO remove this. Debug logging for filters during development
   useEffect(() => {
+    // TODO remove this. Debug logging for filters during development
     console.log('Filters updated:', JSON.stringify(filters, null, 2))
+    window.api.saveTrackFilters(filters)
   }, [filters])
 
   useEffect(() => {
