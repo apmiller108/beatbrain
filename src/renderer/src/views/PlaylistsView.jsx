@@ -16,6 +16,17 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
   })
 
   useEffect(() => {
+    const loadSavedFilters = async () => {
+      const savedFilters = await window.api.getTrackFilters()
+      if (savedFilters) {
+        const parsedFilters = JSON.parse(savedFilters)
+        setFilters(parsedFilters)
+      }
+    }
+    loadSavedFilters()
+  }, [])
+
+  useEffect(() => {
     // TODO remove this. Debug logging for filters during development
     console.log('Filters updated:', JSON.stringify(filters, null, 2))
     window.api.saveTrackFilters(filters)

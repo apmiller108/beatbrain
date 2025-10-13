@@ -301,8 +301,8 @@ decimal.
 ├── eslint.config.js
 ├── launch.json
 ├── NOTES.md
-├── package.json
 ├── package-lock.json
+├── package.json
 ├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
@@ -328,6 +328,7 @@ decimal.
 │   │           └── DatabaseConnectionModal.test.jsx
 │   └── setup.js
 ├── src
+│   ├── assets
 │   ├── main
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
@@ -338,6 +339,7 @@ decimal.
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
+│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -366,7 +368,7 @@ decimal.
 │               └── SettingsView.jsx
 └── vitest.config.js
 
-20 directories, 48 files
+23 directories, 48 files
 ```
 
 ## Core Features
@@ -483,7 +485,7 @@ generation.
 
 ### **Filter Persistence**
 - [x] Implement auto-save of filter changes to app database
-- [ ] retrieve bpm range, trackCount and genres from app database to initialize filter values
+- [x] retrieve bpm range, trackCount and genres from app database to initialize filter values
 - [ ] Add loading states for filter options while data is being fetched
 - [ ] Add error handling for filter fetching, log error and use defaults
 - [ ] Show the count of tracks that the playlist filters are expected to fetch. Update this count when the filters change (debounce this)
