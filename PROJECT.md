@@ -486,8 +486,8 @@ generation.
 ### **Filter Persistence**
 - [x] Implement auto-save of filter changes to app database
 - [x] retrieve bpm range, trackCount and genres from app database to initialize filter values
-- [ ] Add loading states for filter options while data is being fetched
-- [ ] Add error handling for filter fetching, log error and use defaults
+- [x] Add loading states for filter options while data is being fetched
+- [x] Add error handling for filter fetching, log error and use defaults
 - [ ] Show the count of tracks that the playlist filters are expected to fetch. Update this count when the filters change (debounce this)
 
 ### **Basic Playlist Generation**
