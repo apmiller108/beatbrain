@@ -180,10 +180,10 @@ class MixxxDatabase {
    * Get sample tracks for preview
    */
   getSampleTracks(limit = 10) {
-    return this.getTracks({ limit })
+    return this.getTracks({ trackCount: limit } )
   }
 
-  getTracks({ minBpm, maxBpm, genre, limit } = {}) {
+  getTracks({ minBpm, maxBpm, genres, trackCount } = {}) {
     if (!this.isConnected || !this.db) {
       throw new Error('Database not connected')
     }
@@ -214,13 +214,10 @@ class MixxxDatabase {
         query += ' AND bpm <= @maxBpm'
         params.maxBpm = maxBpm
       }
-      // genre can be an array of genres
-      if (genre !== undefined) {
-        if (!Array.isArray(genre)) {
-          genre = [genre]
-        }
+
+      if (genres !== undefined && Array.isArray(genres) && genres.length > 0) {
         const genreNamedParams = []
-        genre.forEach((g, index) => {
+        genres.forEach((g, index) => {
           const name = `genre${index}`
           genreNamedParams.push(`@${name}`)
           params[name] = g.toLowerCase()
@@ -230,9 +227,9 @@ class MixxxDatabase {
 
       query += ' ORDER BY RANDOM()'
 
-      if (limit !== undefined) {
+      if (trackCount !== undefined) {
         query += ' LIMIT @limit'
-        params.limit = limit
+        params.limit = trackCount
       }
 
       const tracks = this.db.prepare(query).all(params)

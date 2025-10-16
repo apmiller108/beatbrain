@@ -488,13 +488,23 @@ generation.
 - [x] retrieve bpm range, trackCount and genres from app database to initialize filter values
 - [x] Add loading states for filter options while data is being fetched
 - [x] Add error handling for filter fetching, log error and use defaults
-- [ ] Show the count of tracks that the playlist filters are expected to fetch. Update this count when the filters change (debounce this)
+- [x] Show the count of tracks that the playlist filters are expected to fetch. Update this count when the filters change (debounce this)
+
+### **create app database playlist schema**
+- [ ] create playlists table. Columns: id, name, created_at, updated_at
+- [ ] create playlists tracks table. Table should contain data required to generate an m3u file.Columns: id, name, duration, path, position, playlist_id (fk)
 
 ### **Basic Playlist Generation**
 - [ ] Update PlaylistsView.jsx: Add "Generate Playlist" button
-- [ ] Add playlist generation logic: query filtered tracks when "Generate" button clicked
-- [ ] Add state to display generated track list in PlaylistsView
-- [ ] Add basic track list display component for generated playlist results
+- [ ] Create new playlist record in the app database along with the playlist_tracks. Playlist name can default to Date time in words.
+
+### **Create Playlist component**
+- [ ] For each playlist persisted in the database, show a link to it under the playlists navigation link
+- [ ] Create playlist component to show the name, created at and updated at.
+- [ ] Add ability to update the playlist name
+
+### **Create PlaylistTrack component**
+This represents a single track in a playlist
 
 ### **Testing**
 - [ ] Write unit tests for new database methods
@@ -515,12 +525,6 @@ generation.
 - [ ] Filter by Year range
 - [ ] Filter by date added range
 - [ ] Cache the selections in appDatabase to be used a default
-### TODO: create app database playlist schema
-Note, this app might one day support Rekordbox libraries. We might want to
-consider that now when creating the schema. The app might need to know when a
-playlist was create for Mixxx vs Rekordbox
-- [ ] create playlists table
-- [ ] create playlists tracks table. Table should contain data required to generate an m3u file (name, duration, path)
 ### TODO: generate playlist
 For now, the playlist can be the results from the query. Smart (AI gen) playlist can be built later.
 - [ ] Generate button submits the request.

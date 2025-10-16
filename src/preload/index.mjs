@@ -28,7 +28,8 @@ const api = {
     getStats: () => ipcRenderer.invoke('mixxx:getStats'),
     getSampleTracks: (limit = 10) =>
       ipcRenderer.invoke('mixxx:getSampleTracks', limit),
-    getGenres: () => ipcRenderer.invoke('mixxx:getGenres')
+    getGenres: () => ipcRenderer.invoke('mixxx:getGenres'),
+    getTracks: (filters) => ipcRenderer.invoke('mixxx:getTracks', filters)
   },
 
   // Future Claude API operations

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Button, Alert, Spinner } from 'react-bootstrap'
+import { Button, Alert, Spinner, Badge } from 'react-bootstrap'
 import PropTypes from 'prop-types'
-import { MusicNoteList } from 'react-bootstrap-icons'
+import { MusicNoteList, ExclamationTriangleFill, CheckCircleFill } from 'react-bootstrap-icons'
 import PlaylistFilters from '../components/PlaylistFilters'
 
 const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) => {
@@ -15,6 +15,7 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
     maxBpm: null,
     genres: [],
   })
+  const [filteredTracks, setFilteredTracks] = useState([])
 
   useEffect(() => {
     const loadSavedFilters = async () => {
@@ -37,8 +38,23 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
   useEffect(() => {
     // TODO remove this. Debug logging for filters during development
     console.log('Filters updated:', JSON.stringify(filters, null, 2))
+
+    const getTracks = async () => {
+      try {
+        const tracks = await window.api.mixxx.getTracks(filters)
+        setFilteredTracks(tracks)
+        console.log('Fetched tracks:', tracks)
+      } catch (error) {
+        console.error('Error fetching tracks:', error)
+      }
+    }
+
     window.api.saveTrackFilters(filters)
-  }, [filters])
+
+    if (mixxxStatus?.isConnected) {
+      getTracks()
+    }
+  }, [filters, mixxxStatus])
 
   useEffect(() => {
     const getGenres = async () => {
@@ -59,13 +75,51 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
     }
   }, [mixxxStats, mixxxStatus])
 
+  // Track count indicator logic
+  const filteredCount = filteredTracks.length
+  const desiredCount = filters.trackCount
+  const isCountSufficient = filteredCount >= desiredCount
+
+  const TrackCountStatus = () => {
+    if (!mixxxStatus?.isConnected || loading) return null
+
+    return (
+      <div className="mb-3">
+        <div className="d-flex align-items-center mb-2">
+          <Badge
+            bg={isCountSufficient ? 'success' : 'danger'}
+            className="me-2"
+          >
+            {filteredCount} tracks found
+          </Badge>
+          {!isCountSufficient && (
+            <small className="text-muted">
+              (need {desiredCount} for playlist)
+            </small>
+          )}
+        </div>
+
+        {!isCountSufficient && (
+          <Alert variant="warning" className="py-2 mb-0">
+            <div className="d-flex align-items-center">
+              <ExclamationTriangleFill className="me-2" size={16} />
+              <small>
+                <strong>Not enough tracks found.</strong> Try adjusting your filters or lowering the track count.
+              </small>
+            </div>
+          </Alert>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div>
       <h2 className="mb-4 d-flex justify-content-start align-items-center">
         <MusicNoteList className="me-2" />
         Playlists
       </h2>
-      
+
       {loading ? (
         <div className="d-flex justify-content-center align-items-center py-4">
           <Spinner animation="border" role="status" className="me-2">
@@ -76,13 +130,16 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
       ) : (
         <>
           {mixxxStatus?.isConnected === true ? (
-            <PlaylistFilters
-              filters={filters}
-              onFiltersChange={setFilters}
-              maxTrackCount={maxCount}
-              bpmRange={bpmRange}
-              availableGenres={genres}
-            />
+            <>
+              <TrackCountStatus />
+              <PlaylistFilters
+                filters={filters}
+                onFiltersChange={setFilters}
+                maxTrackCount={maxCount}
+                bpmRange={bpmRange}
+                availableGenres={genres}
+              />
+            </>
           ) : (
             <Alert variant="warning" className="d-flex align-items-center justify-content-between">
               <div>
