@@ -333,6 +333,8 @@ decimal.
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
 │   │   ├── database
+│   │   │   ├── appDatabase
+│   │   │   │   └── createTables.js
 │   │   │   ├── appDatabase.js
 │   │   │   └── mixxxDatabase.js
 │   │   └── index.js
@@ -356,7 +358,7 @@ decimal.
 │           │   ├── LibraryStats.jsx
 │           │   ├── MixxxDatabaseStatus.jsx
 │           │   ├── Navigation.jsx
-│           │   ├── PlaylistFilters.jsx
+│           │   ├── PlaylistForm.jsx
 │           │   ├── StatusBar.jsx
 │           │   ├── SystemInformation.jsx
 │           │   └── TrackList.jsx
@@ -368,7 +370,7 @@ decimal.
 │               └── SettingsView.jsx
 └── vitest.config.js
 
-23 directories, 48 files
+24 directories, 49 files
 ```
 
 ## Core Features
@@ -491,12 +493,14 @@ generation.
 - [x] Show the count of tracks that the playlist filters are expected to fetch. Update this count when the filters change (debounce this)
 
 ### **create app database playlist schema**
-- [ ] create playlists table. Columns: id, name, created_at, updated_at
-- [ ] create playlists tracks table. Table should contain data required to generate an m3u file.Columns: id, name, duration, path, position, playlist_id (fk)
+- [x] create playlists table. Columns: id, name, description, track_source, created_at, updated_at
+- [x] create playlists tracks table. Table should contain data required to generate an m3u file.Columns: id, name, duration, path, position, playlist_id (fk), source_track_id (the mixxx library track id), and other track metadata columns.
 
 ### **Basic Playlist Generation**
-- [ ] Update PlaylistsView.jsx: Add "Generate Playlist" button
-- [ ] Create new playlist record in the app database along with the playlist_tracks. Playlist name can default to Date time in words.
+- [x] Update PlaylistsView.jsx: Add "Generate Playlist" button
+- [ ] Add appDatabase functions to create playlists / playlist_tracks
+- [ ] On clicking button, create insert new playlist. Playlist name can default to Date time in words.
+- [ ] Show success and error messages
 
 ### **Create Playlist component**
 - [ ] For each playlist persisted in the database, show a link to it under the playlists navigation link

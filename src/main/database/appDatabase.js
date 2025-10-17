@@ -1,4 +1,5 @@
 import Database from 'better-sqlite3'
+import CreateTables from './appDatabase/createTables.js'
 import path from 'path'
 
 class AppDatabase {
@@ -30,30 +31,17 @@ class AppDatabase {
   }
 
   createTables() {
+    const createTables = new CreateTables(this)
+    createTables.up()
+  }
+
+  exec(sql, params = []) {
     try {
-      const createSettingsTable = `
-        CREATE TABLE IF NOT EXISTS app_settings (
-          key TEXT PRIMARY KEY,
-          value TEXT NOT NULL,
-          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        );
-      `
-
-      const createUserPreferencesTable = `
-        CREATE TABLE IF NOT EXISTS user_preferences (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          category TEXT NOT NULL,
-          key TEXT NOT NULL,
-          value TEXT NOT NULL,
-          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          UNIQUE(category, key)
-        );
-      `
-
-      this.db.exec(createSettingsTable)
-      this.db.exec(createUserPreferencesTable)
-    } catch (error) {
-      console.error('Error creating tables:', error)
+      const stmt = this.db.prepare(sql)
+      return stmt.run(...params)
+    }
+    catch (error) {
+      console.error('Error executing SQL:', error)
       throw error
     }
   }

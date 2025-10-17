@@ -1,15 +1,17 @@
 import PropTypes from 'prop-types'
-import { Form } from 'react-bootstrap'
+import { Form, Button } from 'react-bootstrap'
 import TrackCountInput from './filters/TrackCountInput'
 import BpmRangeInput from './filters/BpmRangeInput'
 import GenreMultiSelect from './filters/GenreMultiSelect'
 
-const PlaylistFilters = ({
+const PlaylistForm = ({
   filters,
   onFiltersChange,
   maxTrackCount,
   bpmRange,
-  availableGenres
+  availableGenres,
+  onGeneratePlaylist,
+  isValid
 }) => {
   const handleTrackCountChange = (value) => {
     onFiltersChange({ ...filters, trackCount: value })
@@ -43,12 +45,17 @@ const PlaylistFilters = ({
           value={filters.genres}
           onChange={handleGenresChange}
         />
+        <Button variant="primary"
+                disabled={!isValid}
+                onClick={onGeneratePlaylist}>
+          Generate Playlist
+        </Button>
       </Form>
     </div>
   )
 }
 
-PlaylistFilters.propTypes = {
+PlaylistForm.propTypes = {
   filters: PropTypes.shape({
     trackCount: PropTypes.number.isRequired,
     minBpm: PropTypes.number,
@@ -65,4 +72,4 @@ PlaylistFilters.propTypes = {
   disabled: PropTypes.bool,
 }
 
-export default PlaylistFilters
+export default PlaylistForm

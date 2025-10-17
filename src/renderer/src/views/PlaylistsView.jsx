@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Button, Alert, Spinner, Badge } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import { MusicNoteList, ExclamationTriangleFill, CheckCircleFill } from 'react-bootstrap-icons'
-import PlaylistFilters from '../components/PlaylistFilters'
+import PlaylistForm from '../components/PlaylistForm'
 
 const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) => {
   const [loading, setLoading] = useState(true)
@@ -43,7 +43,6 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
       try {
         const tracks = await window.api.mixxx.getTracks(filters)
         setFilteredTracks(tracks)
-        console.log('Fetched tracks:', tracks)
       } catch (error) {
         console.error('Error fetching tracks:', error)
       }
@@ -79,6 +78,24 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
   const filteredCount = filteredTracks.length
   const desiredCount = filters.trackCount
   const isCountSufficient = filteredCount >= desiredCount
+
+  // Is the form valid for generating a playlist
+  const canGeneratePlaylist = mixxxStatus?.isConnected && !loading && isCountSufficient
+
+  const onGeneratePlaylist = () => {
+    try {
+      setLoading(true)
+      console.log('Generating playlist with tracks:', filteredTracks)
+      // TODO create playlist in app database
+      // TODO show success message
+      // TODO reset form
+    } catch (error) {
+      // TODO show error message
+      console.error('Error generating playlist:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const TrackCountStatus = () => {
     if (!mixxxStatus?.isConnected || loading) return null
@@ -132,12 +149,14 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
           {mixxxStatus?.isConnected === true ? (
             <>
               <TrackCountStatus />
-              <PlaylistFilters
+              <PlaylistForm
                 filters={filters}
                 onFiltersChange={setFilters}
                 maxTrackCount={maxCount}
                 bpmRange={bpmRange}
                 availableGenres={genres}
+                onGeneratePlaylist={onGeneratePlaylist}
+                isValid={canGeneratePlaylist}
               />
             </>
           ) : (
