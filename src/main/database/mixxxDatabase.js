@@ -190,19 +190,58 @@ class MixxxDatabase {
 
     try {
       let query = `
-        SELECT
-          artist,
-          title,
-          album,
-          genre,
-          year,
-          duration,
-          bpm,
-          key,
-          rating,
-          color
-        FROM library
-        WHERE mixxx_deleted = 0
+        SELECT DISTINCT
+            l.id,
+            l.title,
+            l.artist,
+            l.album,
+            l."grouping",
+            l.year,
+            l.datetime_added,
+            l.genre,
+            l.duration,
+            l.bpm,
+            l.rating,
+            CASE
+                -- If key already contains Camelot notation (has A or B followed by space and parenthesis)
+                WHEN l.key LIKE '%A (%' OR l.key LIKE '%B (%' THEN
+                    SUBSTR(l.key, 1, INSTR(l.key, ' ') - 1)
+                -- Minor keys - individual WHEN statements
+                WHEN l.key = 'Am' OR l.key = 'Amin' THEN '8A'
+                WHEN l.key = 'Em' OR l.key = 'Emin' THEN '9A'
+                WHEN l.key = 'Bm' OR l.key = 'Bmin' THEN '10A'
+                WHEN l.key = 'F#m' OR l.key = 'F#min' OR l.key = 'Gbm' OR l.key = 'Gbmin' THEN '11A'
+                WHEN l.key = 'C#m' OR l.key = 'C#min' OR l.key = 'Dbm' OR l.key = 'Dbmin' THEN '12A'
+                WHEN l.key = 'G#m' OR l.key = 'G#min' OR l.key = 'Abm' OR l.key = 'Abmin' THEN '1A'
+                WHEN l.key = 'D#m' OR l.key = 'D#min' OR l.key = 'Ebm' OR l.key = 'Ebmin' THEN '2A'
+                WHEN l.key = 'A#m' OR l.key = 'A#min' OR l.key = 'Bbm' OR l.key = 'Bbmin' THEN '3A'
+                WHEN l.key = 'Fm' OR l.key = 'Fmin' THEN '4A'
+                WHEN l.key = 'Cm' OR l.key = 'Cmin' THEN '5A'
+                WHEN l.key = 'Gm' OR l.key = 'Gmin' THEN '6A'
+                WHEN l.key = 'Dm' OR l.key = 'Dmin' THEN '7A'
+                -- Major keys - individual WHEN statements
+                WHEN l.key = 'C' OR l.key = 'Cmaj' OR l.key = 'CM' THEN '8B'
+                WHEN l.key = 'G' OR l.key = 'Gmaj' OR l.key = 'GM' THEN '9B'
+                WHEN l.key = 'D' OR l.key = 'Dmaj' OR l.key = 'DM' THEN '10B'
+                WHEN l.key = 'A' OR l.key = 'Amaj' OR l.key = 'AM' THEN '11B'
+                WHEN l.key = 'E' OR l.key = 'Emaj' OR l.key = 'EM' THEN '12B'
+                WHEN l.key = 'B' OR l.key = 'Bmaj' OR l.key = 'BM' OR l.key = 'Cb' OR l.key = 'Cbmaj' THEN '1B'
+                WHEN l.key = 'F#' OR l.key = 'F#maj' OR l.key = 'F#M' OR l.key = 'Gb' OR l.key = 'Gbmaj' THEN '2B'
+                WHEN l.key = 'C#' OR l.key = 'C#maj' OR l.key = 'C#M' OR l.key = 'Db' OR l.key = 'Dbmaj' THEN '3B'
+                WHEN l.key = 'G#' OR l.key = 'G#maj' OR l.key = 'G#M' OR l.key = 'Ab' OR l.key = 'Abmaj' THEN '4B'
+                WHEN l.key = 'D#' OR l.key = 'D#maj' OR l.key = 'D#M' OR l.key = 'Eb' OR l.key = 'Ebmaj' THEN '5B'
+                WHEN l.key = 'A#' OR l.key = 'A#maj' OR l.key = 'A#M' OR l.key = 'Bb' OR l.key = 'Bbmaj' THEN '6B'
+                WHEN l.key = 'F' OR l.key = 'Fmaj' OR l.key = 'FM' THEN '7B'
+                ELSE l.key -- Return original if no match
+            END AS "key",
+            c.name "crate_name",
+            tl."location" AS "file_path"
+        FROM
+            "library" l
+            LEFT JOIN crate_tracks ct ON ct.track_id = l.id
+            lEFT JOIN crates c ON c.id = ct.crate_id
+            JOIN track_locations tl ON tl.id = l."location"
+            WHERE l.mixxx_deleted = 0
       `
       const params = {}
 

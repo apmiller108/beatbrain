@@ -97,7 +97,7 @@ describe('MixxxDatabase', () => {
       const result = mixxxDatabase.connect(mockDbPath)
       expect(result).toEqual({
         success: false,
-        error: `Cannot read database file: ${mockDbPath}`
+        error: `Cannot read database file: ${mockDbPath} : Permission denied`,
       })
     })
 
