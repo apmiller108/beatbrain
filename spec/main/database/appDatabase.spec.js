@@ -109,6 +109,63 @@ describe('AppDatabase', () => {
     })
   })
 
+  describe('playlist operations', () => {
+    beforeEach(() => {
+      appDatabase.db.prepare('DELETE FROM playlist_tracks').run()
+      appDatabase.db.prepare('DELETE FROM playlists').run()
+    })
+
+    it('creates a playlist with tracks', () => {
+      const playlistData = {
+        name: 'Test Playlist',
+        description: 'A test playlist',
+        trackSource: 'mixxx'
+      }
+      const tracks = [
+        {
+          id: 1,
+          file_path: '/path/to/track1.mp3',
+          duration: 180,
+          artist: 'Artist 1',
+          title: 'Track 1',
+          album: 'Album 1',
+          genre: 'Genre 1',
+          bpm: 120,
+          key: '8A'
+        },
+        {
+          id: 2,
+          file_path: '/path/to/track2.mp3',
+          duration: 240,
+          artist: 'Artist 2',
+          title: 'Track 2',
+          album: 'Album 2',
+          genre: 'Genre 2',
+          bpm: 125,
+          key: '1B'
+        }
+      ]
+
+      appDatabase.createPlaylist(playlistData, tracks)
+
+      const playlist = appDatabase.db.prepare('SELECT * FROM playlists WHERE name = ?').get(playlistData.name)
+      expect(playlist.name).toBe(playlistData.name)
+      expect(playlist.description).toBe(playlistData.description)
+      expect(playlist.track_source).toBe(playlistData.trackSource)
+
+      const playlistId = playlist.id
+      const insertedTracks = appDatabase.db.prepare('SELECT * FROM playlist_tracks WHERE playlist_id = ? ORDER BY position').all(playlistId)
+
+      expect(insertedTracks.length).toBe(2)
+
+      expect(insertedTracks[0].position).toBe(0)
+      expect(insertedTracks[0]).toMatchObject(tracks[0])
+
+      expect(insertedTracks[1].position).toBe(1)
+      expect(insertedTracks[1]).toMatchObject(tracks[1])
+    })
+  })
+
   describe('transaction', () => {
     it('should execute transaction successfully', () => {
       appDatabase.transaction(() => {

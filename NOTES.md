@@ -4,6 +4,7 @@ This query selects tracks from the mixxx database and normalilzes the keys to Ca
 Converts color to energy level
 ```sql
 SELECT DISTINCT
+    l.id
     l.title,
     l.artist,
     l.album,

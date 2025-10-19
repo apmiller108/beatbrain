@@ -301,8 +301,8 @@ decimal.
 ├── eslint.config.js
 ├── launch.json
 ├── NOTES.md
-├── package-lock.json
 ├── package.json
+├── package-lock.json
 ├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
@@ -328,7 +328,6 @@ decimal.
 │   │           └── DatabaseConnectionModal.test.jsx
 │   └── setup.js
 ├── src
-│   ├── assets
 │   ├── main
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
@@ -341,7 +340,6 @@ decimal.
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
-│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -370,7 +368,7 @@ decimal.
 │               └── SettingsView.jsx
 └── vitest.config.js
 
-24 directories, 49 files
+21 directories, 49 files
 ```
 
 ## Core Features
@@ -498,7 +496,8 @@ generation.
 
 ### **Basic Playlist Generation**
 - [x] Update PlaylistsView.jsx: Add "Generate Playlist" button
-- [ ] Add appDatabase functions to create playlists / playlist_tracks
+- [x] Add appDatabase functions to create playlists / playlist_tracks
+- [ ] Add function to create playlist to app database API functions
 - [ ] On clicking button, create insert new playlist. Playlist name can default to Date time in words.
 - [ ] Show success and error messages
 
