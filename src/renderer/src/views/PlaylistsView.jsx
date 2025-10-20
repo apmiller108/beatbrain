@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Button, Alert, Spinner, Badge } from 'react-bootstrap'
+import { Button, Alert, Spinner, Badge, Toast, ToastContainer } from 'react-bootstrap'
 import PropTypes from 'prop-types'
-import { MusicNoteList, ExclamationTriangleFill, CheckCircleFill } from 'react-bootstrap-icons'
+import { MusicNoteList, ExclamationTriangleFill, CheckCircleFill, XCircleFill } from 'react-bootstrap-icons'
 import PlaylistForm from '../components/PlaylistForm'
 
 const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) => {
@@ -16,6 +16,12 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
     genres: [],
   })
   const [filteredTracks, setFilteredTracks] = useState([])
+  const [notification, setNotification] = useState({
+    show: false,
+    type: 'success', // 'success' or 'error'
+    message: '',
+    details: ''
+  })
 
   useEffect(() => {
     const loadSavedFilters = async () => {
@@ -82,18 +88,41 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
   // Is the form valid for generating a playlist
   const canGeneratePlaylist = mixxxStatus?.isConnected && !loading && isCountSufficient
 
+  const showNotification = (type, message, details = '') => {
+    setNotification({
+      show: true,
+      type,
+      message,
+      details
+    })
+  }
+
+  const hideNotification = () => {
+    setNotification(prev => ({ ...prev, show: false }))
+  }
+
   const onGeneratePlaylist = async () => {
     try {
       setLoading(true)
-      console.log('Generating playlist with tracks:', filteredTracks)
-      const playlist = await window.api.createPlaylist({
-            name: `Playlist ${new Date().toLocaleString()}`,
-            description: 'A playlist created from Mixxx tracks',
-          }, filteredTracks)
-      // TODO show success message
+
+      const name = `Playlist ${new Date().toLocaleString()}`
+      await window.api.createPlaylist({
+        name,
+        description: 'A playlist created from Mixxx tracks',
+      }, filteredTracks)
+
+      showNotification(
+        'success',
+        'Playlist created successfully!',
+        `Created "${name}" with ${filteredTracks.length} tracks`
+      )
     } catch (error) {
-      // TODO show error message
       console.error('Error generating playlist:', error)
+      showNotification(
+        'error',
+        'Failed to create playlist',
+        error.message || 'An unexpected error occurred. Please try again.'
+      )
     } finally {
       setLoading(false)
     }
@@ -138,6 +167,34 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
         <MusicNoteList className="me-2" />
         Playlists
       </h2>
+
+      {/* Toast Notification */}
+      <ToastContainer position="top-end" className="p-3" style={{ position: 'fixed', zIndex: 9999 }}>
+        <Toast
+          show={notification.show}
+          onClose={hideNotification}
+          delay={5000}
+          autohide
+          bg={notification.type === 'success' ? 'success' : 'danger'}
+        >
+          <Toast.Header closeButton={true}>
+            {notification.type === 'success' ? (
+              <CheckCircleFill className="me-2" size={16} />
+            ) : (
+              <XCircleFill className="me-2" size={16} />
+            )}
+            <strong className="me-auto">
+              {notification.type === 'success' ? 'Success' : 'Error'}
+            </strong>
+          </Toast.Header>
+          <Toast.Body className="text-white">
+            <div className="mb-1"><strong>{notification.message}</strong></div>
+            {notification.details && (
+              <small>{notification.details}</small>
+            )}
+          </Toast.Body>
+        </Toast>
+      </ToastContainer>
 
       {loading ? (
         <div className="d-flex justify-content-center align-items-center py-4">
@@ -198,4 +255,4 @@ PlaylistsView.propTypes = {
   handleShowConnectionModal: PropTypes.func.isRequired
 }
 
-export default PlaylistsView
+export default PlaylistsVie
