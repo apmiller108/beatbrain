@@ -499,7 +499,7 @@ generation.
 - [x] Add appDatabase functions to create playlists / playlist_tracks
 - [x] Add function to create playlist to app database API functions
 - [x] On clicking button, create insert new playlist. Playlist name can default to Date time in words.
-- [ ] Show success and error messages
+- [x] Show success and error messages
 
 ### **Create Playlist component**
 - [ ] For each playlist persisted in the database, show a link to it under the playlists navigation link

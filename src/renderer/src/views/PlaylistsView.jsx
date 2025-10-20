@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Button, Alert, Spinner, Badge, Toast, ToastContainer } from 'react-bootstrap'
 import PropTypes from 'prop-types'
-import { MusicNoteList, ExclamationTriangleFill, CheckCircleFill, XCircleFill } from 'react-bootstrap-icons'
+import { MusicNoteList, ExclamationTriangleFill, CheckCircleFill, ExclamationCircleFill } from 'react-bootstrap-icons'
 import PlaylistForm from '../components/PlaylistForm'
 
 const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) => {
@@ -169,7 +169,9 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
       </h2>
 
       {/* Toast Notification */}
-      <ToastContainer position="top-end" className="p-3" style={{ position: 'fixed', zIndex: 9999 }}>
+      <ToastContainer position="top-center"
+                      className="p-3"
+                      style={{ position: 'fixed', zIndex: 9999 }}>
         <Toast
           show={notification.show}
           onClose={hideNotification}
@@ -181,7 +183,7 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
             {notification.type === 'success' ? (
               <CheckCircleFill className="me-2" size={16} />
             ) : (
-              <XCircleFill className="me-2" size={16} />
+              <ExclamationCircleFill className="me-2" size={16} />
             )}
             <strong className="me-auto">
               {notification.type === 'success' ? 'Success' : 'Error'}
@@ -255,4 +257,4 @@ PlaylistsView.propTypes = {
   handleShowConnectionModal: PropTypes.func.isRequired
 }
 
-export default PlaylistsVie
+export default PlaylistsView
