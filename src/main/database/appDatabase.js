@@ -186,6 +186,7 @@ class AppDatabase {
           position: index
         })
       })
+      return playlist
     })
   }
 

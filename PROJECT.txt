@@ -497,8 +497,8 @@ generation.
 ### **Basic Playlist Generation**
 - [x] Update PlaylistsView.jsx: Add "Generate Playlist" button
 - [x] Add appDatabase functions to create playlists / playlist_tracks
-- [ ] Add function to create playlist to app database API functions
-- [ ] On clicking button, create insert new playlist. Playlist name can default to Date time in words.
+- [x] Add function to create playlist to app database API functions
+- [x] On clicking button, create insert new playlist. Playlist name can default to Date time in words.
 - [ ] Show success and error messages
 
 ### **Create Playlist component**

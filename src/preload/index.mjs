@@ -20,6 +20,7 @@ const api = {
 
   getTrackFilters: () => ipcRenderer.invoke('app:getTrackFilters'),
   saveTrackFilters: filters => ipcRenderer.invoke('app:saveTrackFilters', filters),
+  createPlaylist: (playlistData, tracks) => ipcRenderer.invoke('app:createPlaylist', playlistData, tracks),
 
   mixxx: {
     getStatus: () => ipcRenderer.invoke('mixxx:getStatus'),

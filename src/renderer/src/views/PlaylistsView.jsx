@@ -82,13 +82,15 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
   // Is the form valid for generating a playlist
   const canGeneratePlaylist = mixxxStatus?.isConnected && !loading && isCountSufficient
 
-  const onGeneratePlaylist = () => {
+  const onGeneratePlaylist = async () => {
     try {
       setLoading(true)
       console.log('Generating playlist with tracks:', filteredTracks)
-      // TODO create playlist in app database
+      const playlist = await window.api.createPlaylist({
+            name: `Playlist ${new Date().toLocaleString()}`,
+            description: 'A playlist created from Mixxx tracks',
+          }, filteredTracks)
       // TODO show success message
-      // TODO reset form
     } catch (error) {
       // TODO show error message
       console.error('Error generating playlist:', error)

@@ -102,6 +102,8 @@ app.whenReady().then(() => {
     return mixxxDatabase.getTracks(filters)
   })
 
+  // app database handlers
+
   ipcMain.handle('app:selectDatabaseFile', async () => {
     const result = await dialog.showOpenDialog({
       title: 'Select Mixxx Database File',
@@ -137,6 +139,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle('app:saveTrackFilters', async (_, filters) => {
     return appDatabase.saveTrackFilters(filters)
+  })
+
+  ipcMain.handle('app:createPlaylist', async (_, playlistData, tracks) => {
+    return appDatabase.createPlaylist(playlistData, tracks)
   })
 
   createWindow()
