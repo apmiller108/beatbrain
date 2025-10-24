@@ -113,20 +113,20 @@ CREATE TABLE sqlite_sequence(name,seq);
 
 ``` example
 ┌─────────────────────────────────────────────────────────┐
-│ Menu Bar (File, Settings, Help)                        │
+│ Menu Bar (File, Settings, Help)                         │
 ├─────────────────────────────────────────────────────────┤
 │ ┌─────────────────┐ ┌─────────────────────────────────┐ │
 │ │   Navigation    │ │                                 │ │
 │ │   Sidebar       │ │        Main Content Area        │ │
 │ │                 │ │                                 │ │
-│ │ • Library       │ │   ┌─────────────────────────┐   │ │
-│ │ • Crates        │ │   │   Library Table         │   │ │
+│ │                 │ │   ┌─────────────────────────┐   │ │
+│ │ • Library       │ │   │   Library Table         │   │ │
 │ │ • Playlists     │ │   │   (Sortable/Filterable) │   │ │
-│ │ • Claude Chat   │ │   └─────────────────────────┘   │ │
+│ │ • Settings      │ │   └─────────────────────────┘   │ │
 │ │                 │ │                                 │ │
 │ └─────────────────┘ └─────────────────────────────────┘ │
 ├─────────────────────────────────────────────────────────┤
-│ Status Bar (DB Status, Connection Status)              │
+│ Status Bar (DB Status, Connection Status)               │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -272,26 +272,6 @@ CREATE TABLE sqlite_sequence(name,seq);
 
     Generate a Soundcloud description and tracklist to accompany the
     playlist
-
-### Colors
-
-In order to have Claude consider colors, I will probably have to convert
-the decimal notation that the colors are currently stored as in the
-mixxxdb into RGB notation. Claude seems to understand RGB better than
-decimal.
-
-| Color | Energy Level |
-|:------|:-------------|
-| 34952 | Low          |
-| 35071 | Medium       |
-| 255   | High         |
-| 136   | Very High    |
-
-
---- 34952 Low Intensity
---- 35071 Medium Intensity
---- 255 High Intensity
---- 136 Very High Intensity
 
 ## Current project structure
 
@@ -464,7 +444,6 @@ criteria, a type ahead UX would be nice. The filter criteria will be used to
 perform a database query to retrieve tracks to be passed to the LLM for playlist
 generation.
 ### **DONE: Setup & Dependencies**
-- [x] Install react-select package (`npm install react-select`)
 - [x] Add react-select to project dependencies
 
 ### **Database Layer**
@@ -501,25 +480,124 @@ generation.
 - [x] On clicking button, create insert new playlist. Playlist name can default to Date time in words.
 - [x] Show success and error messages
 
-### **Create Playlist component**
-- [ ] For each playlist persisted in the database, show a link to it under the playlists navigation link
-- [ ] Create playlist component to show the name, created at and updated at.
-- [ ] Add ability to update the playlist name
+## TODOs for Feature: Playlist Management (Phase 2: View & Edit)
+### **Database Layer - Playlist CRUD Operations**
+- [ ] Add method to appDatabase.js: `getAllPlaylists()` - fetch all playlists with metadata (id, name, track_count, duration, created_at, updated_at)
+- [ ] Add method to appDatabase.js: `getPlaylistById(id)` - fetch single playlist with full metadata
+- [ ] Add method to appDatabase.js: `getPlaylistTracks(playlistId)` - fetch all tracks for a playlist ordered by position
+- [ ] Add method to appDatabase.js: `updatePlaylistName(id, name)` - update playlist name and updated_at timestamp
+- [ ] Add method to appDatabase.js: `deletePlaylist(id)` - delete playlist and associated tracks (cascade)
+- [ ] Add method to appDatabase.js: `updateTrackPosition(playlistId, trackId, newPosition)` - reorder track in playlist
+- [ ] Add method to appDatabase.js: `removeTrackFromPlaylist(playlistId, trackId)` - remove single track from playlist
+- [ ] Add method to appDatabase.js: `addTrackToPlaylist(playlistId, trackData)` - add track to playlist (for future manual additions)
 
-### **Create PlaylistTrack component**
-This represents a single track in a playlist
+### **Navigation Component Updates**
+- [ ] Update Navigation.jsx: Add state for managing playlist list expansion/collapse
+- [ ] Update Navigation.jsx: Fetch all playlists on component mount using `getAllPlaylists()`
+- [ ] Update Navigation.jsx: Render dynamic playlist list under "Playlists" section
+- [ ] Update Navigation.jsx: Add Bootstrap Collapse component for expandable playlist section
+- [ ] Update Navigation.jsx: Show playlist count badge (e.g., "Playlists (26)")
+- [ ] Update Navigation.jsx: Add "+" button next to Playlists header to navigate to PlaylistsView
+- [ ] Update Navigation.jsx: Highlight active/selected playlist in navigation
+- [ ] Update Navigation.jsx: Handle click events on playlist items to navigate to detail view
+- [ ] Update Navigation.jsx: Add loading state while fetching playlists
+- [ ] Update Navigation.jsx: Add error handling for playlist fetch failures
+
+### **Routing & View Management**
+- [ ] Update App.jsx: Extend view state to support playlist detail routing (e.g., `{ view: 'playlist-detail', playlistId: 123 }`)
+- [ ] Update App.jsx: Add navigation handler for playlist selection
+- [ ] Update App.jsx: Pass playlist navigation functions to Navigation component
+- [ ] Create view routing logic to render PlaylistDetailView when playlist is selected
+
+### **Playlist List Component**
+- [ ] Create `src/renderer/src/components/PlaylistList.jsx` - component for rendering playlist items in navigation
+- [ ] PlaylistList.jsx: Accept playlists array and onSelect callback as props
+- [ ] PlaylistList.jsx: Render each playlist with icon, name, and track count
+- [ ] PlaylistList.jsx: Apply active styling to selected playlist
+- [ ] PlaylistList.jsx: Add hover effects and cursor pointer
+- [ ] PlaylistList.jsx: Handle empty state (no playlists created yet)
+
+### **Playlist Detail View Component**
+- [ ] Create `src/renderer/src/views/PlaylistDetailView.jsx` - main view for viewing/editing a playlist
+- [ ] PlaylistDetailView.jsx: Accept playlistId as prop
+- [ ] PlaylistDetailView.jsx: Fetch playlist metadata and tracks on mount
+- [ ] PlaylistDetailView.jsx: Display playlist header with name, created date, track count, total duration
+- [ ] PlaylistDetailView.jsx: Add "Back to Playlists" navigation button
+- [ ] PlaylistDetailView.jsx: Add Export button (placeholder for now)
+- [ ] PlaylistDetailView.jsx: Add Delete button with confirmation modal
+- [ ] PlaylistDetailView.jsx: Render track list using PlaylistTrackItem components
+- [ ] PlaylistDetailView.jsx: Add loading state while fetching playlist data
+- [ ] PlaylistDetailView.jsx: Add error handling for playlist not found
+- [ ] PlaylistDetailView.jsx: Calculate and display playlist statistics (total duration, avg BPM, key distribution)
+
+### **Playlist Track Item Component**
+- [ ] Create `src/renderer/src/components/PlaylistTrackItem.jsx` - component for individual track in playlist
+- [ ] PlaylistTrackItem.jsx: Display track position number
+- [ ] PlaylistTrackItem.jsx: Display track metadata (title, artist, album, BPM, key, duration)
+- [ ] PlaylistTrackItem.jsx: Add remove button with confirmation
+- [ ] PlaylistTrackItem.jsx: Add drag handle for reordering (visual only for now)
+- [ ] PlaylistTrackItem.jsx: Style with Bootstrap table row or card
+- [ ] PlaylistTrackItem.jsx: Add hover effects
+- [ ] PlaylistTrackItem.jsx: Handle remove track action
+
+### **Playlist Editing Features**
+- [ ] Implement inline playlist name editing in PlaylistDetailView
+- [ ] Add save/cancel buttons for name editing
+- [ ] Add validation for playlist name (non-empty, max length)
+- [ ] Implement track removal with optimistic UI updates
+- [ ] Add confirmation modal for destructive actions (delete playlist, remove track)
+- [ ] Update playlist updated_at timestamp on any edit
+- [ ] Show success/error toast notifications for edit actions
+
+### **Drag-and-Drop Track Reordering**
+- [ ] Install drag-and-drop library (e.g., `react-beautiful-dnd` or `@dnd-kit/core`)
+- [ ] Wrap track list in drag-and-drop context
+- [ ] Make PlaylistTrackItem components draggable
+- [ ] Implement drop handler to update track positions
+- [ ] Update database with new track positions on drop
+- [ ] Add visual feedback during drag (ghost element, drop zones)
+- [ ] Handle edge cases (drag to same position, drag outside bounds)
+
+### **Playlist Export (M3U)**
+- [ ] Create utility function to generate M3U file content from playlist tracks
+- [ ] Implement file save dialog using Electron's dialog API
+- [ ] Add IPC handler for file system write operations
+- [ ] Format M3U with extended metadata (#EXTINF)
+- [ ] Include track file paths from Mixxx database
+- [ ] Add error handling for file write failures
+- [ ] Show success notification with file path after export
+- [ ] Add option to choose M3U format (basic vs extended)
+
+### **Polish & UX Enhancements**
+- [ ] Add empty state message when playlist has no tracks
+- [ ] Add search/filter bar for playlists with many tracks
+- [ ] Show loading skeletons while fetching playlist data
+- [ ] Add keyboard shortcuts (Delete key to remove track, Esc to cancel editing)
+- [ ] Implement undo/redo for track removal (optional)
+- [ ] Add playlist duplication feature
+- [ ] Add "Add tracks" button to manually add tracks from library (future feature)
+- [ ] Style components to match existing Bootstrap theme
+- [ ] Ensure responsive design for smaller screens
 
 ### **Testing**
-- [ ] Write unit tests for new database methods
-- [ ] Write unit tests for filter components
-- [ ] Write integration test for PlaylistsView filter functionality
+- [ ] Write unit tests for new appDatabase playlist methods
+- [ ] Write unit tests for PlaylistList component
+- [ ] Write unit tests for PlaylistDetailView component
+- [ ] Write unit tests for PlaylistTrackItem component
+- [ ] Write integration test for playlist navigation flow
+- [ ] Write integration test for playlist editing (name, remove tracks)
+- [ ] Write integration test for playlist deletion
+- [ ] Write e2e test for complete playlist management workflow
+- [ ] Write tests for M3U export functionality
+- [ ] Test drag-and-drop reordering across different browsers/platforms
 
-### **Polish & UX**
-- [ ] Style react-select to match Bootstrap theme
-- [ ] Add form validation and user feedback
-- [ ] Add loading spinner during playlist generation
-- [ ] Add empty state messaging when no filters are applied
+### **Documentation**
+- [ ] Update README with playlist management features
+- [ ] Document M3U export format and compatibility
+- [ ] Add screenshots of playlist views to documentation
+- [ ] Document keyboard shortcuts for playlist management
 
+## TODOs for Feature: Playlist (Phase 3: filter enhancements)
 ### TODO: Implement fields for user to filter tracks eligible for playlist creation
 - [ ] Filter by crates
 - [ ] Filter by Groups
@@ -527,24 +605,8 @@ This represents a single track in a playlist
 - [ ] Filter by musicl key
 - [ ] Filter by Year range
 - [ ] Filter by date added range
-- [ ] Cache the selections in appDatabase to be used a default
-### TODO: generate playlist
-For now, the playlist can be the results from the query. Smart (AI gen) playlist can be built later.
-- [ ] Generate button submits the request.
-- [ ] Results are stored in appDatabase, playlists table.
-### TODO: playlist index
-- [ ] Provide playlist index component to select previously generated playlists
-### TODO: playlist show view
-- [ ] Show playlist in playlist show view
-
-## TODOs for Feature: Playlist (Phase 2: edit and export)
-### TODO export m3u file
-- [ ] User clicks a button to export to m3u file and is prompted for where on the local file system to save.
-### TODO edit playlist manually
-- [ ] Remove track
-- [ ] Change order
-- [ ] Add track
-### TODO add ability to play audio to preview track while editing
+## TODOs for Feature: Playlist (Phase 4: harmonic mixing)
+## TODOs for Feature: Playlist (Phase 4: Audio Player)
 
 ## TODOs for Feature: Settings Foundation (Phase 2: API key management)
 ### DONE: Move existing components to Settings view
