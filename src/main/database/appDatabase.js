@@ -1,5 +1,8 @@
 import Database from 'better-sqlite3'
 import CreateTables from './appDatabase/createTables.js'
+import SettingsRepository from './appDatabase/settingsRepository.js'
+import UserPreferenceRepository from './appDatabase/userPreferenceRepository.js'
+import PlaylistRepository from './appDatabase/playlistRepository.js'
 import path from 'path'
 
 class AppDatabase {
@@ -7,6 +10,9 @@ class AppDatabase {
     this.dbPath = null
     this.db = null
     this.verbose = debug ? console.log : null
+    this.settingsRepository = new SettingsRepository(this)
+    this.userPreferencesRepository = new UserPreferenceRepository(this)
+    this.playlistRepository = new PlaylistRepository(this)
   }
 
   initialize(userDataPath) {
@@ -35,160 +41,53 @@ class AppDatabase {
     createTables.up()
   }
 
-  exec(sql, params = []) {
-    try {
-      const stmt = this.db.prepare(sql)
-      return stmt.run(...params)
-    }
-    catch (error) {
-      console.error('Error executing SQL:', error)
-      throw error
-    }
-  }
+  // Settings Repository Methods
 
   getSetting(key) {
-    try {
-      const stmt = this.db.prepare(
-        'SELECT value FROM app_settings WHERE key = ?'
-      )
-      const row = stmt.get(key)
-      return row ? row.value : null
-    } catch (error) {
-      console.error('Error getting setting:', error)
-      throw error
-    }
+    return this.settingsRepository.getSetting(key)
   }
 
   getAllSettings() {
-    try {
-      const stmt = this.db.prepare('SELECT key, value FROM app_settings')
-      const rows = stmt.all()
-      const settings = {}
-      rows.forEach(row => {
-        settings[row.key] = row.value
-      })
-
-      return settings
-    } catch (error) {
-      console.error('Error getting all settings:', error)
-      throw error
-    }
+    return this.settingsRepository.getAllSettings()
   }
 
   setSetting(key, value) {
-    try {
-      const stmt = this.db.prepare(`
-        INSERT INTO app_settings (key, value, updated_at)
-        VALUES (?, ?, CURRENT_TIMESTAMP)
-        ON CONFLICT(key) DO UPDATE SET
-          value = excluded.value,
-          updated_at = CURRENT_TIMESTAMP;
-      `)
-      stmt.run(key, value)
-      return true
-    } catch (error) {
-      console.error('Error setting setting:', error)
-      throw error
-    }
+    return this.settingsRepository.setSetting(key, value)
   }
 
   deleteSetting(key) {
-    try {
-      const stmt = this.db.prepare('DELETE FROM app_settings WHERE key = ?')
-      stmt.run(key)
-    } catch (error) {
-      console.error('Error deleting setting:', error)
-      throw error
-    }
+    return this.settingsRepository.deleteSetting(key)
   }
 
   saveTrackFilters(filters = {}) {
-    const filtersJson = JSON.stringify(filters)
-    return this.setSetting('trackFilters', filtersJson)
+    return this.settingsRepository.saveTrackFilters(filters)
   }
 
   getTrackFilters() {
-    return this.getSetting('trackFilters')
+    return this.settingsRepository.getTrackFilters()
   }
 
+  // User Preferences Repository Methods
+
   getUserPreference(category, key) {
-    try {
-      const stmt = this.db.prepare(
-        'SELECT value FROM user_preferences WHERE category = ? AND key = ?'
-      )
-      const row = stmt.get(category, key)
-      return row ? row.value : null
-    } catch (error) {
-      console.error('Error getting user preference:', error)
-      throw error
-    }
+    return this.userPreferencesRepository.getPreference(category, key)
   }
 
   getUserPreferencesForCategory(category) {
-    try {
-      const stmt = this.db.prepare(`
-        SELECT key, value FROM user_preferences WHERE category = ?
-        ORDER BY updated_at DESC
-      `)
-      const rows = stmt.all(category)
-      const preferences = {}
-      rows.forEach(row => {
-        preferences[row.key] = row.value
-      })
-
-      return preferences
-    } catch (error) {
-      console.error('Error getting user preferences for category:', error)
-      throw error
-    }
+    return this.userPreferencesRepository.getAllPreferences(category)
   }
 
   setUserPreference(category, key, value) {
-    try {
-      const stmt = this.db.prepare(`
-        INSERT INTO user_preferences (category, key, value, updated_at)
-        VALUES (?, ?, ?, CURRENT_TIMESTAMP)
-        ON CONFLICT(category, key) DO UPDATE SET
-          value = excluded.value,
-          updated_at = CURRENT_TIMESTAMP;
-      `)
-      stmt.run(category, key, value)
-    } catch (error) {
-      console.error('Error setting user preference:', error)
-      throw error
-    }
+    return this.userPreferencesRepository.setPreference(category, key, value)
   }
+
+  // Playlist Repository Methods
 
   createPlaylist({ name, description = '', trackSource = 'mixxx' }, tracks = []) {
-    return this.transaction(() => {
-      const insertPlaylistStmt = this.db.prepare(`
-        INSERT INTO playlists (name, description, track_source, created_at, updated_at)
-        VALUES ($name, $description, $trackSource, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-      `)
-      const playlist = insertPlaylistStmt.run({ name, description, trackSource })
-
-      const insertTrackStmt = this.db.prepare(`
-        INSERT INTO playlist_tracks (playlist_id, source_track_id, file_path, duration, artist, title, album, genre, bpm, key, position, created_at, updated_at)
-        VALUES ($playlist_id, $source_track_id, $file_path, $duration, $artist, $title, $album, $genre, $bpm, $key, $position, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-      `)
-      tracks.forEach((track, index) => {
-        insertTrackStmt.run({
-          playlist_id: playlist.lastInsertRowid,
-          source_track_id: track.id,
-          file_path: track.file_path,
-          duration: track.duration,
-          artist: track.artist,
-          title: track.title,
-          album: track.album,
-          genre: track.genre,
-          bpm: track.bpm,
-          key: track.key,
-          position: index
-        })
-      })
-      return playlist
-    })
+    return this.playlistRepository.createPlaylist(name, description, trackSource, tracks)
   }
+
+  // Utility Methods
 
   transaction(fn) {
     try {
@@ -203,6 +102,25 @@ class AppDatabase {
       throw error
     }
   }
+
+  prepare(sql) {
+    if (!this.db) {
+      throw new Error('Database not initialized')
+    }
+    return this.db.prepare(sql)
+  }
+
+  exec(sql, params = []) {
+    try {
+      const stmt = this.prepare(sql)
+      return stmt.run(...params)
+    }
+    catch (error) {
+      console.error('Error executing SQL:', error)
+      throw error
+    }
+  }
+
 
   close() {
     if (this.db) {
