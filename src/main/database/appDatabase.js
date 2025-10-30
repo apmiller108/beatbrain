@@ -87,6 +87,34 @@ class AppDatabase {
     return this.playlistRepository.createPlaylist(name, description, trackSource, tracks)
   }
 
+  getPlaylist(id) {
+    return this.playlistRepository.getPlaylistById(id)
+  }
+
+  getAllPlaylists() {
+    return this.playlistRepository.getAllPlaylists()
+  }
+
+  updatePlaylist(playlistId, { name, description }) {
+    return this.playlistRepository.updatePlaylist(playlistId, { name, description })
+  }
+
+  updateTrackPosition(playlistId, trackId, newPosition) {
+    return this.playlistRepository.updateTrackPosition(playlistId, trackId, newPosition)
+  }
+
+  addTrackToPlaylist(playlistId, trackData) {
+    return this.playlistRepository.addTrackToPlaylist(playlistId, trackData)
+  }
+
+  removeTrackFromPlaylist(playlistId, trackId) {
+    return this.playlistRepository.removeTrackFromPlaylist(playlistId, trackId)
+  }
+
+  deletePlaylist(playlistId) {
+    return this.playlistRepository.deletePlaylist(playlistId)
+  }
+
   // Utility Methods
 
   transaction(fn) {

@@ -281,8 +281,8 @@ CREATE TABLE sqlite_sequence(name,seq);
 ├── eslint.config.js
 ├── launch.json
 ├── NOTES.md
-├── package.json
 ├── package-lock.json
+├── package.json
 ├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
@@ -308,18 +308,23 @@ CREATE TABLE sqlite_sequence(name,seq);
 │   │           └── DatabaseConnectionModal.test.jsx
 │   └── setup.js
 ├── src
+│   ├── assets
 │   ├── main
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
 │   │   ├── database
 │   │   │   ├── appDatabase
-│   │   │   │   └── createTables.js
+│   │   │   │   ├── createTables.js
+│   │   │   │   ├── playlistRepository.js
+│   │   │   │   ├── settingsRepository.js
+│   │   │   │   └── userPreferenceRepository.js
 │   │   │   ├── appDatabase.js
 │   │   │   └── mixxxDatabase.js
 │   │   └── index.js
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
+│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -348,7 +353,7 @@ CREATE TABLE sqlite_sequence(name,seq);
 │               └── SettingsView.jsx
 └── vitest.config.js
 
-21 directories, 49 files
+24 directories, 52 files
 ```
 
 ## Core Features
@@ -482,14 +487,14 @@ generation.
 
 ## TODOs for Feature: Playlist Management (Phase 2: View & Edit)
 ### **Database Layer - Playlist CRUD Operations**
-- [ ] Add method to appDatabase.js: `getAllPlaylists()` - fetch all playlists with metadata (id, name, track_count, duration, created_at, updated_at)
-- [ ] Add method to appDatabase.js: `getPlaylistById(id)` - fetch single playlist with full metadata
-- [ ] Add method to appDatabase.js: `getPlaylistTracks(playlistId)` - fetch all tracks for a playlist ordered by position
-- [ ] Add method to appDatabase.js: `updatePlaylistName(id, name)` - update playlist name and updated_at timestamp
-- [ ] Add method to appDatabase.js: `deletePlaylist(id)` - delete playlist and associated tracks (cascade)
-- [ ] Add method to appDatabase.js: `updateTrackPosition(playlistId, trackId, newPosition)` - reorder track in playlist
-- [ ] Add method to appDatabase.js: `removeTrackFromPlaylist(playlistId, trackId)` - remove single track from playlist
-- [ ] Add method to appDatabase.js: `addTrackToPlaylist(playlistId, trackData)` - add track to playlist (for future manual additions)
+- [x] Add method to appDatabase.js: `getAllPlaylists()` - fetch all playlists with metadata (id, name, track_count, duration, created_at, updated_at)
+- [x] Add method to appDatabase.js: `getPlaylistById(id)` - fetch single playlist with full metadata
+- [x] Add method to appDatabase.js: `getPlaylistTracks(playlistId)` - fetch all tracks for a playlist ordered by position
+- [x] Add method to appDatabase.js: `updatePlaylist(id, { name, description })` - update playlist name and updated_at timestamp
+- [x] Add method to appDatabase.js: `deletePlaylist(id)` - delete playlist and associated tracks (cascade)
+- [x] Add method to appDatabase.js: `updateTrackPosition(playlistId, trackId, newPosition)` - reorder track in playlist
+- [x] Add method to appDatabase.js: `removeTrackFromPlaylist(playlistId, trackId)` - remove single track from playlist
+- [x] Add method to appDatabase.js: `addTrackToPlaylist(playlistId, trackData)` - add track to playlist (for future manual additions)
 
 ### **Navigation Component Updates**
 - [ ] Update Navigation.jsx: Add state for managing playlist list expansion/collapse
