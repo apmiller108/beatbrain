@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Container, Navbar, Alert, Row, Col } from 'react-bootstrap'
 
 import PlaylistsView from './views/PlaylistsView'
+import PlaylistDetailView from './views/PlaylistDetailView'
 import LibraryView from './views/LibraryView'
 import SettingsView from './views/SettingsView'
 import Navigation from './components/Navigation'
@@ -11,6 +12,7 @@ import logo from './assets/beatbrain_logo.png'
 
 function App() {
   const [currentView, setCurrentView] = useState('playlists')
+  const [activePlaylistId, setActivePlaylistId] = useState(null)
 
   const [appInfo, setAppInfo] = useState({
     version: 'Loading...',
@@ -166,6 +168,18 @@ function App() {
     setShowConnectionModal(!showConnectionModal)
   }
 
+  const handleSetView = (view) => {
+    if (view !== 'playlist-detail') {
+      setActivePlaylistId(null)
+    }
+    setCurrentView(view)
+  }
+
+  const handleSelectPlaylist = (playlistId) => {
+    setActivePlaylistId(playlistId)
+    setCurrentView('playlist-detail')
+  }
+
   // Render current view
   const renderCurrentView = () => {
     switch (currentView) {
@@ -174,7 +188,12 @@ function App() {
           <LibraryView mixxxStats={mixxxStats} sampleTracks={sampleTracks} />
         )
       case 'playlists':
-      return <PlaylistsView mixxxStats={mixxxStats} mixxxStatus={mixxxStatus} handleShowConnectionModal={handleShowConnectionModal} />
+      return <PlaylistsView mixxxStats={mixxxStats}
+                            mixxxStatus={mixxxStatus}
+                            handleShowConnectionModal={handleShowConnectionModal} />
+      case 'playlist-detail':
+      return <PlaylistDetailView playlistId={activePlaylistId}
+                                 onBack={() => handleSetView('playlists')}/>
       case 'settings':
         return (
           <SettingsView
@@ -196,7 +215,10 @@ function App() {
       <Container fluid>
         <Row>
           <Col md={2} className="p-0">
-            <Navigation view={currentView} setView={setCurrentView} />
+            <Navigation view={currentView}
+                        setView={handleSetView}
+                        onSelectPlaylist={handleSelectPlaylist}
+                        activePlaylistId={activePlaylistId}/>
           </Col>
           <Col md={10}>
             <Container className="mt-3">

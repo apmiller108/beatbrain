@@ -62,6 +62,20 @@ export default class PlaylistRepository {
       SELECT * FROM playlists ORDER BY created_at DESC
     `)
     const playlists = playlistsStmt.all()
+
+    // fetch the playlist_tracks count grouped by playlist_id and attach to each playlist
+    const trackCountStmt = this.db.prepare(`
+      SELECT playlist_id, COUNT(*) as track_count
+      FROM playlist_tracks
+      GROUP BY playlist_id
+    `)
+    const trackCounts = trackCountStmt.all()
+
+    playlists.map(playlist => {
+      const trackCount = trackCounts.find(tc => tc.playlist_id === playlist.id)
+      playlist.track_count = trackCount ? trackCount.track_count : 0
+    })
+
     return playlists
   }
 
