@@ -21,6 +21,12 @@ const api = {
   getTrackFilters: () => ipcRenderer.invoke('app:getTrackFilters'),
   saveTrackFilters: filters => ipcRenderer.invoke('app:saveTrackFilters', filters),
   createPlaylist: (playlistData, tracks) => ipcRenderer.invoke('app:createPlaylist', playlistData, tracks),
+  getAllPlaylists: () => ipcRenderer.invoke('app:getAllPlaylists'),
+  getPlaylist: id => ipcRenderer.invoke('app:getPlaylist', id),
+  updatePlaylist: (id, playlistData) => ipcRenderer.invoke('app:updatePlaylist', id, playlistData),
+  updateTrackPosition: (playlistId, trackId, newPosition) => ipcRenderer.invoke('app:updateTrackPosition', playlistId, trackId, newPosition),
+  addTrackToPlaylist: (playlistId, trackData) => ipcRenderer.invoke('app:addTrackToPlaylist', playlistId, trackData),
+  removeTrackFromPlaylist: (playlistId, trackId) => ipcRenderer.invoke('app:removeTrackFromPlaylist', playlistId, trackId),
 
   mixxx: {
     getStatus: () => ipcRenderer.invoke('mixxx:getStatus'),

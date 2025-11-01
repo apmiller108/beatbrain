@@ -121,7 +121,7 @@ export default class PlaylistRepository {
   }
 
   // append a track to the end of the playlist
-  addTrackToPlaylist(playlistId, track) {
+  addTrackToPlaylist(playlistId, trackData) {
     try {
       const playlist = this.getPlaylistById(playlistId)
       const lastTrack = playlist.tracks[playlist.tracks.length - 1]
@@ -133,15 +133,15 @@ export default class PlaylistRepository {
       `)
       insertTrackStmt.run({
         playlist_id: playlistId,
-        source_track_id: track.id,
-        file_path: track.file_path,
-        duration: track.duration,
-        artist: track.artist,
-        title: track.title,
-        album: track.album,
-        genre: track.genre,
-        bpm: track.bpm,
-        key: track.key,
+        source_track_id: trackData.id,
+        file_path: trackData.file_path,
+        duration: trackData.duration,
+        artist: trackData.artist,
+        title: trackData.title,
+        album: trackData.album,
+        genre: trackData.genre,
+        bpm: trackData.bpm,
+        key: trackData.key,
         position: position
       })
 

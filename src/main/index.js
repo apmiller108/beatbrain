@@ -61,6 +61,7 @@ app.whenReady().then(() => {
   }
 
   // IPC handlers
+
   ipcMain.handle('app:getVersion', () => {
     return app.getVersion()
   })
@@ -74,6 +75,7 @@ app.whenReady().then(() => {
   })
 
   // Mixxx database handlers
+
   ipcMain.handle('mixxx:getStatus', () => {
     return mixxxDatabase.getStatus()
   })
@@ -121,6 +123,7 @@ app.whenReady().then(() => {
   })
 
   // User preferences handlers
+
   ipcMain.handle('app:getUserPreference', async (_, category, key) => {
     return appDatabase.getUserPreference(category, key)
   })
@@ -141,8 +144,34 @@ app.whenReady().then(() => {
     return appDatabase.saveTrackFilters(filters)
   })
 
+  // Playlist handlers
+
   ipcMain.handle('app:createPlaylist', async (_, playlistData, tracks) => {
     return appDatabase.createPlaylist(playlistData, tracks)
+  })
+
+  ipcMain.handle('app:getAllPlaylists', async () => {
+    return appDatabase.getAllPlaylists()
+  })
+
+  ipcMain.handle('app:getPlaylist', async (_, id) => {
+    return appDatabase.getPlaylist(id)
+  })
+
+  ipcMain.handle('app:updatePlaylist', async (_, id, playlistData) => {
+    return appDatabase.updatePlaylist(id, playlistData)
+  })
+
+  ipcMain.handle('app:updateTrackPosition', async (_, playlistId, trackId, newPosition) => {
+    return appDatabase.updateTrackPosition(playlistId, trackId, newPosition)
+  })
+
+  ipcMain.handle('app:addTrackToPlaylist', async (_, playlistId, trackData) => {
+    return appDatabase.addTrackToPlaylist(playlistId, trackData)
+  })
+
+  ipcMain.handle('app:removeTrackFromPlaylist', async (_, playlistId, trackId) => {
+    return appDatabase.removeTrackFromPlaylist(playlistId, trackId)
   })
 
   createWindow()
