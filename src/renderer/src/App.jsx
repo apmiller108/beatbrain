@@ -212,6 +212,29 @@ function App() {
 
   return (
     <div className="App">
+      <Container fluid className="p-0">
+        <Row>
+          <Col md={12}>
+            <Navbar
+              bg="dark"
+              variant="dark"
+              expand="md"
+              className="shadow mb-2 px-3"
+            >
+              <Navbar.Brand>
+                <div className="d-flex justify-content-start align-items-center">
+                  <img
+                    className="beatbrain-logo"
+                    src={logo}
+                    alt="BeatBrain"
+                  />
+                  <span className="ms-4">BeatBrain</span>
+                </div>
+              </Navbar.Brand>
+            </Navbar>
+          </Col>
+        </Row>
+      </Container>
       <Container fluid>
         <Row>
           <Col md={2} className="p-0">
@@ -222,25 +245,6 @@ function App() {
           </Col>
           <Col md={10}>
             <Container className="mt-3">
-              <Navbar
-                bg="dark"
-                variant="dark"
-                expand="md"
-                className="shadow mb-4"
-              >
-                <Container>
-                  <Navbar.Brand className="p-2">
-                    <div className="d-flex justify-content-start align-items-center">
-                      <img
-                        className="beatbrain-logo"
-                        src={logo}
-                        alt="BeatBrain"
-                      />
-                      <span className="ms-4">BeatBrain</span>
-                    </div>
-                  </Navbar.Brand>
-                </Container>
-              </Navbar>
 
               {showAlert && (
                 <Alert

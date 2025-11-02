@@ -18,7 +18,7 @@ const PlaylistList = ({ playlists, loading, error, activePlaylistId, onSelectPla
     <div className="playlist-navigation">
       {/* Playlists Header */}
       <div
-        className="d-flex align-items-center justify-content-between px-3 py-2 playlist-header"
+        className="d-flex align-items-center justify-content-start px-3 py-2 playlist-header"
         style={{ cursor: 'pointer' }}
         onClick={toggleExpanded}
       >
@@ -42,7 +42,7 @@ const PlaylistList = ({ playlists, loading, error, activePlaylistId, onSelectPla
           }}
           title="Create new playlist"
         >
-          <Plus size={18} />
+          <Plus size={32} />
         </Button>
       </div>
 

@@ -51,34 +51,36 @@ const Navigation = ({ view, setView, onSelectPlaylist, activePlaylistId }) => {
   }
 
   return (
-    <Nav
-      variant="pills"
-      className="flex-column bg-light p-3"
-      activeKey={getActiveKey()}
-      onSelect={handleNavSelect}
-    >
-      <Nav.Item>
-        <Nav.Link eventKey="library">
-          <CollectionPlay className="me-2" /> Library
-        </Nav.Link>
-      </Nav.Item>
+    <div className='c-navigation'>
+      <Nav
+        variant="pills"
+        className="flex-column bg-light"
+        activeKey={getActiveKey()}
+        onSelect={handleNavSelect}
+      >
+        <Nav.Item>
+          <Nav.Link eventKey="library">
+            <CollectionPlay className="me-2" /> Library
+          </Nav.Link>
+        </Nav.Item>
 
-      {/* Playlists Section with nested list */}
-      <PlaylistList
-        playlists={playlists}
-        loading={loading}
-        error={error}
-        activePlaylistId={activePlaylistId}
-        onSelectPlaylist={handlePlaylistSelect}
-        onCreateNew={handleCreateNewPlaylist}
-      />
+        {/* Playlists Section with nested list */}
+        <PlaylistList
+          playlists={playlists}
+          loading={loading}
+          error={error}
+          activePlaylistId={activePlaylistId}
+          onSelectPlaylist={handlePlaylistSelect}
+          onCreateNew={handleCreateNewPlaylist}
+        />
 
-      <Nav.Item className="mt-2">
-        <Nav.Link eventKey="settings">
-          <Gear className="me-2" /> Settings
-        </Nav.Link>
-      </Nav.Item>
-    </Nav>
+        <Nav.Item className="mt-2">
+          <Nav.Link eventKey="settings">
+            <Gear className="me-2" /> Settings
+          </Nav.Link>
+        </Nav.Item>
+      </Nav>
+    </div>
   )
 }
 
