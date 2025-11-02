@@ -154,7 +154,7 @@ app.whenReady().then(() => {
     return appDatabase.getAllPlaylists()
   })
 
-  ipcMain.handle('app:getPlaylist', async (_, id) => {
+  ipcMain.handle('app:getPlaylistById', async (_, id) => {
     return appDatabase.getPlaylist(id)
   })
 

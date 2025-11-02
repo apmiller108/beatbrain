@@ -192,8 +192,7 @@ function App() {
                             mixxxStatus={mixxxStatus}
                             handleShowConnectionModal={handleShowConnectionModal} />
       case 'playlist-detail':
-      return <PlaylistDetailView playlistId={activePlaylistId}
-                                 onBack={() => handleSetView('playlists')}/>
+      return <PlaylistDetailView playlistId={activePlaylistId} />
       case 'settings':
         return (
           <SettingsView
@@ -235,7 +234,7 @@ function App() {
           </Col>
         </Row>
       </Container>
-      <Container fluid>
+      <Container fluid className="pb-5">
         <Row>
           <Col md={2} className="p-0">
             <Navigation view={currentView}

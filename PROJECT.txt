@@ -289,12 +289,14 @@ Read-only database operations
 ├── eslint.config.js
 ├── launch.json
 ├── NOTES.md
-├── package-lock.json
 ├── package.json
+├── package-lock.json
 ├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
 ├── README.md
+├── scripts
+│   └── schema-dump.js
 ├── spec
 │   ├── e2e
 │   │   ├── database-connection.spec.js
@@ -316,7 +318,6 @@ Read-only database operations
 │   │           └── DatabaseConnectionModal.test.jsx
 │   └── setup.js
 ├── src
-│   ├── assets
 │   ├── main
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
@@ -332,7 +333,6 @@ Read-only database operations
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
-│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -348,6 +348,8 @@ Read-only database operations
 │           │   │   └── TrackCountInput.jsx
 │           │   ├── LibraryStats.jsx
 │           │   ├── MixxxDatabaseStatus.jsx
+│           │   ├── Navigation
+│           │   │   └── PlaylistList.jsx
 │           │   ├── Navigation.jsx
 │           │   ├── PlaylistForm.jsx
 │           │   ├── StatusBar.jsx
@@ -357,11 +359,13 @@ Read-only database operations
 │           ├── utilities.js
 │           └── views
 │               ├── LibraryView.jsx
+│               ├── PlaylistDetailView.jsx
 │               ├── PlaylistsView.jsx
 │               └── SettingsView.jsx
+├── structure.sql
 └── vitest.config.js
 
-24 directories, 52 files
+23 directories, 56 files
 ```
 
 # TODOS
@@ -480,43 +484,42 @@ generation.
 - [x] Add method to appDatabase.js: `addTrackToPlaylist(playlistId, trackData)` - add track to playlist (for future manual additions)
 
 ### **Navigation Component Updates**
-- [ ] Update Navigation.jsx: Add state for managing playlist list expansion/collapse
-- [ ] Update Navigation.jsx: Fetch all playlists on component mount using `getAllPlaylists()`
-- [ ] Update Navigation.jsx: Render dynamic playlist list under "Playlists" section
-- [ ] Update Navigation.jsx: Add Bootstrap Collapse component for expandable playlist section
-- [ ] Update Navigation.jsx: Show playlist count badge (e.g., "Playlists (26)")
-- [ ] Update Navigation.jsx: Add "+" button next to Playlists header to navigate to PlaylistsView
-- [ ] Update Navigation.jsx: Highlight active/selected playlist in navigation
-- [ ] Update Navigation.jsx: Handle click events on playlist items to navigate to detail view
-- [ ] Update Navigation.jsx: Add loading state while fetching playlists
-- [ ] Update Navigation.jsx: Add error handling for playlist fetch failures
+- [x] Update Navigation.jsx: Add state for managing playlist list expansion/collapse
+- [x] Update Navigation.jsx: Fetch all playlists on component mount using `getAllPlaylists()`
+- [x] Update Navigation.jsx: Render dynamic playlist list under "Playlists" section
+- [x] Update Navigation.jsx: Add Bootstrap Collapse component for expandable playlist section
+- [x] Update Navigation.jsx: Show playlist count badge (e.g., "Playlists (26)")
+- [x] Update Navigation.jsx: Add "+" button next to Playlists header to navigate to PlaylistsView
+- [x] Update Navigation.jsx: Highlight active/selected playlist in navigation
+- [x] Update Navigation.jsx: Handle click events on playlist items to navigate to detail view
+- [x] Update Navigation.jsx: Add loading state while fetching playlists
+- [x] Update Navigation.jsx: Add error handling for playlist fetch failures
 
 ### **Routing & View Management**
-- [ ] Update App.jsx: Extend view state to support playlist detail routing (e.g., `{ view: 'playlist-detail', playlistId: 123 }`)
-- [ ] Update App.jsx: Add navigation handler for playlist selection
-- [ ] Update App.jsx: Pass playlist navigation functions to Navigation component
-- [ ] Create view routing logic to render PlaylistDetailView when playlist is selected
+- [x] Update App.jsx: Extend view state to support playlist detail routing (e.g., `{ view: 'playlist-detail', playlistId: 123 }`)
+- [x] Update App.jsx: Add navigation handler for playlist selection
+- [x] Update App.jsx: Pass playlist navigation functions to Navigation component
+- [x] Create view routing logic to render PlaylistDetailView when playlist is selected
 
 ### **Playlist List Component**
-- [ ] Create `src/renderer/src/components/PlaylistList.jsx` - component for rendering playlist items in navigation
-- [ ] PlaylistList.jsx: Accept playlists array and onSelect callback as props
-- [ ] PlaylistList.jsx: Render each playlist with icon, name, and track count
-- [ ] PlaylistList.jsx: Apply active styling to selected playlist
-- [ ] PlaylistList.jsx: Add hover effects and cursor pointer
-- [ ] PlaylistList.jsx: Handle empty state (no playlists created yet)
+- [x] Create `src/renderer/src/components/PlaylistList.jsx` - component for rendering playlist items in navigation
+- [x] PlaylistList.jsx: Accept playlists array and onSelect callback as props
+- [x] PlaylistList.jsx: Render each playlist with icon, name, and track count
+- [x] PlaylistList.jsx: Apply active styling to selected playlist
+- [x] PlaylistList.jsx: Add hover effects and cursor pointer
+- [x] PlaylistList.jsx: Handle empty state (no playlists created yet)
 
 ### **Playlist Detail View Component**
-- [ ] Create `src/renderer/src/views/PlaylistDetailView.jsx` - main view for viewing/editing a playlist
-- [ ] PlaylistDetailView.jsx: Accept playlistId as prop
-- [ ] PlaylistDetailView.jsx: Fetch playlist metadata and tracks on mount
-- [ ] PlaylistDetailView.jsx: Display playlist header with name, created date, track count, total duration
-- [ ] PlaylistDetailView.jsx: Add "Back to Playlists" navigation button
+- [x] Create `src/renderer/src/views/PlaylistDetailView.jsx` - main view for viewing/editing a playlist
+- [x] PlaylistDetailView.jsx: Accept playlistId as prop
+- [x] PlaylistDetailView.jsx: Fetch playlist metadata and tracks on mount
+- [x] PlaylistDetailView.jsx: Display playlist header with name, created date, track count, total duration
 - [ ] PlaylistDetailView.jsx: Add Export button (placeholder for now)
 - [ ] PlaylistDetailView.jsx: Add Delete button with confirmation modal
 - [ ] PlaylistDetailView.jsx: Render track list using PlaylistTrackItem components
-- [ ] PlaylistDetailView.jsx: Add loading state while fetching playlist data
-- [ ] PlaylistDetailView.jsx: Add error handling for playlist not found
-- [ ] PlaylistDetailView.jsx: Calculate and display playlist statistics (total duration, avg BPM, key distribution)
+- [x] PlaylistDetailView.jsx: Add loading state while fetching playlist data
+- [x] PlaylistDetailView.jsx: Add error handling for playlist fetch error
+- [x] PlaylistDetailView.jsx: Calculate and display playlist statistics (total duration, avg BPM)
 
 ### **Playlist Track Item Component**
 - [ ] Create `src/renderer/src/components/PlaylistTrackItem.jsx` - component for individual track in playlist
@@ -624,6 +627,11 @@ generation.
 - [ ] TODO: Move datafetching from App.jsx to LibarayView.jsx
 
 ## TODOs for UI polish
+### Resizable Navigation Panel
+- [ ] Add drag handle between navigation and main content
+- [ ] Implement resize logic with min/max width constraints
+- [ ] Persist user's preferred width in app settings
+- [ ] Add double-click to reset to default width
 
 # Notes
 See also NOTES.md
