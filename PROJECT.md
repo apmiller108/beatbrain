@@ -514,7 +514,7 @@ generation.
 - [x] PlaylistDetailView.jsx: Accept playlistId as prop
 - [x] PlaylistDetailView.jsx: Fetch playlist metadata and tracks on mount
 - [x] PlaylistDetailView.jsx: Display playlist header with name, created date, track count, total duration
-- [ ] PlaylistDetailView.jsx: Add Export button (placeholder for now)
+- [x] PlaylistDetailView.jsx: Add Export button (placeholder for now)
 - [ ] PlaylistDetailView.jsx: Add Delete button with confirmation modal
 - [ ] PlaylistDetailView.jsx: Render track list using PlaylistTrackItem components
 - [x] PlaylistDetailView.jsx: Add loading state while fetching playlist data

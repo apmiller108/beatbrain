@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Card, Spinner, Alert, Badge, Table } from 'react-bootstrap'
-import { Clock, MusicNote, Calendar } from 'react-bootstrap-icons'
+import { Card, Spinner, Alert, Badge, Table, Button } from 'react-bootstrap'
+import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3 } from 'react-bootstrap-icons'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
 import propTypes from 'prop-types'
 import { formatDuration } from '../utilities'
 
@@ -107,7 +109,16 @@ const PlaylistDetailView = ({ playlistId }) => {
 
             {/* Action Buttons - Placeholder for now */}
             <div className="d-flex gap-2">
-              {/* Export and Delete buttons will go here */}
+              <OverlayTrigger overlay={<Tooltip>Export Playlist</Tooltip>}>
+                <Button variant="primary">
+                  <BoxArrowDown />
+                </Button>
+              </OverlayTrigger>
+              <OverlayTrigger overlay={<Tooltip>Delete Playlist</Tooltip>}>
+                <Button variant="danger">
+                  <Trash3 />
+                </Button>
+              </OverlayTrigger>
             </div>
           </div>
         </Card.Body>
