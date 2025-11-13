@@ -516,7 +516,6 @@ generation.
 - [x] PlaylistDetailView.jsx: Display playlist header with name, created date, track count, total duration
 - [x] PlaylistDetailView.jsx: Add Export button (placeholder for now)
 - [ ] PlaylistDetailView.jsx: Add Delete button with confirmation modal
-- [ ] PlaylistDetailView.jsx: Render track list using PlaylistTrackItem components
 - [x] PlaylistDetailView.jsx: Add loading state while fetching playlist data
 - [x] PlaylistDetailView.jsx: Add error handling for playlist fetch error
 - [x] PlaylistDetailView.jsx: Calculate and display playlist statistics (total duration, avg BPM)
