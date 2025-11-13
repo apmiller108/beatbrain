@@ -26,6 +26,8 @@ function App() {
   const [showAlert, setShowAlert] = useState(false)
   const [showConnectionModal, setShowConnectionModal] = useState(false)
   const [databasePreferences, setDatabasePreferences] = useState({})
+  const [deletedPlaylistId, setDeletedPlaylistId] = useState(null)
+  const [createdPlaylistId, setCreatedPlaylistId] = useState(null)
 
   useEffect(() => {
     const loadAppInfo = async () => {
@@ -180,6 +182,18 @@ function App() {
     setCurrentView('playlist-detail')
   }
 
+  const handlePlaylistDeleted = (playlistId) => {
+    setActivePlaylistId(null)
+    setCurrentView('playlists')
+    setDeletedPlaylistId(playlistId)
+  }
+
+  const handlePlaylistCreated = (playlistId) => {
+    setCreatedPlaylistId(playlistId)
+    setActivePlaylistId(playlistId)
+    setCurrentView('playlist-detail')
+  }
+
   // Render current view
   const renderCurrentView = () => {
     switch (currentView) {
@@ -190,9 +204,10 @@ function App() {
       case 'playlists':
       return <PlaylistsView mixxxStats={mixxxStats}
                             mixxxStatus={mixxxStatus}
+                            onPlaylistCreated={handlePlaylistCreated}
                             handleShowConnectionModal={handleShowConnectionModal} />
       case 'playlist-detail':
-      return <PlaylistDetailView playlistId={activePlaylistId} />
+      return <PlaylistDetailView playlistId={activePlaylistId} onPlaylistDeleted={handlePlaylistDeleted} />
       case 'settings':
         return (
           <SettingsView
@@ -240,6 +255,8 @@ function App() {
             <Navigation view={currentView}
                         setView={handleSetView}
                         onSelectPlaylist={handleSelectPlaylist}
+                        deletedPlaylistId={deletedPlaylistId}
+                        createdPlaylistId={createdPlaylistId}
                         activePlaylistId={activePlaylistId}/>
           </Col>
           <Col md={10}>

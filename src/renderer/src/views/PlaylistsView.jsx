@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { MusicNoteList, ExclamationTriangleFill, CheckCircleFill, ExclamationCircleFill } from 'react-bootstrap-icons'
 import PlaylistForm from '../components/PlaylistForm'
 
-const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) => {
+const PlaylistsView = ({ mixxxStats, mixxxStatus, onPlaylistCreated, handleShowConnectionModal }) => {
   const [loading, setLoading] = useState(true)
   const [maxCount, setMaxCount] = useState(100)
   const [bpmRange, setBpmRange] = useState({ minBpm: 0, maxBpm: 300 })
@@ -106,16 +106,12 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
       setLoading(true)
 
       const name = `Playlist ${new Date().toLocaleString()}`
-      await window.api.createPlaylist({
+      const playlist = await window.api.createPlaylist({
         name,
         description: 'A playlist created from Mixxx tracks',
       }, filteredTracks)
 
-      showNotification(
-        'success',
-        'Playlist created successfully!',
-        `Created "${name}" with ${filteredTracks.length} tracks`
-      )
+      onPlaylistCreated(playlist.id)
     } catch (error) {
       console.error('Error generating playlist:', error)
       showNotification(

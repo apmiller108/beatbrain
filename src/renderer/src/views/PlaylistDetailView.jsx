@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Card, Spinner, Alert, Badge, Table, Button } from 'react-bootstrap'
-import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3 } from 'react-bootstrap-icons'
+import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3, ExclamationTriangleFill } from 'react-bootstrap-icons'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import propTypes from 'prop-types'
 import { formatDuration } from '../utilities'
+import ConfirmationPrompt from '../components/common/ConfirmationPrompt'
 
-const PlaylistDetailView = ({ playlistId }) => {
+const PlaylistDetailView = ({ playlistId, onPlaylistDeleted }) => {
   const [playlist, setPlaylist] = useState(null)
   const [playlistStats, setPlaylistStats] = useState({
     totalDuration: 0,
@@ -15,6 +16,10 @@ const PlaylistDetailView = ({ playlistId }) => {
   })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [showConfirmation, setShowConfirmation] = useState(false)
+  const [confirmationTitle, setConfirmationTitle] = useState('')
+  const [confirmationAction, setConfirmationAction] = useState(null)
+  const [playlistError , setPlaylistError] = useState(null)
 
   useEffect(() => {
     loadPlaylist()
@@ -55,6 +60,22 @@ const PlaylistDetailView = ({ playlistId }) => {
     })
   }
 
+  const handleDeletePlaylist = () => {
+    setConfirmationTitle(`Are you sure you want to delete the playlist "${playlist.name}"?`)
+    setShowConfirmation(true)
+    setConfirmationAction(() => async () => {
+      try {
+        await window.api.deletePlaylist(playlist.id)
+        onPlaylistDeleted(playlistId)
+      } catch (err) {
+        console.error('Failed to delete playlist:', err)
+        setPlaylistError(`Failed to delete playlist: ${err.message}`)
+      } finally {
+        setShowConfirmation(false)
+      }
+    })
+  }
+
   if (loading) {
     return (
       <div className="text-center py-5">
@@ -75,7 +96,16 @@ const PlaylistDetailView = ({ playlistId }) => {
 
   return (
     <div className="playlist-detail-view">
-      {/* Playlist Header */}
+      { playlistError && (
+        <Alert variant="warning" className="c-alert py-2 mb-2" onClose={() => setPlaylistError(null)} dismissible>
+          <div className="d-flex align-items-center">
+            <ExclamationTriangleFill className="me-2" size={16} />
+            <small>
+              <strong>{playlistError}</strong>
+            </small>
+          </div>
+        </Alert>
+      )}
       <Card className="mb-4 shadow-sm">
         <Card.Body>
           <div className="d-flex justify-content-between align-items-start">
@@ -115,7 +145,7 @@ const PlaylistDetailView = ({ playlistId }) => {
                 </Button>
               </OverlayTrigger>
               <OverlayTrigger overlay={<Tooltip>Delete Playlist</Tooltip>}>
-                <Button variant="danger">
+                <Button variant="danger" onClick={handleDeletePlaylist}>
                   <Trash3 />
                 </Button>
               </OverlayTrigger>
@@ -185,6 +215,10 @@ const PlaylistDetailView = ({ playlistId }) => {
           )}
         </Card.Body>
       </Card>
+      <ConfirmationPrompt show={showConfirmation}
+                          title={confirmationTitle}
+                          onConfirm={confirmationAction}
+                          onCancel={() => setShowConfirmation(false)} />
     </div>
   )
 }

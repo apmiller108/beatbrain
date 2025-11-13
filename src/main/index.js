@@ -174,6 +174,10 @@ app.whenReady().then(() => {
     return appDatabase.removeTrackFromPlaylist(playlistId, trackId)
   })
 
+  ipcMain.handle('app:deletePlaylist', async (_, id) => {
+    return appDatabase.deletePlaylist(id)
+  })
+
   createWindow()
 })
 

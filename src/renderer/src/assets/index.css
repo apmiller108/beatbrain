@@ -74,3 +74,9 @@ code {
   overflow-x: hidden;
   background-color: #f8f9fa;
 }
+
+.c-alert {
+  .btn-close {
+    padding: 0.75rem 0.75rem
+  }
+}

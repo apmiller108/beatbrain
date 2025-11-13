@@ -30,7 +30,7 @@ export default class PlaylistRepository {
           position: index
         })
       })
-      return playlist
+      return { id: playlist.lastInsertRowid, name, description, trackSource, tracks }
     })
   }
 

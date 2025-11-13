@@ -27,6 +27,7 @@ const api = {
   updateTrackPosition: (playlistId, trackId, newPosition) => ipcRenderer.invoke('app:updateTrackPosition', playlistId, trackId, newPosition),
   addTrackToPlaylist: (playlistId, trackData) => ipcRenderer.invoke('app:addTrackToPlaylist', playlistId, trackData),
   removeTrackFromPlaylist: (playlistId, trackId) => ipcRenderer.invoke('app:removeTrackFromPlaylist', playlistId, trackId),
+  deletePlaylist: id => ipcRenderer.invoke('app:deletePlaylist', id),
 
   mixxx: {
     getStatus: () => ipcRenderer.invoke('mixxx:getStatus'),
@@ -37,10 +38,7 @@ const api = {
       ipcRenderer.invoke('mixxx:getSampleTracks', limit),
     getGenres: () => ipcRenderer.invoke('mixxx:getGenres'),
     getTracks: (filters) => ipcRenderer.invoke('mixxx:getTracks', filters)
-  },
-
-  // Future Claude API operations
-  // sendQuery: (query) => ipcRenderer.invoke('claude:query', query),
+  }
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

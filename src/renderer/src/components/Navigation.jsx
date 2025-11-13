@@ -4,14 +4,14 @@ import propTypes from 'prop-types'
 import { Gear, CollectionPlay } from 'react-bootstrap-icons'
 import PlaylistList from './Navigation/PlaylistList'
 
-const Navigation = ({ view, setView, onSelectPlaylist, activePlaylistId }) => {
+const Navigation = ({ view, setView, onSelectPlaylist, activePlaylistId, deletedPlaylistId, createdPlaylistId }) => {
   const [playlists, setPlaylists] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
     loadPlaylists()
-  }, [])
+  }, [deletedPlaylistId, createdPlaylistId])
 
   const loadPlaylists = async () => {
     try {

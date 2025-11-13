@@ -289,8 +289,8 @@ Read-only database operations
 ├── eslint.config.js
 ├── launch.json
 ├── NOTES.md
-├── package.json
 ├── package-lock.json
+├── package.json
 ├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
@@ -318,6 +318,7 @@ Read-only database operations
 │   │           └── DatabaseConnectionModal.test.jsx
 │   └── setup.js
 ├── src
+│   ├── assets
 │   ├── main
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
@@ -333,6 +334,7 @@ Read-only database operations
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
+│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -341,6 +343,8 @@ Read-only database operations
 │           │   ├── beatbrain_logo.svg
 │           │   └── index.css
 │           ├── components
+│           │   ├── common
+│           │   │   └── ConfirmationPrompt.jsx
 │           │   ├── DatabaseConnectionModal.jsx
 │           │   ├── filters
 │           │   │   ├── BpmRangeInput.jsx
@@ -365,7 +369,7 @@ Read-only database operations
 ├── structure.sql
 └── vitest.config.js
 
-23 directories, 56 files
+27 directories, 57 files
 ```
 
 # TODOS
@@ -515,10 +519,11 @@ generation.
 - [x] PlaylistDetailView.jsx: Fetch playlist metadata and tracks on mount
 - [x] PlaylistDetailView.jsx: Display playlist header with name, created date, track count, total duration
 - [x] PlaylistDetailView.jsx: Add Export button (placeholder for now)
-- [ ] PlaylistDetailView.jsx: Add Delete button with confirmation modal
+- [x] PlaylistDetailView.jsx: Add Delete button with confirmation modal
 - [x] PlaylistDetailView.jsx: Add loading state while fetching playlist data
 - [x] PlaylistDetailView.jsx: Add error handling for playlist fetch error
 - [x] PlaylistDetailView.jsx: Calculate and display playlist statistics (total duration, avg BPM)
+- [ ] Extract alert component or notification component
 
 ### **Playlist Track Item Component**
 - [ ] Create `src/renderer/src/components/PlaylistTrackItem.jsx` - component for individual track in playlist
