@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Container, Navbar, Alert, Row, Col } from 'react-bootstrap'
+import { Container, Navbar, Row, Col } from 'react-bootstrap'
 
 import PlaylistCreationView from './views/PlaylistCreationView'
 import PlaylistDetailView from './views/PlaylistDetailView'
@@ -7,6 +7,7 @@ import LibraryView from './views/LibraryView'
 import SettingsView from './views/SettingsView'
 import Navigation from './components/Navigation'
 import StatusBar from './components/StatusBar'
+import ToastNotification from './components/common/ToastNotification'
 import DatabaseConnectionModal from './components/DatabaseConnectionModal'
 import logo from './assets/beatbrain_logo.png'
 
@@ -23,11 +24,17 @@ function App() {
   const [mixxxStats, setMixxxStats] = useState(null)
   const [sampleTracks, setSampleTracks] = useState([])
   const [loading, setLoading] = useState(false)
-  const [showAlert, setShowAlert] = useState(false)
   const [showConnectionModal, setShowConnectionModal] = useState(false)
   const [databasePreferences, setDatabasePreferences] = useState({})
   const [deletedPlaylistId, setDeletedPlaylistId] = useState(null)
   const [createdPlaylistId, setCreatedPlaylistId] = useState(null)
+
+  const [notification, setNotification] = useState({
+    show: false,
+    type: 'success', // 'success' or 'error'
+    message: '',
+    details: ''
+  })
 
   useEffect(() => {
     const loadAppInfo = async () => {
@@ -194,6 +201,16 @@ function App() {
     setCurrentView('playlist-detail')
   }
 
+  const playlistCreationView = () => {
+    return (
+      <PlaylistCreationView mixxxStats={mixxxStats}
+                            mixxxStatus={mixxxStatus}
+                            onPlaylistCreated={handlePlaylistCreated}
+                            handleShowConnectionModal={handleShowConnectionModal}
+                            setNotification={setNotification}/>
+    )
+  }
+
   // Render current view
   const renderCurrentView = () => {
     switch (currentView) {
@@ -202,10 +219,7 @@ function App() {
           <LibraryView mixxxStats={mixxxStats} sampleTracks={sampleTracks} />
         )
       case 'playlists':
-      return <PlaylistCreationView mixxxStats={mixxxStats}
-                                   mixxxStatus={mixxxStatus}
-                                   onPlaylistCreated={handlePlaylistCreated}
-                                   handleShowConnectionModal={handleShowConnectionModal} />
+      return playlistCreationView()
       case 'playlist-detail':
       return <PlaylistDetailView playlistId={activePlaylistId} onPlaylistDeleted={handlePlaylistDeleted} />
       case 'settings':
@@ -220,12 +234,19 @@ function App() {
           />
         )
       default:
-        return <PlaylistCreationView />
+        return playlistCreationView()
     }
   }
 
   return (
     <div className="App">
+      <ToastNotification
+        message={notification.message}
+        details={notification.details}
+        type={notification.type}
+        show={notification.show}
+        onClose={() => setNotification(prev => ({ ...prev, show: false }))}
+      />
       <Container fluid className="p-0">
         <Row>
           <Col>
@@ -261,25 +282,6 @@ function App() {
           </Col>
           <Col xs={10} xm={10}>
             <Container className="mt-3">
-
-              {showAlert && (
-                <Alert
-                  variant="success"
-                  dismissible
-                  onClose={() => setShowAlert(false)}
-                  className="shadow-sm"
-                >
-                  <Alert.Heading>🎉 Welcome to BeatBrain!</Alert.Heading>
-                  <p>
-                    Your AI-powered DJ library management tool is ready to go!
-                    {mixxxStatus.isConnected
-                      ? " We've successfully connected to your Mixxx database!"
-                      : " Let's connect to your Mixxx database to get started."}
-                  </p>
-                </Alert>
-              )}
-
-              {/* Render the current view */}
               {renderCurrentView()}
             </Container>
           </Col>
