@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { MusicNoteList, ExclamationTriangleFill, CheckCircleFill, ExclamationCircleFill } from 'react-bootstrap-icons'
 import PlaylistForm from '../components/PlaylistForm'
 
-const PlaylistsView = ({ mixxxStats, mixxxStatus, onPlaylistCreated, handleShowConnectionModal }) => {
+const PlaylistCreationView = ({ mixxxStats, mixxxStatus, onPlaylistCreated, handleShowConnectionModal }) => {
   const [loading, setLoading] = useState(true)
   const [maxCount, setMaxCount] = useState(100)
   const [bpmRange, setBpmRange] = useState({ minBpm: 0, maxBpm: 300 })
@@ -239,7 +239,7 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, onPlaylistCreated, handleShowC
   )
 }
 
-PlaylistsView.propTypes = {
+PlaylistCreationView.propTypes = {
   mixxxStats: PropTypes.shape({
     totalTracks: PropTypes.number,
     bpmRange: PropTypes.shape({
@@ -250,7 +250,8 @@ PlaylistsView.propTypes = {
   mixxxStatus: PropTypes.shape({
     isConnected: PropTypes.bool.isRequired,
   }),
-  handleShowConnectionModal: PropTypes.func.isRequired
+  handleShowConnectionModal: PropTypes.func.isRequired,
+  onPlaylistCreated: PropTypes.func.isRequired,
 }
 
-export default PlaylistsView
+export default PlaylistCreationView

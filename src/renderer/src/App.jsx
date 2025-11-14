@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Container, Navbar, Alert, Row, Col } from 'react-bootstrap'
 
-import PlaylistsView from './views/PlaylistsView'
+import PlaylistCreationView from './views/PlaylistCreationView'
 import PlaylistDetailView from './views/PlaylistDetailView'
 import LibraryView from './views/LibraryView'
 import SettingsView from './views/SettingsView'
@@ -202,10 +202,10 @@ function App() {
           <LibraryView mixxxStats={mixxxStats} sampleTracks={sampleTracks} />
         )
       case 'playlists':
-      return <PlaylistsView mixxxStats={mixxxStats}
-                            mixxxStatus={mixxxStatus}
-                            onPlaylistCreated={handlePlaylistCreated}
-                            handleShowConnectionModal={handleShowConnectionModal} />
+      return <PlaylistCreationView mixxxStats={mixxxStats}
+                                   mixxxStatus={mixxxStatus}
+                                   onPlaylistCreated={handlePlaylistCreated}
+                                   handleShowConnectionModal={handleShowConnectionModal} />
       case 'playlist-detail':
       return <PlaylistDetailView playlistId={activePlaylistId} onPlaylistDeleted={handlePlaylistDeleted} />
       case 'settings':
@@ -220,7 +220,7 @@ function App() {
           />
         )
       default:
-        return <PlaylistsView />
+        return <PlaylistCreationView />
     }
   }
 
@@ -228,7 +228,7 @@ function App() {
     <div className="App">
       <Container fluid className="p-0">
         <Row>
-          <Col md={12}>
+          <Col>
             <Navbar
               bg="dark"
               variant="dark"
@@ -251,7 +251,7 @@ function App() {
       </Container>
       <Container fluid className="pb-5">
         <Row>
-          <Col md={2} className="p-0">
+          <Col xs={2} sm={2} className="p-0">
             <Navigation view={currentView}
                         setView={handleSetView}
                         onSelectPlaylist={handleSelectPlaylist}
@@ -259,7 +259,7 @@ function App() {
                         createdPlaylistId={createdPlaylistId}
                         activePlaylistId={activePlaylistId}/>
           </Col>
-          <Col md={10}>
+          <Col xs={10} xm={10}>
             <Container className="mt-3">
 
               {showAlert && (
