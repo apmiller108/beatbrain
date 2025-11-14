@@ -363,8 +363,8 @@ Read-only database operations
 │           ├── utilities.js
 │           └── views
 │               ├── LibraryView.jsx
+│               ├── PlaylistCreationView.jsx
 │               ├── PlaylistDetailView.jsx
-│               ├── PlaylistsView.jsx
 │               └── SettingsView.jsx
 ├── structure.sql
 └── vitest.config.js
@@ -373,7 +373,6 @@ Read-only database operations
 ```
 
 # TODOS
-
 ## TODOs for initial project setup
 ### Setup Electron app
 - [x] setup Electron desktop application using React, Bootstrap, and Vite.
