@@ -1,4 +1,5 @@
-import { Card, Button, Alert } from 'react-bootstrap'
+import { Card, Button } from 'react-bootstrap'
+import FlashMessage from './common/FlashMessage'
 import propTypes from 'prop-types'
 
 function MixxxDatabaseStatus({
@@ -38,9 +39,7 @@ function MixxxDatabaseStatus({
         )}
 
         {mixxxStatus.lastError && (
-          <Alert variant="danger" className="small">
-            <strong>Error:</strong> {mixxxStatus.lastError}
-          </Alert>
+          <FlashMessage variant="danger" message={<div><strong>Error:</strong> {mixxxStatus.lastError}</div>}/>
         )}
 
         <div className="d-grid gap-2">

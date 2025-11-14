@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Button, Alert, Spinner, Badge} from 'react-bootstrap'
+import { Button, Spinner, Badge} from 'react-bootstrap'
 import PropTypes from 'prop-types'
-import { MusicNoteList, ExclamationTriangleFill } from 'react-bootstrap-icons'
+import { MusicNoteList } from 'react-bootstrap-icons'
 import PlaylistForm from '../components/PlaylistForm'
+import FlashMessage from '../components/common/FlashMessage'
 
 const PlaylistCreationView = ({ mixxxStats, mixxxStatus, onPlaylistCreated, handleShowConnectionModal, setNotification }) => {
   const [loading, setLoading] = useState(true)
@@ -85,7 +86,6 @@ const PlaylistCreationView = ({ mixxxStats, mixxxStatus, onPlaylistCreated, hand
   const onGeneratePlaylist = async () => {
     try {
       setLoading(true)
-      throw new Error('test error')
 
       const name = `Playlist ${new Date().toLocaleString()}`
       const playlist = await window.api.createPlaylist({
@@ -127,14 +127,9 @@ const PlaylistCreationView = ({ mixxxStats, mixxxStatus, onPlaylistCreated, hand
         </div>
 
         {!isCountSufficient && (
-          <Alert variant="warning" className="py-2 mb-0">
-            <div className="d-flex align-items-center">
-              <ExclamationTriangleFill className="me-2" size={16} />
-              <small>
-                <strong>Not enough tracks found.</strong> Try adjusting your filters or lowering the track count.
-              </small>
-            </div>
-          </Alert>
+          <FlashMessage variant="warning"
+                        className="py-2 mb-0"
+                        message={<div><strong>Not enough tracks found </strong>Try adjusting your filters or lowering the track count</div>} />
         )}
       </div>
     )
@@ -170,21 +165,18 @@ const PlaylistCreationView = ({ mixxxStats, mixxxStatus, onPlaylistCreated, hand
               />
             </>
           ) : (
-            <Alert variant="warning" className="d-flex align-items-center justify-content-between">
-              <div>
-                <Alert.Heading className="h6 mb-1">Database Not Connected</Alert.Heading>
-                <p className="mb-0">
-                  Connect to your Mixxx database to start creating playlists.
-                </p>
-              </div>
-              <Button
-                variant="primary"
-                onClick={handleShowConnectionModal}
-                className="ms-3"
-              >
-                Configure Database
-              </Button>
-            </Alert>
+                <FlashMessage variant="warning"
+                              heading="Database Not Connected"
+                              message="Connect to your Mixxx database to start creating playlists."
+                              action={
+                                <Button
+                                  variant="primary"
+                                  onClick={handleShowConnectionModal}
+                                  className="ms-3"
+                                >
+                                  Configure Database
+                                </Button>
+                              }/>
           )}
         </>
       )}
@@ -205,6 +197,7 @@ PlaylistCreationView.propTypes = {
   }),
   handleShowConnectionModal: PropTypes.func.isRequired,
   onPlaylistCreated: PropTypes.func.isRequired,
+  setNotification: PropTypes.func.isRequired
 }
 
 export default PlaylistCreationView

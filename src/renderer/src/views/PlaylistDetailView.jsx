@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { Card, Spinner, Alert, Badge, Table, Button } from 'react-bootstrap'
-import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3, ExclamationTriangleFill } from 'react-bootstrap-icons'
+import { Card, Spinner, Badge, Table, Button } from 'react-bootstrap'
+import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3 } from 'react-bootstrap-icons'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import propTypes from 'prop-types'
 import { formatDuration } from '../utilities'
 import ConfirmationPrompt from '../components/common/ConfirmationPrompt'
+import FlashMessage from '../components/common/FlashMessage'
 
 const PlaylistDetailView = ({ playlistId, onPlaylistDeleted }) => {
   const [playlist, setPlaylist] = useState(null)
@@ -87,24 +88,14 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted }) => {
 
   if (error) {
     return (
-      <Alert variant="danger">
-        <Alert.Heading>Error Loading Playlist</Alert.Heading>
-        <p>{error}</p>
-      </Alert>
+      <FlashMessage variant="danger" heading="Error Loading Playlist" message={error} />
     )
   }
 
   return (
     <div className="playlist-detail-view">
       { playlistError && (
-        <Alert variant="warning" className="c-alert py-2 mb-2" onClose={() => setPlaylistError(null)} dismissible>
-          <div className="d-flex align-items-center">
-            <ExclamationTriangleFill className="me-2" size={16} />
-            <small>
-              <strong>{playlistError}</strong>
-            </small>
-          </div>
-        </Alert>
+        <FlashMessage variant='warning' className="py-2 mb-2" onClose={() => setPlaylistError(null)} dismissible={true} message={playlistError}/>
       )}
       <Card className="mb-4 shadow-sm">
         <Card.Body>
@@ -224,7 +215,8 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted }) => {
 }
 
 PlaylistDetailView.propTypes = {
-  playlistId: propTypes.number.isRequired
+  playlistId: propTypes.number.isRequired,
+  onPlaylistDeleted: propTypes.func.isRequired
 }
 
 export default PlaylistDetailView

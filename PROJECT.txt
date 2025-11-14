@@ -344,7 +344,9 @@ Read-only database operations
 │           │   └── index.css
 │           ├── components
 │           │   ├── common
-│           │   │   └── ConfirmationPrompt.jsx
+│           │   │   ├── ConfirmationPrompt.jsx
+│           │   │   ├── FlashMessage.jsx
+│           │   │   └── ToastNotification.jsx
 │           │   ├── DatabaseConnectionModal.jsx
 │           │   ├── filters
 │           │   │   ├── BpmRangeInput.jsx
@@ -369,7 +371,7 @@ Read-only database operations
 ├── structure.sql
 └── vitest.config.js
 
-27 directories, 57 files
+27 directories, 59 files
 ```
 
 # TODOS
@@ -522,7 +524,7 @@ generation.
 - [x] PlaylistDetailView.jsx: Add loading state while fetching playlist data
 - [x] PlaylistDetailView.jsx: Add error handling for playlist fetch error
 - [x] PlaylistDetailView.jsx: Calculate and display playlist statistics (total duration, avg BPM)
-- [ ] Extract alert component or notification component
+- [x] Extract alert component or notification component
 
 ### **Playlist Track Item Component**
 - [ ] Create `src/renderer/src/components/PlaylistTrackItem.jsx` - component for individual track in playlist
