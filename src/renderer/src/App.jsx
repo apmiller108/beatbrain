@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react'
-import { Container, Navbar, Alert, Row, Col } from 'react-bootstrap'
+import { Container, Navbar, Row, Col } from 'react-bootstrap'
 
-import PlaylistsView from './views/PlaylistsView'
+import PlaylistCreationView from './views/PlaylistCreationView'
+import PlaylistDetailView from './views/PlaylistDetailView'
 import LibraryView from './views/LibraryView'
 import SettingsView from './views/SettingsView'
 import Navigation from './components/Navigation'
 import StatusBar from './components/StatusBar'
+import ToastNotification from './components/common/ToastNotification'
 import DatabaseConnectionModal from './components/DatabaseConnectionModal'
 import logo from './assets/beatbrain_logo.png'
 
 function App() {
   const [currentView, setCurrentView] = useState('playlists')
+  const [activePlaylistId, setActivePlaylistId] = useState(null)
 
   const [appInfo, setAppInfo] = useState({
     version: 'Loading...',
@@ -21,9 +24,17 @@ function App() {
   const [mixxxStats, setMixxxStats] = useState(null)
   const [sampleTracks, setSampleTracks] = useState([])
   const [loading, setLoading] = useState(false)
-  const [showAlert, setShowAlert] = useState(false)
   const [showConnectionModal, setShowConnectionModal] = useState(false)
   const [databasePreferences, setDatabasePreferences] = useState({})
+  const [deletedPlaylistId, setDeletedPlaylistId] = useState(null)
+  const [createdPlaylistId, setCreatedPlaylistId] = useState(null)
+
+  const [notification, setNotification] = useState({
+    show: false,
+    type: 'success', // 'success' or 'error'
+    message: '',
+    details: ''
+  })
 
   useEffect(() => {
     const loadAppInfo = async () => {
@@ -166,6 +177,40 @@ function App() {
     setShowConnectionModal(!showConnectionModal)
   }
 
+  const handleSetView = (view) => {
+    if (view !== 'playlist-detail') {
+      setActivePlaylistId(null)
+    }
+    setCurrentView(view)
+  }
+
+  const handleSelectPlaylist = (playlistId) => {
+    setActivePlaylistId(playlistId)
+    setCurrentView('playlist-detail')
+  }
+
+  const handlePlaylistDeleted = (playlistId) => {
+    setActivePlaylistId(null)
+    setCurrentView('playlists')
+    setDeletedPlaylistId(playlistId)
+  }
+
+  const handlePlaylistCreated = (playlistId) => {
+    setCreatedPlaylistId(playlistId)
+    setActivePlaylistId(playlistId)
+    setCurrentView('playlist-detail')
+  }
+
+  const playlistCreationView = () => {
+    return (
+      <PlaylistCreationView mixxxStats={mixxxStats}
+                            mixxxStatus={mixxxStatus}
+                            onPlaylistCreated={handlePlaylistCreated}
+                            handleShowConnectionModal={handleShowConnectionModal}
+                            setNotification={setNotification}/>
+    )
+  }
+
   // Render current view
   const renderCurrentView = () => {
     switch (currentView) {
@@ -174,7 +219,9 @@ function App() {
           <LibraryView mixxxStats={mixxxStats} sampleTracks={sampleTracks} />
         )
       case 'playlists':
-      return <PlaylistsView mixxxStats={mixxxStats} mixxxStatus={mixxxStatus} handleShowConnectionModal={handleShowConnectionModal} />
+      return playlistCreationView()
+      case 'playlist-detail':
+      return <PlaylistDetailView playlistId={activePlaylistId} onPlaylistDeleted={handlePlaylistDeleted} />
       case 'settings':
         return (
           <SettingsView
@@ -187,57 +234,54 @@ function App() {
           />
         )
       default:
-        return <PlaylistsView />
+        return playlistCreationView()
     }
   }
 
   return (
     <div className="App">
-      <Container fluid>
+      <ToastNotification
+        message={notification.message}
+        details={notification.details}
+        type={notification.type}
+        show={notification.show}
+        onClose={() => setNotification(prev => ({ ...prev, show: false }))}
+      />
+      <Container fluid className="p-0">
         <Row>
-          <Col md={2} className="p-0">
-            <Navigation view={currentView} setView={setCurrentView} />
+          <Col>
+            <Navbar
+              bg="dark"
+              variant="dark"
+              expand="md"
+              className="shadow mb-2 px-3"
+            >
+              <Navbar.Brand>
+                <div className="d-flex justify-content-start align-items-center">
+                  <img
+                    className="beatbrain-logo"
+                    src={logo}
+                    alt="BeatBrain"
+                  />
+                  <span className="ms-4">BeatBrain</span>
+                </div>
+              </Navbar.Brand>
+            </Navbar>
           </Col>
-          <Col md={10}>
+        </Row>
+      </Container>
+      <Container fluid className="pb-5">
+        <Row>
+          <Col xs={2} sm={2} className="p-0">
+            <Navigation view={currentView}
+                        setView={handleSetView}
+                        onSelectPlaylist={handleSelectPlaylist}
+                        deletedPlaylistId={deletedPlaylistId}
+                        createdPlaylistId={createdPlaylistId}
+                        activePlaylistId={activePlaylistId}/>
+          </Col>
+          <Col xs={10} xm={10}>
             <Container className="mt-3">
-              <Navbar
-                bg="dark"
-                variant="dark"
-                expand="md"
-                className="shadow mb-4"
-              >
-                <Container>
-                  <Navbar.Brand className="p-2">
-                    <div className="d-flex justify-content-start align-items-center">
-                      <img
-                        className="beatbrain-logo"
-                        src={logo}
-                        alt="BeatBrain"
-                      />
-                      <span className="ms-4">BeatBrain</span>
-                    </div>
-                  </Navbar.Brand>
-                </Container>
-              </Navbar>
-
-              {showAlert && (
-                <Alert
-                  variant="success"
-                  dismissible
-                  onClose={() => setShowAlert(false)}
-                  className="shadow-sm"
-                >
-                  <Alert.Heading>🎉 Welcome to BeatBrain!</Alert.Heading>
-                  <p>
-                    Your AI-powered DJ library management tool is ready to go!
-                    {mixxxStatus.isConnected
-                      ? " We've successfully connected to your Mixxx database!"
-                      : " Let's connect to your Mixxx database to get started."}
-                  </p>
-                </Alert>
-              )}
-
-              {/* Render the current view */}
               {renderCurrentView()}
             </Container>
           </Col>
