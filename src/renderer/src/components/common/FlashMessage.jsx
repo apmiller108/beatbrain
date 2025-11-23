@@ -45,7 +45,7 @@ export function  FlashMessage({
                 {!heading && iconToShow && (
                   <span className="me-2">{iconToShow}</span>
                 )}
-                <p className="mb-0">{message}</p>
+                <div className="mb-0">{message}</div>
               </div>
             )}
           </div>
