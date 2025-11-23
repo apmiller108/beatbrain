@@ -289,8 +289,8 @@ Read-only database operations
 ├── eslint.config.js
 ├── launch.json
 ├── NOTES.md
-├── package-lock.json
 ├── package.json
+├── package-lock.json
 ├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
@@ -318,7 +318,6 @@ Read-only database operations
 │   │           └── DatabaseConnectionModal.test.jsx
 │   └── setup.js
 ├── src
-│   ├── assets
 │   ├── main
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
@@ -334,7 +333,6 @@ Read-only database operations
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
-│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -358,6 +356,7 @@ Read-only database operations
 │           │   │   └── PlaylistList.jsx
 │           │   ├── Navigation.jsx
 │           │   ├── PlaylistForm.jsx
+│           │   ├── PlaylistTrackItem.jsx
 │           │   ├── StatusBar.jsx
 │           │   ├── SystemInformation.jsx
 │           │   └── TrackList.jsx
@@ -371,7 +370,7 @@ Read-only database operations
 ├── structure.sql
 └── vitest.config.js
 
-27 directories, 59 files
+24 directories, 60 files
 ```
 
 # TODOS
@@ -527,21 +526,19 @@ generation.
 - [x] Extract alert component or notification component
 
 ### **Playlist Track Item Component**
-- [ ] Create `src/renderer/src/components/PlaylistTrackItem.jsx` - component for individual track in playlist
-- [ ] PlaylistTrackItem.jsx: Display track position number
-- [ ] PlaylistTrackItem.jsx: Display track metadata (title, artist, album, BPM, key, duration)
-- [ ] PlaylistTrackItem.jsx: Add remove button with confirmation
-- [ ] PlaylistTrackItem.jsx: Add drag handle for reordering (visual only for now)
-- [ ] PlaylistTrackItem.jsx: Style with Bootstrap table row or card
-- [ ] PlaylistTrackItem.jsx: Add hover effects
-- [ ] PlaylistTrackItem.jsx: Handle remove track action
+- [x] Create `src/renderer/src/components/PlaylistTrackItem.jsx` - component for individual track in playlist
+- [x] PlaylistTrackItem.jsx: Display track position number
+- [x] PlaylistTrackItem.jsx: Display track metadata (title, artist, album, BPM, key, duration)
+- [x] PlaylistTrackItem.jsx: Add remove button with confirmation
+- [x] PlaylistTrackItem.jsx: Add drag handle for reordering (visual only for now)
+- [x] PlaylistTrackItem.jsx: Style with Bootstrap table row or card
+- [x] PlaylistTrackItem.jsx: Handle remove track action
 
 ### **Playlist Editing Features**
-- [ ] Implement inline playlist name editing in PlaylistDetailView
-- [ ] Add save/cancel buttons for name editing
-- [ ] Add validation for playlist name (non-empty, max length)
-- [ ] Implement track removal with optimistic UI updates
-- [ ] Add confirmation modal for destructive actions (delete playlist, remove track)
+- [x] Implement inline playlist name editing in PlaylistDetailView
+- [x] Add validation for playlist name (non-empty, max length)
+- [x] Implement track removal with optimistic UI updates
+- [x] Add confirmation modal for destructive actions (delete playlist, remove track)
 - [ ] Update playlist updated_at timestamp on any edit
 - [ ] Show success/error toast notifications for edit actions
 
