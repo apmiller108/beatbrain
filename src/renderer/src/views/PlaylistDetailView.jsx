@@ -7,8 +7,9 @@ import propTypes from 'prop-types'
 import { formatDuration } from '../utilities'
 import ConfirmationPrompt from '../components/common/ConfirmationPrompt'
 import FlashMessage from '../components/common/FlashMessage'
+import PlaylistTrackItem from '../components/PlaylistTrackItem'
 
-const PlaylistDetailView = ({ playlistId, onPlaylistDeleted }) => {
+const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }) => {
   const [playlist, setPlaylist] = useState(null)
   const [playlistStats, setPlaylistStats] = useState({
     totalDuration: 0,
@@ -21,6 +22,8 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted }) => {
   const [confirmationTitle, setConfirmationTitle] = useState('')
   const [confirmationAction, setConfirmationAction] = useState(null)
   const [playlistError , setPlaylistError] = useState(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editingName, setEditingName] = useState('')
 
   useEffect(() => {
     loadPlaylist()
@@ -28,6 +31,9 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted }) => {
 
   useEffect(() => {
     calculatePlaylistStats()
+    if (playlist) {
+      setEditingName(playlist.name)
+    }
   }, [playlist])
 
   const loadPlaylist = async () => {
@@ -58,6 +64,54 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted }) => {
       totalDuration,
       avgBpm: avgBpm.toFixed(1),
       trackCount
+    })
+  }
+
+  const handleEdit = () => {
+    setIsEditing(true)
+  }
+
+  const handleCancel = () => {
+    setIsEditing(false)
+    setEditingName(playlist.name)
+  }
+
+  const handleSave = async () => {
+    if (!editingName.trim()) {
+      setPlaylistError('Playlist name cannot be empty.')
+      return
+    }
+    try {
+      await window.api.updatePlaylist(playlist.id, { name: editingName })
+      setPlaylist(prev => ({ ...prev, name: editingName }))
+      setIsEditing(false)
+      onPlaylistUpdated(playlist.id, { name: editingName })
+    } catch (err) {
+      console.error('Failed to update playlist name:', err)
+      setPlaylistError(`Failed to update playlist name: ${err.message}`)
+    }
+  }
+
+  const handleRemoveTrack = (trackId) => {
+    const track = playlist.tracks.find(t => t.id === trackId)
+    setConfirmationTitle(`Are you sure you want to remove "${track.title}" from the playlist?`)
+    setShowConfirmation(true)
+    setConfirmationAction(() => async () => {
+      try {
+        await window.api.removeTrackFromPlaylist(playlistId, trackId)
+        // Optimistically update the UI
+        setPlaylist(prevPlaylist => ({
+          ...prevPlaylist,
+          tracks: prevPlaylist.tracks.filter(t => t.id !== trackId)
+        }))
+        calculatePlaylistStats()
+        onPlaylistUpdated(playlistId)
+      } catch (err) {
+        console.error('Failed to remove track:', err)
+        setPlaylistError(`Failed to remove track: ${err.message}`)
+      } finally {
+        setShowConfirmation(false)
+      }
     })
   }
 
@@ -101,10 +155,28 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted }) => {
         <Card.Body>
           <div className="d-flex justify-content-between align-items-start">
             <div>
-              <h2 className="mb-3">{playlist.name}</h2>
-              {playlist.description && (
-                <p className="text-muted mb-3">{playlist.description}</p>
+              {isEditing ? (
+                <div className="d-flex align-items-center">
+                  <input
+                    type="text"
+                    className="form-control me-2"
+                    value={editingName}
+                    onChange={(e) => setEditingName(e.target.value)}
+                  />
+                  <Button variant="success" onClick={handleSave} className="me-2">Save</Button>
+                  <Button variant="secondary" onClick={handleCancel}>Cancel</Button>
+                </div>
+              ) : (
+                <div className="d-flex align-items-center">
+                  <h2 className="mb-0">{playlist.name}</h2>
+                  <Button variant="link" onClick={handleEdit} className="ms-2">Edit</Button>
+                </div>
               )}
+              <div className="mt-3">
+                {playlist.description && (
+                  <p className="text-muted mb-3">{playlist.description}</p>
+                )}
+              </div>
 
               {/* Playlist Metadata */}
               <div className="d-flex gap-4 flex-wrap">
@@ -167,34 +239,12 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted }) => {
               </thead>
               <tbody>
                 {playlist.tracks.map((track, index) => (
-                  <tr key={track.id}>
-                    <td className="text-muted">{index + 1}</td>
-                    <td>
-                      <strong>{track.title || 'Unknown Title'}</strong>
-                    </td>
-                    <td>{track.artist || 'Unknown Artist'}</td>
-                    <td className="text-muted">{track.album || '-'}</td>
-                    <td>
-                      {track.bpm ? (
-                        <Badge bg="secondary">{Math.round(track.bpm)}</Badge>
-                      ) : (
-                        '-'
-                      )}
-                    </td>
-                    <td>
-                      {track.key ? (
-                        <Badge bg="primary">{track.key}</Badge>
-                      ) : (
-                        '-'
-                      )}
-                    </td>
-                    <td className="text-muted">
-                      {track.duration ? formatDuration(track.duration) : '-'}
-                    </td>
-                    <td>
-                      {/* Action buttons will go here */}
-                    </td>
-                  </tr>
+                  <PlaylistTrackItem
+                    key={track.id}
+                    track={track}
+                    position={index + 1}
+                    onRemove={handleRemoveTrack}
+                  />
                 ))}
               </tbody>
             </Table>
@@ -216,7 +266,8 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted }) => {
 
 PlaylistDetailView.propTypes = {
   playlistId: propTypes.number.isRequired,
-  onPlaylistDeleted: propTypes.func.isRequired
+  onPlaylistDeleted: propTypes.func.isRequired,
+  onPlaylistUpdated: propTypes.func.isRequired
 }
 
 export default PlaylistDetailView

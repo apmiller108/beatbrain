@@ -28,6 +28,7 @@ function App() {
   const [databasePreferences, setDatabasePreferences] = useState({})
   const [deletedPlaylistId, setDeletedPlaylistId] = useState(null)
   const [createdPlaylistId, setCreatedPlaylistId] = useState(null)
+  const [updatedPlaylist, setUpdatedPlaylist] = useState(null)
 
   const [notification, setNotification] = useState({
     show: false,
@@ -195,6 +196,10 @@ function App() {
     setDeletedPlaylistId(playlistId)
   }
 
+  const handlePlaylistUpdated = (playlistId, updatedData) => {
+    setUpdatedPlaylist({ id: playlistId, ...updatedData })
+  }
+
   const handlePlaylistCreated = (playlistId) => {
     setCreatedPlaylistId(playlistId)
     setActivePlaylistId(playlistId)
@@ -221,7 +226,7 @@ function App() {
       case 'playlists':
       return playlistCreationView()
       case 'playlist-detail':
-      return <PlaylistDetailView playlistId={activePlaylistId} onPlaylistDeleted={handlePlaylistDeleted} />
+      return <PlaylistDetailView playlistId={activePlaylistId} onPlaylistDeleted={handlePlaylistDeleted} onPlaylistUpdated={handlePlaylistUpdated} />
       case 'settings':
         return (
           <SettingsView
@@ -278,6 +283,7 @@ function App() {
                         onSelectPlaylist={handleSelectPlaylist}
                         deletedPlaylistId={deletedPlaylistId}
                         createdPlaylistId={createdPlaylistId}
+                        updatedPlaylist={updatedPlaylist}
                         activePlaylistId={activePlaylistId}/>
           </Col>
           <Col xs={10} xm={10}>

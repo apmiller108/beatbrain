@@ -46,7 +46,7 @@ export default class PlaylistRepository {
 
     const tracks = this.getPlaylistTracks(playlistId)
 
-    return { ...playlist, tracks }
+    return { ...playlist, tracks, track_count: tracks.length }
   }
 
   getPlaylistTracks(playlistId) {

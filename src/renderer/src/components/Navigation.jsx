@@ -4,7 +4,7 @@ import propTypes from 'prop-types'
 import { Gear, CollectionPlay } from 'react-bootstrap-icons'
 import PlaylistList from './Navigation/PlaylistList'
 
-const Navigation = ({ view, setView, onSelectPlaylist, activePlaylistId, deletedPlaylistId, createdPlaylistId }) => {
+const Navigation = ({ view, setView, onSelectPlaylist, activePlaylistId, deletedPlaylistId, createdPlaylistId, updatedPlaylist }) => {
   const [playlists, setPlaylists] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -25,6 +25,21 @@ const Navigation = ({ view, setView, onSelectPlaylist, activePlaylistId, deleted
     } finally {
       setLoading(false)
     }
+  }
+
+  useEffect(() => {
+    if (updatedPlaylist) {
+      updatePlaylistInList(updatedPlaylist)
+    }
+  }, [updatedPlaylist])
+
+  const updatePlaylistInList = async(updatedPlaylist) => {
+    const updatedPlaylistData = await window.api.getPlaylistById(updatedPlaylist.id)
+    setPlaylists((prevPlaylists) =>
+      prevPlaylists.map((playlist) =>
+        playlist.id === updatedPlaylistData.id ? updatedPlaylistData : playlist
+      )
+    )
   }
 
   const handleNavSelect = (selectedKey) => {
@@ -89,6 +104,9 @@ Navigation.propTypes = {
   setView: propTypes.func.isRequired,
   onSelectPlaylist: propTypes.func.isRequired,
   activePlaylistId: propTypes.number,
+  deletedPlaylistId: propTypes.number,
+  createdPlaylistId: propTypes.number,
+  updatedPlaylist: propTypes.object
 }
 
 export default Navigation
