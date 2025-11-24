@@ -539,8 +539,7 @@ generation.
 - [x] Add validation for playlist name (non-empty, max length)
 - [x] Implement track removal with optimistic UI updates
 - [x] Add confirmation modal for destructive actions (delete playlist, remove track)
-- [ ] Update playlist updated_at timestamp on any edit
-- [ ] Show success/error toast notifications for edit actions
+- [x] Update playlist updated_at timestamp on any edit
 
 ### **Drag-and-Drop Track Reordering**
 - [ ] Install drag-and-drop library (e.g., `react-beautiful-dnd` or `@dnd-kit/core`)
@@ -563,6 +562,7 @@ generation.
 
 ### **Polish & UX Enhancements**
 - [ ] Add empty state message when playlist has no tracks
+- [ ] Add info icon for each track that on click shows the full track details (what should the UX be? Modal? expand row item?)
 - [ ] Add search/filter bar for playlists with many tracks
 - [ ] Show loading skeletons while fetching playlist data
 - [ ] Add keyboard shortcuts (Delete key to remove track, Esc to cancel editing)

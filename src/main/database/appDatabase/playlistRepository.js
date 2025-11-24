@@ -126,6 +126,12 @@ export default class PlaylistRepository {
       `)
       updateStmt.run(newPosition, trackId, playlistId)
 
+      if (updateStmt.changes === 0) {
+        throw new Error(`Failed to update position for track with id ${trackId} in playlist ${playlistId}`)
+      } else {
+        this.updatePlaylist(playlistId, {})  // update the playlist's updated_at timestamp
+      }
+
       return true
 
     } catch (error) {
@@ -175,6 +181,8 @@ export default class PlaylistRepository {
 
       if (result.changes === 0) {
         throw new Error(`Track with id ${trackId} not found in playlist ${playlistId}`)
+      } else {
+        this.updatePlaylist(playlistId, {})  // update the playlist's updated_at timestamp
       }
 
       return true

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Card, Spinner, Badge, Table, Button } from 'react-bootstrap'
-import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3 } from 'react-bootstrap-icons'
+import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3, Pencil } from 'react-bootstrap-icons'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import propTypes from 'prop-types'
@@ -22,8 +22,10 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
   const [confirmationTitle, setConfirmationTitle] = useState('')
   const [confirmationAction, setConfirmationAction] = useState(null)
   const [playlistError , setPlaylistError] = useState(null)
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditingName, setIsEditingName] = useState(false)
   const [editingName, setEditingName] = useState('')
+  const [isEditingDescription, setIsEditingDescription] = useState(false)
+  const [editingDescription, setEditingDescription] = useState('')
 
   useEffect(() => {
     loadPlaylist()
@@ -42,6 +44,8 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
       setError(null)
       const data = await window.api.getPlaylistById(playlistId)
       setPlaylist(data)
+      setEditingName(data.name)
+      setEditingDescription(data.description || '')
     } catch (err) {
       console.error('Failed to load playlist:', err)
       setError(err.message)
@@ -67,13 +71,28 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
     })
   }
 
-  const handleEdit = () => {
-    setIsEditing(true)
+  const onEditingHame = () => {
+    setIsEditingName(true)
+    // Focus the input after state update
+    setTimeout(() => {
+      const input = document.querySelector('#playlist-name-input')
+      if (input) {
+        input.focus()
+        input.select()
+      }
+    }, 0)
   }
 
-  const handleCancel = () => {
-    setIsEditing(false)
-    setEditingName(playlist.name)
+  const onEditingDescription = () => {
+    setIsEditingDescription(true)
+    // Focus the input after state update
+    setTimeout(() => {
+      const input = document.querySelector('#playlist-description-input')
+      if (input) {
+        input.focus()
+        input.select()
+      }
+    }, 0)
   }
 
   const handleSave = async () => {
@@ -81,14 +100,29 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
       setPlaylistError('Playlist name cannot be empty.')
       return
     }
+    const attributes = {}
+    if (isEditingName && editingName !== playlist.name) {
+      attributes.name = editingName
+    }
+    if (isEditingDescription && editingDescription !== (playlist.description || '')) {
+      attributes.description = editingDescription
+    }
+    console.log('Saving playlist attributes:', attributes)
+    if (Object.keys(attributes).length === 0) {
+      setIsEditingName(false)
+      setIsEditingDescription(false)
+      return
+    }
+
     try {
-      await window.api.updatePlaylist(playlist.id, { name: editingName })
-      setPlaylist(prev => ({ ...prev, name: editingName }))
-      setIsEditing(false)
-      onPlaylistUpdated(playlist.id, { name: editingName })
+      await window.api.updatePlaylist(playlist.id, attributes)
+      setPlaylist(prev => ({ ...prev, ...attributes }))
+      setIsEditingName(false)
+      setIsEditingDescription(false)
+      onPlaylistUpdated(playlist.id, attributes)
     } catch (err) {
-      console.error('Failed to update playlist name:', err)
-      setPlaylistError(`Failed to update playlist name: ${err.message}`)
+      console.error('Failed to update playlist:', err)
+      setPlaylistError(`Failed to update playlist: ${err.message}`)
     }
   }
 
@@ -155,27 +189,53 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
         <Card.Body>
           <div className="d-flex justify-content-between align-items-start">
             <div>
-              {isEditing ? (
+              {isEditingName ? (
                 <div className="d-flex align-items-center">
                   <input
                     type="text"
+                    id="playlist-name-input"
                     className="form-control me-2"
                     value={editingName}
                     onChange={(e) => setEditingName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleSave()
+                      }
+                    }}
+                    onBlur={handleSave}
                   />
-                  <Button variant="success" onClick={handleSave} className="me-2">Save</Button>
-                  <Button variant="secondary" onClick={handleCancel}>Cancel</Button>
                 </div>
               ) : (
-                <div className="d-flex align-items-center">
+                <div className="d-flex align-items-center justify-content-start">
                   <h2 className="mb-0">{playlist.name}</h2>
-                  <Button variant="link" onClick={handleEdit} className="ms-2">Edit</Button>
+                  <Button variant="link" onClick={onEditingHame} className="ms-2"><Pencil/></Button>
                 </div>
               )}
-              <div className="mt-3">
-                {playlist.description && (
-                  <p className="text-muted mb-3">{playlist.description}</p>
-                )}
+              <div className="mt-1">
+                {isEditingDescription ? (
+                  <div className="d-flex flex-column">
+                    <input
+                      className="form-control mb-2"
+                      id="playlist-description-input"
+                      value={editingDescription}
+                      onChange={(e) => setEditingDescription(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleSave()
+                        }
+                      }}
+                      onBlur={handleSave}
+                    />
+                  </div>
+                ) : (
+                  <div className="d-flex align-items-center">
+                    <p className="text-muted mb-0">
+                      {playlist.description || <span className="text-muted fst-italic">No description</span>}
+                    </p>
+                    <Button variant="link" onClick={onEditingDescription} className="ms-2"><Pencil/></Button>
+                  </div>
+                )
+                }
               </div>
 
               {/* Playlist Metadata */}
@@ -188,15 +248,19 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
                   <Clock className="me-2" />
                   <span>{formatDuration(playlistStats.totalDuration)}</span>
                 </div>
-                <div className="d-flex align-items-center">
-                  <Calendar className="me-2" />
-                  <span>Created {new Date(playlist.created_at).toLocaleDateString()}</span>
-                </div>
                 {playlistStats.avgBpm > 0 && (
                   <div>
                     <Badge bg="info">Avg BPM: {playlistStats.avgBpm}</Badge>
                   </div>
                 )}
+                <div className="d-flex align-items-center">
+                  <Calendar className="me-2" />
+                  <span>Created {new Date(playlist.created_at).toLocaleDateString()}</span>
+                </div>
+                <div className="d-flex align-items-center">
+                  <Calendar className="me-2" />
+                  <span>Updated {new Date(playlist.updated_at).toLocaleDateString()}</span>
+                </div>
               </div>
             </div>
 

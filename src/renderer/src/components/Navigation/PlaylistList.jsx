@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Nav, Spinner, Badge, Button, Collapse } from 'react-bootstrap'
 import { MusicNoteList, ChevronDown, ChevronRight, Plus } from 'react-bootstrap-icons'
 import propTypes from 'prop-types'
@@ -13,10 +13,6 @@ const PlaylistList = ({ playlists, loading, error, activePlaylistId, onSelectPla
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded)
   }
-
-  useEffect(() => {
-    console.log('Playlists updated:', playlists)
-  }, [playlists])
 
   return (
     <div className="playlist-navigation">
