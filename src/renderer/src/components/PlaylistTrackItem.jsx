@@ -5,12 +5,12 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import { formatDuration } from '../utilities'
 
-const PlaylistTrackItem = ({ track, position, onRemove }) => {
+const PlaylistTrackItem = ({ track, onRemove }) => {
   return (
     <tr className="playlist-track-item">
       <td className="text-muted">
         <GripVertical className="me-2" style={{ cursor: 'grab' }} />
-        {position}
+        {track.position + 1}
       </td>
       <td>
         <strong>{track.title || 'Unknown Title'}</strong>
@@ -53,9 +53,9 @@ PlaylistTrackItem.propTypes = {
     album: PropTypes.string,
     bpm: PropTypes.number,
     key: PropTypes.string,
-    duration: PropTypes.number
+    duration: PropTypes.number,
+    position: PropTypes.number.isRequired
   }).isRequired,
-  position: PropTypes.number.isRequired,
   onRemove: PropTypes.func.isRequired
 }
 

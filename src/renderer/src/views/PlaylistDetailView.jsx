@@ -302,11 +302,10 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
                 </tr>
               </thead>
               <tbody>
-                {playlist.tracks.map((track, index) => (
+                {playlist.tracks.map((track) => (
                   <PlaylistTrackItem
                     key={track.id}
                     track={track}
-                    position={index + 1}
                     onRemove={handleRemoveTrack}
                   />
                 ))}
