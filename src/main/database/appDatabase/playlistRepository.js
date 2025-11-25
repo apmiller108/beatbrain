@@ -15,8 +15,8 @@ export default class PlaylistRepository {
         INSERT INTO playlist_tracks (playlist_id, source_track_id, file_path, duration, artist, title, album, genre, bpm, key, position, created_at, updated_at)
         VALUES ($playlist_id, $source_track_id, $file_path, $duration, $artist, $title, $album, $genre, $bpm, $key, $position, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `)
-      tracks.forEach((track, index) => {
-        insertTrackStmt.run({
+      const insertedTracks = tracks.map((track, index) => {
+        const result = insertTrackStmt.run({
           playlist_id: playlist.lastInsertRowid,
           source_track_id: track.id,
           file_path: track.file_path,
@@ -29,8 +29,9 @@ export default class PlaylistRepository {
           key: track.key,
           position: index
         })
+        return { ...track, id: result.lastInsertRowid, position: index }
       })
-      return { id: playlist.lastInsertRowid, name, description, trackSource, tracks }
+      return { id: playlist.lastInsertRowid, name, description, trackSource, tracks: insertedTracks  }
     })
   }
 
@@ -41,7 +42,7 @@ export default class PlaylistRepository {
     const playlist = playlistStmt.get(playlistId)
 
     if (!playlist) {
-      throw new Error(`Playlist with id ${id} not found`)
+      throw new Error(`Playlist with id ${playlistId} not found`)
     }
 
     const tracks = this.getPlaylistTracks(playlistId)

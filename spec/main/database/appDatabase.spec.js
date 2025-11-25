@@ -188,10 +188,9 @@ describe('AppDatabase', () => {
           }
         ]
 
-        const playlistResult = appDatabase.createPlaylist(playlistData, tracks)
-        const playlistId = playlistResult.lastInsertRowid
+        const playlist = appDatabase.createPlaylist(playlistData, tracks)
 
-        const retrievedPlaylist = appDatabase.getPlaylist(playlistId)
+        const retrievedPlaylist = appDatabase.getPlaylist(playlist.id)
 
         expect(retrievedPlaylist).toMatchObject({
           name: playlistData.name, description: playlistData.description, track_source: playlistData.trackSource
@@ -235,17 +234,16 @@ describe('AppDatabase', () => {
           trackSource: 'mixxx'
         }
 
-        const playlistResult = appDatabase.createPlaylist(playlistData, [])
-        const playlistId = playlistResult.lastInsertRowid
+        const playlist = appDatabase.createPlaylist(playlistData, [])
 
         const updatedData = {
           name: 'Updated Name',
           description: 'Updated description'
         }
 
-        appDatabase.updatePlaylist(playlistId, updatedData)
+        appDatabase.updatePlaylist(playlist.id, updatedData)
 
-        const updatedPlaylist = appDatabase.getPlaylist(playlistId)
+        const updatedPlaylist = appDatabase.getPlaylist(playlist.id)
 
         expect(updatedPlaylist).toMatchObject(updatedData)
       })
@@ -283,14 +281,12 @@ describe('AppDatabase', () => {
           }
         ]
 
-        const playlistResult = appDatabase.createPlaylist(playlistData, trackData)
-        const playlistId = playlistResult.lastInsertRowid
-        const playlist = appDatabase.getPlaylist(playlistId)
+        const playlist = appDatabase.createPlaylist(playlistData, trackData)
         const track = playlist.tracks[1]
 
-        appDatabase.updateTrackPosition(playlistId, track.id, 1)
+        appDatabase.updateTrackPosition(playlist.id, track.id, 1)
 
-        const updatedPlaylist = appDatabase.getPlaylist(playlistId)
+        const updatedPlaylist = appDatabase.getPlaylist(playlist.id)
         const updatedTrack = updatedPlaylist.tracks.find(t => t.id === track.id)
 
         expect(updatedTrack.position).toBe(1)
@@ -318,8 +314,7 @@ describe('AppDatabase', () => {
           }
         ]
 
-        const playlistResult = appDatabase.createPlaylist(playlistData, initialTracks)
-        const playlistId = playlistResult.lastInsertRowid
+        const playlist = appDatabase.createPlaylist(playlistData, initialTracks)
 
         const newTrackData = {
           id: 2,
@@ -333,9 +328,9 @@ describe('AppDatabase', () => {
           key: '1B'
         }
 
-        appDatabase.addTrackToPlaylist(playlistId, newTrackData)
+        appDatabase.addTrackToPlaylist(playlist.id, newTrackData)
 
-        const updatedPlaylist = appDatabase.getPlaylist(playlistId)
+        const updatedPlaylist = appDatabase.getPlaylist(playlist.id)
 
         expect(updatedPlaylist.tracks.length).toBe(2)
       })
@@ -348,9 +343,10 @@ describe('AppDatabase', () => {
           description: 'A test playlist',
           trackSource: 'mixxx'
         }
+        // tracks from mixxx
         const tracks = [
           {
-            id: 1,
+            id: 1, // this becomes the source track ID
             file_path: '/path/to/track1.mp3',
             duration: 180,
             artist: 'Artist 1',
@@ -362,14 +358,12 @@ describe('AppDatabase', () => {
           }
         ]
 
-        const playlistResult = appDatabase.createPlaylist(playlistData, tracks)
-        const playlistId = playlistResult.lastInsertRowid
-        const playlist = appDatabase.getPlaylist(playlistId)
+        const playlist = appDatabase.createPlaylist(playlistData, tracks)
         const track = playlist.tracks[0]
 
-        appDatabase.removeTrackFromPlaylist(playlistId, track.id)
+        appDatabase.removeTrackFromPlaylist(playlist.id, track.id)
 
-        const updatedPlaylist = appDatabase.getPlaylist(playlistId)
+        const updatedPlaylist = appDatabase.getPlaylist(playlist.id)
 
         expect(updatedPlaylist.tracks.length).toBe(0)
       })

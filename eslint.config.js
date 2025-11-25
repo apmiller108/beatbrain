@@ -31,6 +31,7 @@ export default [
         __filename: 'readonly',
         Buffer: 'readonly',
         global: 'readonly',
+        setTimeout: 'readonly',
         ...vitest.environments.env.globals
       },
     },

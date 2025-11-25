@@ -289,8 +289,8 @@ Read-only database operations
 ├── eslint.config.js
 ├── launch.json
 ├── NOTES.md
-├── package.json
 ├── package-lock.json
+├── package.json
 ├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
@@ -318,6 +318,7 @@ Read-only database operations
 │   │           └── DatabaseConnectionModal.test.jsx
 │   └── setup.js
 ├── src
+│   ├── assets
 │   ├── main
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
@@ -333,6 +334,7 @@ Read-only database operations
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
+│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -370,35 +372,28 @@ Read-only database operations
 ├── structure.sql
 └── vitest.config.js
 
-24 directories, 60 files
+27 directories, 60 files
 ```
 
 # TODOS
 ## TODOs for initial project setup
 ### Setup Electron app
 - [x] setup Electron desktop application using React, Bootstrap, and Vite.
-- [x] add eslint and prettier
 
 ## TODOs for Database modules
 ### create database modules and initialize them on application startup
 - [x] Create `appDatabase.js` class with methods for managing settings and user preferences across two tables (`app_settings` and `user_preferences`)
-- [x] Integrated App database initialization into Electron main process with proper cleanup on app exit
 - [x] Created `mixxxDatabase.js` module for connecting and reading from the mixxx database.
 
 ## TODOs for Feature: Core Navigation & Status (Phase 1)
 ### Create view routing system
 - [x] Add navigation state management to App.jsx with default view as ‘playlist’
-- [x] Create placeholder components for playlist, library, and settings views
-- [x] Wire up navigation buttons/menu to switch between views
 ### Create view components directory structure
 - [x] Create src/renderer/src/views/ directory with PlaylistView.jsx, LibraryView.jsx, SettingsView.jsx
-- [x] Create src/renderer/src/components/ directory for reusable UI components
 - [x] Add Navigation.jsx component for view switching
 ### Implement database status display in status bar
 - [x] Add component StatusBar.jsx
-- [x] Add real-time status indicator to bottom status bar (🟢 Connected, 🔴 No connection, 🟡 Locked/retry, ⚪ Not configured)
-- [x] Connect status display to existing mixxxDatabase.js module
-- [x] Show current connection state and update automatically
+- [x] Connect status display to existing mixxxDatabase.js module and show connection state
 ### Add database connection prompts at startup
 - [x] Implement auto-detection logic for Mixxx database on application startup. Update the existing logic to not automatically connect to Mixxx.
 - [x] Create DatabaseConnectionModal component - Main dialog for connection prompts
@@ -408,10 +403,8 @@ Read-only database operations
 - [x] Have checkbox to "remember my choice" / "do not prompt again", If
       selected, store the choice in the application database and use that to
       autmatically connect to the database.
-- [x] Show the database disconnet button in the modal when connected. When connected, hide the options.
 - [x] Update MixxxDatabaseStatus component to have configure database button. On click, show the modal.
-- [x] Make the database icon in the StatusBar component clickable.
-- [x] clicking the database icon brings up modal that contains the MixxxDatabaseStatus component
+- [x] Make the database icon in the StatusBar component clickable. It brings up modal that contains the MixxxDatabaseStatus component
 
 ## TODOS for setting up a test suite
 ### Setup unit testing framework
@@ -433,12 +426,6 @@ Build interface that allows users to filter the library to a subset of tracks
 that should be considered for smart playlist generation. The parametes will be
 used to perform a query against the Mixxx dabatase.
 
-Note filtering should be built in such a way that it can be resued in the
-library view. Also these filter criteria are multiselect for which a "tag"
-based UX might be appropriate. Given there could be many options per filter
-criteria, a type ahead UX would be nice. The filter criteria will be used to
-perform a database query to retrieve tracks to be passed to the LLM for playlist
-generation.
 ### **Setup & Dependencies**
 - [x] Add react-select to project dependencies
 
@@ -542,11 +529,11 @@ generation.
 - [x] Update playlist updated_at timestamp on any edit
 
 ### **Drag-and-Drop Track Reordering**
-- [ ] Install drag-and-drop library (e.g., `react-beautiful-dnd` or `@dnd-kit/core`)
+- [ ] Install drag-and-drop library (use `@dnd-kit/core`)
 - [ ] Wrap track list in drag-and-drop context
 - [ ] Make PlaylistTrackItem components draggable
 - [ ] Implement drop handler to update track positions
-- [ ] Update database with new track positions on drop
+- [ ] Update playlist_tracks in the app database with their new track positions on drop
 - [ ] Add visual feedback during drag (ghost element, drop zones)
 - [ ] Handle edge cases (drag to same position, drag outside bounds)
 
