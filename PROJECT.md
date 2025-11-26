@@ -534,7 +534,7 @@ used to perform a query against the Mixxx dabatase.
 - [x] Make PlaylistTrackItem components draggable
 - [x] Implement drop handler to update track positions
 - [x] Update playlist_tracks in the app database with their new track positions on drop
-- [ ] Fix bug where tracks are not reorderd after removal
+- [x] Fix bug where tracks are not reorderd after removal
 
 ### **Playlist Export (M3U)**
 - [ ] Create utility function to generate M3U file content from playlist tracks

@@ -123,7 +123,6 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
     if (isEditingDescription && editingDescription !== (playlist.description || '')) {
       attributes.description = editingDescription
     }
-    console.log('Saving playlist attributes:', attributes)
     if (Object.keys(attributes).length === 0) {
       setIsEditingName(false)
       setIsEditingDescription(false)
@@ -143,25 +142,30 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
   }
 
   const handleRemoveTrack = (trackId) => {
+    const scrollPosition = window.scrollY
     const track = playlist.tracks.find(t => t.id === trackId)
     setConfirmationTitle(`Are you sure you want to remove "${track.title}" from the playlist?`)
     setShowConfirmation(true)
     setConfirmationAction(() => async () => {
       try {
-        // TODO handle re-ordering after removal
+        setIsUpdatingOrder(true)
         await window.api.removeTrackFromPlaylist(playlistId, trackId)
-        // Optimistically update the UI
-        setPlaylist(prevPlaylist => ({
-          ...prevPlaylist,
-          tracks: prevPlaylist.tracks.filter(t => t.id !== trackId)
-        }))
-        calculatePlaylistStats()
+        loadPlaylist()
         onPlaylistUpdated(playlistId)
+        setTimeout(() => {
+          requestAnimationFrame(() => {
+            window.scrollTo({
+              top: scrollPosition,
+              behavior: 'instant'
+            })
+          })
+        })
       } catch (err) {
         console.error('Failed to remove track:', err)
         setPlaylistError(`Failed to remove track: ${err.message}`)
       } finally {
         setShowConfirmation(false)
+        setIsUpdatingOrder(false)
       }
     })
   }
@@ -204,6 +208,7 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
           .map((track, index) => ({ ...track, position: index }))
 
     try {
+      // dragging is disabled during update
       setIsUpdatingOrder(true)
       // optimistically update UI
       setPlaylist(prev => ({ ...prev, tracks: reorderedTracks }))
@@ -213,7 +218,6 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
         return track.position !== originalTrack.position
       })
       await window.api.updateTrackPositions(playlist.id, tracksWithChangedPositions)
-      // TODO should we disable drag operations during the update?
     } catch (error) {
       console.error('Failed to reorder tracks:', error)
       setPlaylistError(`Failed to reorder tracks: ${error.message}`)
@@ -221,6 +225,8 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
       return
     } finally {
       setIsUpdatingOrder(false)
+      // Remove focus from the dragged item
+      document.querySelector(`#track-${active.id}`)?.querySelector('.grip-icon')?.blur()
     }
   }
 
@@ -347,7 +353,7 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
             Tracks
             {isUpdatingOrder && (
               <small className="text-muted ms-2 fs-6">
-                Updating order...
+                Updating playlist...
               </small>
             )}
           </h5>

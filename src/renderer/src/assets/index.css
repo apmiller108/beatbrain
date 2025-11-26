@@ -80,3 +80,9 @@ code {
     padding: 0.75rem 0.75rem
   }
 }
+
+.c-playlist-track-item {
+  td {
+    vertical-align: middle;
+  }
+}

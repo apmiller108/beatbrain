@@ -19,10 +19,12 @@ const PlaylistTrackItem = ({ track, onRemove, disabled }) => {
   }
 
   return (
-    <tr ref={sortable.setNodeRef} style={style} className="playlist-track-item">
+    <tr id={`track-${track.id}`} ref={sortable.setNodeRef} style={style} className="c-playlist-track-item">
       <td className="text-muted">
-        <GripVertical className="me-2" style={{ cursor: 'grab' }} {...sortable.attributes} {...sortable.listeners} />
-        {track.position + 1}
+        <div className="d-flex align-items-center">
+          <GripVertical className="me-2 grip-icon" style={{ cursor: 'grab' }} {...sortable.attributes} {...sortable.listeners} />
+          <span>{track.position + 1}</span>
+        </div>
       </td>
       <td>
         <strong>{track.title || 'Unknown Title'}</strong>
@@ -68,7 +70,8 @@ PlaylistTrackItem.propTypes = {
     duration: PropTypes.number,
     position: PropTypes.number.isRequired
   }).isRequired,
-  onRemove: PropTypes.func.isRequired
+  onRemove: PropTypes.func.isRequired,
+  disabled: PropTypes.bool
 }
 
 export default PlaylistTrackItem

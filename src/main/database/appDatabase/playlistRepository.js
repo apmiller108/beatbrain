@@ -182,23 +182,32 @@ export default class PlaylistRepository {
   }
 
   removeTrackFromPlaylist(playlistId, trackId) {
-    try {
-      const deleteStmt = this.db.prepare(`
-        DELETE FROM playlist_tracks WHERE playlist_id = ? AND id = ?
-      `)
-      const result = deleteStmt.run(playlistId, trackId)
+    this.db.transaction(() => {
+      try {
+        const tracks = this.getPlaylistTracks(playlistId)
+        const track = tracks.find(t => t.id === trackId)
+        // Decrement positions of tracks that were after the removed track
+        const tracksToReoder = tracks.filter(t => t.position > track.position)
+                                     .map(t => ({ ...t, position: t.position - 1 }))
 
-      if (result.changes === 0) {
-        throw new Error(`Track with id ${trackId} not found in playlist ${playlistId}`)
-      } else {
-        this.updatePlaylist(playlistId, {})  // update the playlist's updated_at timestamp
+        const deleteStmt = this.db.prepare(`
+          DELETE FROM playlist_tracks WHERE playlist_id = ? AND id = ?
+        `)
+        const result = deleteStmt.run(playlistId, trackId)
+
+        if (result.changes === 0) {
+          throw new Error(`Track with id ${trackId} not found in playlist ${playlistId}`)
+        } else {
+          this.updatePlaylist(playlistId, {})  // update the playlist's updated_at timestamp
+          this.updateTrackPositions(playlistId, tracksToReoder) // reorder remaining tracks
+        }
+
+        return true
+      } catch (error) {
+        console.error('Error removing track from playlist:', error)
+        throw error
       }
-
-      return true
-    } catch (error) {
-      console.error('Error removing track from playlist:', error)
-      throw error
-    }
+    })
   }
 
   deletePlaylist(id) {
