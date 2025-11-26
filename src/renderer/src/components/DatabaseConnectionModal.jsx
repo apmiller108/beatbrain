@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Modal, Button, Alert, Form, Spinner } from 'react-bootstrap'
-import { MusicNote, CheckCircleFill } from 'react-bootstrap-icons'
+import { Modal, Button, Form, Spinner } from 'react-bootstrap'
+import { MusicNote } from 'react-bootstrap-icons'
+import FlashMessage from './common/FlashMessage'
 
 import PropTypes from 'prop-types'
 
@@ -89,14 +90,14 @@ function DatabaseConnectionModal({
       <Modal.Body>
         <div className="mb-4">
           {mixxxStatus.isConnected ? (
-            <Alert variant="success">
-              <div className="d-flex align-items-center" />
-              <CheckCircleFill className="text-success me-2" />
-              BeatBrain is currently connected to your Mixxx database at
-              <div className="mt-2">
-                <code>{mixxxStatus.dbPath}</code>
-              </div>
-            </Alert>
+            <FlashMessage variant="success"
+                          message={
+                            <div>
+                              BeatBrain is currently connected to your Mixxx database at
+                              <div className="mt-2">
+                                <code>{mixxxStatus.dbPath}</code>
+                              </div>
+                            </div>} />
           ) : (
             <p className="text-muted">
               BeatBrain needs to connect to your Mixxx database to access your
@@ -165,9 +166,13 @@ function DatabaseConnectionModal({
             </div>
 
             {mixxxStatus.lastError && (
-              <Alert variant="danger" className="mb-3">
-                <strong>Connection Error:</strong> {mixxxStatus.lastError}
-              </Alert>
+              <FlashMessage
+                variant="danger"
+                message={
+                  <div>
+                    <strong>Connection Error:</strong> {mixxxStatus.lastError}
+                  </div>
+                } />
             )}
 
             <Form.Check

@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Button, Alert, Spinner, Badge, Toast, ToastContainer } from 'react-bootstrap'
+import { Button, Spinner, Badge} from 'react-bootstrap'
 import PropTypes from 'prop-types'
-import { MusicNoteList, ExclamationTriangleFill, CheckCircleFill, ExclamationCircleFill } from 'react-bootstrap-icons'
+import { MusicNoteList } from 'react-bootstrap-icons'
 import PlaylistForm from '../components/PlaylistForm'
+import FlashMessage from '../components/common/FlashMessage'
 
-const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) => {
+const PlaylistCreationView = ({ mixxxStats, mixxxStatus, onPlaylistCreated, handleShowConnectionModal, setNotification }) => {
   const [loading, setLoading] = useState(true)
   const [maxCount, setMaxCount] = useState(100)
   const [bpmRange, setBpmRange] = useState({ minBpm: 0, maxBpm: 300 })
@@ -16,12 +17,6 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
     genres: [],
   })
   const [filteredTracks, setFilteredTracks] = useState([])
-  const [notification, setNotification] = useState({
-    show: false,
-    type: 'success', // 'success' or 'error'
-    message: '',
-    details: ''
-  })
 
   useEffect(() => {
     const loadSavedFilters = async () => {
@@ -88,41 +83,25 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
   // Is the form valid for generating a playlist
   const canGeneratePlaylist = mixxxStatus?.isConnected && !loading && isCountSufficient
 
-  const showNotification = (type, message, details = '') => {
-    setNotification({
-      show: true,
-      type,
-      message,
-      details
-    })
-  }
-
-  const hideNotification = () => {
-    setNotification(prev => ({ ...prev, show: false }))
-  }
-
   const onGeneratePlaylist = async () => {
     try {
       setLoading(true)
 
       const name = `Playlist ${new Date().toLocaleString()}`
-      await window.api.createPlaylist({
+      const playlist = await window.api.createPlaylist({
         name,
         description: 'A playlist created from Mixxx tracks',
       }, filteredTracks)
 
-      showNotification(
-        'success',
-        'Playlist created successfully!',
-        `Created "${name}" with ${filteredTracks.length} tracks`
-      )
+      onPlaylistCreated(playlist.id)
     } catch (error) {
       console.error('Error generating playlist:', error)
-      showNotification(
-        'error',
-        'Failed to create playlist',
-        error.message || 'An unexpected error occurred. Please try again.'
-      )
+      setNotification({
+        show: true,
+        type: 'error',
+        message: 'Failed to create playlist',
+        details: error.message || 'An unexpected error occurred. Please try again.'
+      })
     } finally {
       setLoading(false)
     }
@@ -148,14 +127,9 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
         </div>
 
         {!isCountSufficient && (
-          <Alert variant="warning" className="py-2 mb-0">
-            <div className="d-flex align-items-center">
-              <ExclamationTriangleFill className="me-2" size={16} />
-              <small>
-                <strong>Not enough tracks found.</strong> Try adjusting your filters or lowering the track count.
-              </small>
-            </div>
-          </Alert>
+          <FlashMessage variant="warning"
+                        className="py-2 mb-0"
+                        message={<div><strong>Not enough tracks found </strong>Try adjusting your filters or lowering the track count</div>} />
         )}
       </div>
     )
@@ -167,36 +141,6 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
         <MusicNoteList className="me-2" />
         Playlists
       </h2>
-
-      {/* Toast Notification */}
-      <ToastContainer position="top-center"
-                      className="p-3"
-                      style={{ position: 'fixed', zIndex: 9999 }}>
-        <Toast
-          show={notification.show}
-          onClose={hideNotification}
-          delay={5000}
-          autohide
-          bg={notification.type === 'success' ? 'success' : 'danger'}
-        >
-          <Toast.Header closeButton={true}>
-            {notification.type === 'success' ? (
-              <CheckCircleFill className="me-2" size={16} />
-            ) : (
-              <ExclamationCircleFill className="me-2" size={16} />
-            )}
-            <strong className="me-auto">
-              {notification.type === 'success' ? 'Success' : 'Error'}
-            </strong>
-          </Toast.Header>
-          <Toast.Body className="text-white">
-            <div className="mb-1"><strong>{notification.message}</strong></div>
-            {notification.details && (
-              <small>{notification.details}</small>
-            )}
-          </Toast.Body>
-        </Toast>
-      </ToastContainer>
 
       {loading ? (
         <div className="d-flex justify-content-center align-items-center py-4">
@@ -221,21 +165,18 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
               />
             </>
           ) : (
-            <Alert variant="warning" className="d-flex align-items-center justify-content-between">
-              <div>
-                <Alert.Heading className="h6 mb-1">Database Not Connected</Alert.Heading>
-                <p className="mb-0">
-                  Connect to your Mixxx database to start creating playlists.
-                </p>
-              </div>
-              <Button
-                variant="primary"
-                onClick={handleShowConnectionModal}
-                className="ms-3"
-              >
-                Configure Database
-              </Button>
-            </Alert>
+                <FlashMessage variant="warning"
+                              heading="Database Not Connected"
+                              message="Connect to your Mixxx database to start creating playlists."
+                              action={
+                                <Button
+                                  variant="primary"
+                                  onClick={handleShowConnectionModal}
+                                  className="ms-3"
+                                >
+                                  Configure Database
+                                </Button>
+                              }/>
           )}
         </>
       )}
@@ -243,7 +184,7 @@ const PlaylistsView = ({ mixxxStats, mixxxStatus, handleShowConnectionModal }) =
   )
 }
 
-PlaylistsView.propTypes = {
+PlaylistCreationView.propTypes = {
   mixxxStats: PropTypes.shape({
     totalTracks: PropTypes.number,
     bpmRange: PropTypes.shape({
@@ -254,7 +195,9 @@ PlaylistsView.propTypes = {
   mixxxStatus: PropTypes.shape({
     isConnected: PropTypes.bool.isRequired,
   }),
-  handleShowConnectionModal: PropTypes.func.isRequired
+  handleShowConnectionModal: PropTypes.func.isRequired,
+  onPlaylistCreated: PropTypes.func.isRequired,
+  setNotification: PropTypes.func.isRequired
 }
 
-export default PlaylistsView
+export default PlaylistCreationView

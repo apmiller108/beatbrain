@@ -70,6 +70,8 @@ PlaylistForm.propTypes = {
   }).isRequired,
   availableGenres: PropTypes.arrayOf(PropTypes.string).isRequired,
   disabled: PropTypes.bool,
+  onGeneratePlaylist: PropTypes.func.isRequired,
+  isValid: PropTypes.bool.isRequired,
 }
 
 export default PlaylistForm

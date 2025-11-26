@@ -1,4 +1,14 @@
 # Notes
+## Testing in node console.
+
+Testing appDatabase
+```js
+const path = "/Users/USERNAME/Library/Application Support/beatbrain" // MacOS
+let db = require('./src/main/database/appDatabase.js').default
+db.initilize(path)
+db.playlistRepository.getPlaylistTracks(1)
+```
+
 ## Database query that converts to camelot notation
 This query selects tracks from the mixxx database and normalilzes the keys to Camelot notation.
 Converts color to energy level
