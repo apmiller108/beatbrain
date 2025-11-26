@@ -166,6 +166,10 @@ app.whenReady().then(() => {
     return appDatabase.updateTrackPosition(playlistId, trackId, newPosition)
   })
 
+  ipcMain.handle('app:updateTrackPositions', async (_, playlistId, tracks) => {
+    return appDatabase.updateTrackPositions(playlistId, tracks)
+  })
+
   ipcMain.handle('app:addTrackToPlaylist', async (_, playlistId, trackData) => {
     return appDatabase.addTrackToPlaylist(playlistId, trackData)
   })

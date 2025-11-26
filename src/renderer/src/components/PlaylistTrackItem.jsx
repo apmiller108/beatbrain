@@ -3,13 +3,25 @@ import { Badge, Button } from 'react-bootstrap'
 import { Trash3, GripVertical } from 'react-bootstrap-icons'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { formatDuration } from '../utilities'
 
-const PlaylistTrackItem = ({ track, onRemove }) => {
+const PlaylistTrackItem = ({ track, onRemove, disabled }) => {
+  const sortable = useSortable({ id: track.id })
+
+  const style = {
+    transform: CSS.Transform.toString(sortable.transform),
+    transition: sortable.transition,
+    opacity: sortable.isDragging ? 0.5 : 1,
+    backgroundColor: sortable.isDragging ? '#f8f9fa' : 'transparent',
+    cursor: disabled ? 'not-allowed' : 'default'
+  }
+
   return (
-    <tr className="playlist-track-item">
+    <tr ref={sortable.setNodeRef} style={style} className="playlist-track-item">
       <td className="text-muted">
-        <GripVertical className="me-2" style={{ cursor: 'grab' }} />
+        <GripVertical className="me-2" style={{ cursor: 'grab' }} {...sortable.attributes} {...sortable.listeners} />
         {track.position + 1}
       </td>
       <td>

@@ -25,6 +25,7 @@ const api = {
   getPlaylistById: id => ipcRenderer.invoke('app:getPlaylistById', id),
   updatePlaylist: (id, playlistData) => ipcRenderer.invoke('app:updatePlaylist', id, playlistData),
   updateTrackPosition: (playlistId, trackId, newPosition) => ipcRenderer.invoke('app:updateTrackPosition', playlistId, trackId, newPosition),
+  updateTrackPositions: (playlistId, tracks) => ipcRenderer.invoke('app:updateTrackPositions', playlistId, tracks),
   addTrackToPlaylist: (playlistId, trackData) => ipcRenderer.invoke('app:addTrackToPlaylist', playlistId, trackData),
   removeTrackFromPlaylist: (playlistId, trackId) => ipcRenderer.invoke('app:removeTrackFromPlaylist', playlistId, trackId),
   deletePlaylist: id => ipcRenderer.invoke('app:deletePlaylist', id),

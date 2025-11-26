@@ -141,6 +141,14 @@ export default class PlaylistRepository {
     }
   }
 
+  updateTrackPositions(playlistId, tracks) {
+    this.db.transaction(() => {
+      tracks.forEach((track) => {
+        this.updateTrackPosition(playlistId, track.id, track.position)
+      })
+    })
+  }
+
   // append a track to the end of the playlist
   addTrackToPlaylist(playlistId, trackData) {
     try {

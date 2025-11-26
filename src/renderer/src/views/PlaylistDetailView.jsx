@@ -3,6 +3,21 @@ import { Card, Spinner, Badge, Table, Button } from 'react-bootstrap'
 import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3, Pencil } from 'react-bootstrap-icons'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors
+} from '@dnd-kit/core'
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy
+} from '@dnd-kit/sortable'
+
 import propTypes from 'prop-types'
 import { formatDuration } from '../utilities'
 import ConfirmationPrompt from '../components/common/ConfirmationPrompt'
@@ -26,6 +41,7 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
   const [editingName, setEditingName] = useState('')
   const [isEditingDescription, setIsEditingDescription] = useState(false)
   const [editingDescription, setEditingDescription] = useState('')
+  const [isUpdatingOrder, setIsUpdatingOrder] = useState(false)
 
   useEffect(() => {
     loadPlaylist()
@@ -132,6 +148,7 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
     setShowConfirmation(true)
     setConfirmationAction(() => async () => {
       try {
+        // TODO handle re-ordering after removal
         await window.api.removeTrackFromPlaylist(playlistId, trackId)
         // Optimistically update the UI
         setPlaylist(prevPlaylist => ({
@@ -163,6 +180,48 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
         setShowConfirmation(false)
       }
     })
+  }
+
+  // Track reordering handlers
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
+
+  const handleDragEnd = async (event) => {
+    const { active, over } = event
+
+    if (!over || active.id === over.id) {
+      return
+    }
+    const originalTracks = [...playlist.tracks]
+    const oldIndex = playlist.tracks.findIndex(track => track.id === active.id)
+    const newIndex = playlist.tracks.findIndex(track => track.id === over.id)
+
+    const reorderedTracks = arrayMove(playlist.tracks, oldIndex, newIndex)
+          .map((track, index) => ({ ...track, position: index }))
+
+    try {
+      setIsUpdatingOrder(true)
+      // optimistically update UI
+      setPlaylist(prev => ({ ...prev, tracks: reorderedTracks }))
+      // Persist positions of tracks that changed position
+      const tracksWithChangedPositions = reorderedTracks.filter((track) => {
+        const originalTrack = originalTracks.find(t => t.id === track.id)
+        return track.position !== originalTrack.position
+      })
+      await window.api.updateTrackPositions(playlist.id, tracksWithChangedPositions)
+      // TODO should we disable drag operations during the update?
+    } catch (error) {
+      console.error('Failed to reorder tracks:', error)
+      setPlaylistError(`Failed to reorder tracks: ${error.message}`)
+      setPlaylist(prev => ({ ...prev, tracks: originalTracks })) // revert on error
+      return
+    } finally {
+      setIsUpdatingOrder(false)
+    }
   }
 
   if (loading) {
@@ -284,33 +343,45 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
       {/* Track List */}
       <Card className="shadow-sm">
         <Card.Header>
-          <h5 className="mb-0">Tracks</h5>
+          <h5 className="mb-0">
+            Tracks
+            {isUpdatingOrder && (
+              <small className="text-muted ms-2 fs-6">
+                Updating order...
+              </small>
+            )}
+          </h5>
         </Card.Header>
         <Card.Body className="p-0">
           {playlist.tracks && playlist.tracks.length > 0 ? (
-            <Table hover responsive className="mb-0">
-              <thead>
-                <tr>
-                  <th style={{ width: '50px' }}>#</th>
-                  <th>Title</th>
-                  <th>Artist</th>
-                  <th>Album</th>
-                  <th style={{ width: '80px' }}>BPM</th>
-                  <th style={{ width: '60px' }}>Key</th>
-                  <th style={{ width: '100px' }}>Duration</th>
-                  <th style={{ width: '80px' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {playlist.tracks.map((track) => (
-                  <PlaylistTrackItem
-                    key={track.id}
-                    track={track}
-                    onRemove={handleRemoveTrack}
-                  />
-                ))}
-              </tbody>
-            </Table>
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd} autosScroll={!isUpdatingOrder}>
+              <SortableContext items={playlist.tracks.map(t => t.id)} strategry={verticalListSortingStrategy}>
+                <Table hover responsive className="mb-0">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '50px' }}>#</th>
+                      <th>Title</th>
+                      <th>Artist</th>
+                      <th>Album</th>
+                      <th style={{ width: '80px' }}>BPM</th>
+                      <th style={{ width: '60px' }}>Key</th>
+                      <th style={{ width: '100px' }}>Duration</th>
+                      <th style={{ width: '80px' }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {playlist.tracks.map((track) => (
+                      <PlaylistTrackItem
+                        key={track.id}
+                        track={track}
+                        disabled={isUpdatingOrder}
+                        onRemove={handleRemoveTrack}
+                      />
+                    ))}
+                  </tbody>
+                </Table>
+              </SortableContext>
+            </DndContext>
           ) : (
             <div className="text-center py-5 text-muted">
               <MusicNote size={48} className="mb-3 opacity-50" />

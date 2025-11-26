@@ -530,12 +530,11 @@ used to perform a query against the Mixxx dabatase.
 
 ### **Drag-and-Drop Track Reordering**
 - [x] Install drag-and-drop library (use `@dnd-kit/core`)
-- [ ] Wrap track list in drag-and-drop context
-- [ ] Make PlaylistTrackItem components draggable
-- [ ] Implement drop handler to update track positions
-- [ ] Update playlist_tracks in the app database with their new track positions on drop
-- [ ] Add visual feedback during drag (ghost element, drop zones)
-- [ ] Handle edge cases (drag to same position, drag outside bounds)
+- [x] Wrap track list in drag-and-drop context
+- [x] Make PlaylistTrackItem components draggable
+- [x] Implement drop handler to update track positions
+- [x] Update playlist_tracks in the app database with their new track positions on drop
+- [ ] Fix bug where tracks are not reorderd after removal
 
 ### **Playlist Export (M3U)**
 - [ ] Create utility function to generate M3U file content from playlist tracks
