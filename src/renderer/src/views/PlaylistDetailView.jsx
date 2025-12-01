@@ -152,6 +152,8 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
         await window.api.removeTrackFromPlaylist(playlistId, trackId)
         loadPlaylist()
         onPlaylistUpdated(playlistId)
+        // If the window has been scrolled, removing a track re-renders the list and resets scroll.
+        // This attempts to restore the scroll position.
         setTimeout(() => {
           requestAnimationFrame(() => {
             window.scrollTo({
@@ -266,6 +268,10 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
                       if (e.key === 'Enter') {
                         handleSave()
                       }
+                      if (e.key === 'Escape') {
+                        setIsEditingName(false)
+                        setEditingName(playlist.name)
+                      }
                     }}
                     onBlur={handleSave}
                   />
@@ -287,6 +293,10 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                           handleSave()
+                        }
+                        if (e.key === 'Escape') {
+                          setIsEditingDescription(false)
+                          setEditingDescription(playlist.description || '')
                         }
                       }}
                       onBlur={handleSave}

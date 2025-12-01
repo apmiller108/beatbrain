@@ -8,10 +8,6 @@ body {
   background-color: #f8f9fa;
 }
 
-.App {
-  min-height: 100vh;
-}
-
 /* Status indicator */
 .status-indicator {
   width: 12px;
@@ -69,7 +65,6 @@ code {
 }
 
 .c-navigation {
-  height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
   background-color: #f8f9fa;
