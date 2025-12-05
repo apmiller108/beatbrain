@@ -30,6 +30,8 @@ const api = {
   removeTrackFromPlaylist: (playlistId, trackId) => ipcRenderer.invoke('app:removeTrackFromPlaylist', playlistId, trackId),
   deletePlaylist: id => ipcRenderer.invoke('app:deletePlaylist', id),
 
+  saveM3UPlaylist: (options) => ipcRenderer.invoke('file:saveM3UPlaylist', options),
+
   mixxx: {
     getStatus: () => ipcRenderer.invoke('mixxx:getStatus'),
     connect: dbPath => ipcRenderer.invoke('mixxx:connect', dbPath),

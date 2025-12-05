@@ -19,7 +19,7 @@ import {
 } from '@dnd-kit/sortable'
 
 import propTypes from 'prop-types'
-import { formatDuration } from '../utilities'
+import { formatDuration } from '../utilities/formatDuration'
 import ConfirmationPrompt from '../components/common/ConfirmationPrompt'
 import FlashMessage from '../components/common/FlashMessage'
 import InlineEditInput from '../components/common/InlineEditInput'
@@ -267,7 +267,7 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
               </div>
             </div>
 
-            {/* Action Buttons - Placeholder for now */}
+            {/* Action Buttons - Export is a placeholder for now */}
             <div className="d-flex gap-2">
               <OverlayTrigger overlay={<Tooltip>Export Playlist</Tooltip>}>
                 <Button variant="primary">
