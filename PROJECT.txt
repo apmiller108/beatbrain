@@ -289,8 +289,8 @@ Read-only database operations
 ├── eslint.config.js
 ├── launch.json
 ├── NOTES.md
-├── package.json
 ├── package-lock.json
+├── package.json
 ├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
@@ -318,6 +318,7 @@ Read-only database operations
 │   │           └── DatabaseConnectionModal.test.jsx
 │   └── setup.js
 ├── src
+│   ├── assets
 │   ├── main
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
@@ -333,6 +334,7 @@ Read-only database operations
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
+│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -344,6 +346,7 @@ Read-only database operations
 │           │   ├── common
 │           │   │   ├── ConfirmationPrompt.jsx
 │           │   │   ├── FlashMessage.jsx
+│           │   │   ├── InlineEditInput.jsx
 │           │   │   └── ToastNotification.jsx
 │           │   ├── DatabaseConnectionModal.jsx
 │           │   ├── filters
@@ -370,7 +373,7 @@ Read-only database operations
 ├── structure.sql
 └── vitest.config.js
 
-24 directories, 60 files
+27 directories, 61 files
 ```
 
 # TODOS
@@ -536,11 +539,11 @@ used to perform a query against the Mixxx dabatase.
 
 ### **Playlist Export (M3U)**
 - [ ] Create utility function to generate M3U file content from playlist tracks. Format M3U with extended metadata (#EXTINF). Meta data should be duration, artist and title. Include track file paths from Mixxx database. Encode with UTF-8.
-- [ ] Implement file save dialog using Electron's dialog API. Use a sensible default export location, like the user's Music folder if it exits, otherwise the user's home directory.
-- [ ] Store the export location is user_preferences and recall it when exporting in the future.
+- [ ] Implement file save dialog using Electron's dialog API. Use a sensible default export location, like the user's Music folder if it exits, otherwise the user's home directory. This will be depend on the user's OS.
 - [ ] Add IPC handler for file system write operations
 - [ ] Add error handling for file write failures
 - [ ] Show success ToastNotification with the playlist file path after export (can the file path be a link to open the file?)
+- [ ] Store the export location is user_preferences and recall it when exporting in the future.
 
 ### **Polish & UX Enhancements**
 - [ ] Add empty state message when playlist has no tracks
