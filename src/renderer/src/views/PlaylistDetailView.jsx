@@ -19,7 +19,8 @@ import {
 } from '@dnd-kit/sortable'
 
 import propTypes from 'prop-types'
-import { formatDuration } from '../utilities/formatDuration'
+import formatDuration from '../utilities/formatDuration'
+import generateM3UContent from '../utilities/generateM3UContent'
 import ConfirmationPrompt from '../components/common/ConfirmationPrompt'
 import FlashMessage from '../components/common/FlashMessage'
 import InlineEditInput from '../components/common/InlineEditInput'
@@ -39,6 +40,7 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
   const [confirmationAction, setConfirmationAction] = useState(null)
   const [playlistError , setPlaylistError] = useState(null)
   const [isUpdatingOrder, setIsUpdatingOrder] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
 
   useEffect(() => {
     loadPlaylist()
@@ -158,6 +160,22 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
     })
   }
 
+  const handleExportPlaylist = async () => {
+    setIsExporting(true)
+
+    try {
+      // TODO : Generate M3U content with generateM3UContent utility
+      // TODO : Use window.api.saveM3UPlaylist to save file
+      // TODO : Store last export path in user preferences
+      // TODO : Show toast notification on success/failure with link to file location if successful
+    } catch (err) {
+      console.error('Failed to export playlist:', err)
+      setPlaylistError(`Failed to export playlist: ${err.message}`)
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
   // Track reordering handlers
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -270,7 +288,7 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
             {/* Action Buttons - Export is a placeholder for now */}
             <div className="d-flex gap-2">
               <OverlayTrigger overlay={<Tooltip>Export Playlist</Tooltip>}>
-                <Button variant="primary">
+                <Button variant="primary" onClick={handleExportPlaylist} disabled={isExporting}>
                   <BoxArrowDown />
                 </Button>
               </OverlayTrigger>
