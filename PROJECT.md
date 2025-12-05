@@ -1,11 +1,9 @@
-# Mixxx Claude Assistant - Project Requirements & Plan
+# Beatbrain - Project Requirements & Plan
 
 ## Project Overview
 
-A cross-platform Electron desktop application that provides an
-intelligent interface to Mixxx DJ software's music library using Claude
-AI for playlist generation and music discovery.
-
+A cross-platform Electron desktop application that provides an intelligent
+interface to Mixxx DJ software's music library for smart playlist generation.
 
 App Name: **BeatBrain**
 
@@ -28,19 +26,19 @@ App Name: **BeatBrain**
   - Filter tracks
   - harmonic mixing rules
 
-### 4\. Claude AI Integration (AI mode for playlist generation)
-
-  - User-configurable API key storage in application settings
-  - Natural language queries about music library content
-  - **Intelligent playlist generation** based on user prompts
-  - Context-aware responses using actual library data
-
-### 5\. Playlist Export
+### 4\. Playlist Export
 
   - Generate **Extended M3U format** playlists
   - Include track names and metadata in export
   - Local file system export for manual Mixxx import
   - User-friendly file save dialogs
+
+### 5\. AI Integration (optional AI mode for playlist generation)
+
+  - User-configurable API key storage in application settings
+  - Natural language queries about music library content
+  - **Intelligent playlist generation** based on user prompts
+  - Context-aware responses using actual library data
 
 ## Technical Architecture
 
@@ -48,8 +46,10 @@ App Name: **BeatBrain**
 
   - **Frontend**: React + Bootstrap
   - **Backend**: Electron main process with Node.js
-  - **Database**: SQLite3 with read-only access
-  - **AI Integration**: Anthropic Claude API
+  - **Database**:
+    - SQLite3 with read-only access to Mixxx database
+    - SQLite3 with read/write access to application database
+  - **AI Integration**: TBD
 
 ### Database Schema Integration
 
@@ -70,27 +70,51 @@ CREATE TABLE user_preferences (
           UNIQUE(category, key)
         );
 CREATE TABLE sqlite_sequence(name,seq);
+CREATE TABLE playlists (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          description TEXT,
+          track_source TEXT NOT NULL DEFAULT 'mixxx' CHECK (track_source IN ('mixxx', 'rekordbox')),
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+CREATE TABLE playlist_tracks (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          playlist_id INTEGER NOT NULL,
+          source_track_id INTERGER NOT NULL,
+          file_path TEXT NOT NULL,
+          duration FLOAT,
+          artist TEXT,
+          title TEXT,
+          album TEXT,
+          genre TEXT,
+          bpm FLOAT,
+          key TEXT,
+          position INTEGER NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (playlist_id) REFERENCES playlists(id)
+        );
+
 ```
 
 2. Mixxx database (mixxxdb.sqlite)
 
     1.  Primary Tables
-
-          - **`library`**: Main track metadata (artist, title, album,
-            BPM, key, genre, etc.)
+          - **`library`**: Main track metadata (artist, title, album, BPM, key, genre, etc.)
           - **`track_locations`**: File paths and metadata
           - **`crates`**: User-created track collections
           - **`crate_tracks`**: Track-to-crate relationships
           - **`Playlists`**: User playlists
           - **`PlaylistTracks`**: Playlist contents
 
-### Platform-Specific Database Locations
+    2. Platform-Specific Mixxx Database Locations
 
-| Platform    | Default Path                                                                                 |
-| ----------- | -------------------------------------------------------------------------------------------- |
-| **Windows** | `C:\Users\<Username>\AppData\Local\Mixxx\mixxxdb.sqlite`                                     |
-| **macOS**   | `~/Library/Containers/org.mixxx.mixxx/Data/Library/Application Support/Mixxx/mixxxdb.sqlite` |
-| **Linux**   | `~/.mixxx/mixxxdb.sqlite`                                                                    |
+      | Platform    | Default Path                                                                                 |
+      | ----------- | -------------------------------------------------------------------------------------------- |
+      | **Windows** | `C:\Users\<Username>\AppData\Local\Mixxx\mixxxdb.sqlite`                                     |
+      | **macOS**   | `~/Library/Containers/org.mixxx.mixxx/Data/Library/Application Support/Mixxx/mixxxdb.sqlite` |
+      | **Linux**   | `~/.mixxx/mixxxdb.sqlite`                                                                    |
 
 ## Dependencies
 - better-sqlite3
@@ -107,97 +131,93 @@ CREATE TABLE sqlite_sequence(name,seq);
 - electron-rebuild
 - electron-vite
 
+## Testing frameworks
+- vitest
+- playwright
+
 ## User Interface Design
 
 ### Proposed Layout Structure
 
 ``` example
 ┌─────────────────────────────────────────────────────────┐
-│ Menu Bar (File, Settings, Help)                        │
+│ Menu Bar (File, Settings, Help)                         │
 ├─────────────────────────────────────────────────────────┤
 │ ┌─────────────────┐ ┌─────────────────────────────────┐ │
 │ │   Navigation    │ │                                 │ │
 │ │   Sidebar       │ │        Main Content Area        │ │
 │ │                 │ │                                 │ │
-│ │ • Library       │ │   ┌─────────────────────────┐   │ │
-│ │ • Crates        │ │   │   Library Table         │   │ │
+│ │                 │ │   ┌─────────────────────────┐   │ │
+│ │ • Library       │ │   │   Library Table         │   │ │
 │ │ • Playlists     │ │   │   (Sortable/Filterable) │   │ │
-│ │ • Claude Chat   │ │   └─────────────────────────┘   │ │
+│ │ • Settings      │ │   └─────────────────────────┘   │ │
 │ │                 │ │                                 │ │
 │ └─────────────────┘ └─────────────────────────────────┘ │
 ├─────────────────────────────────────────────────────────┤
-│ Status Bar (DB Status, Connection Status)              │
+│ Status Bar (DB Status, Connection Status)               │
 └─────────────────────────────────────────────────────────┘
 ```
 
 ### Key UI Components
 
 1.  1\. Library Table
-
       - **Columns**: Artist, Title, Album, BPM, Key, Genre, Duration,
         Rating
       - **Features**: Click-to-sort, multi-column filtering, search bar
-      - **Bootstrap Components**: Table, Form controls, Input groups
 
 2.  2\. Smart playlist Interface
 
-      - **custom instructions** for natural language queries
-      - **Prompt examples** for playlist generation
-      - **Response display** with formatted playlist suggestions
-      - **Export buttons** for generated playlists
-
 3.  3\. Settings Panel
-
-      - **API Key management** with secure storage
       - **Database path configuration**
       - **Export preferences**
       - **Application preferences**
 
 ## Core Features Specification
 
-### Database Operations
+### Mixxx Database Operations
+Read-only database operations
 
-``` javascript
-// Read-only database operations
 - getAllTracks()
 - getTracksByFilter(criteria)
 - getCrates()
 - getPlaylists()
 - getTrackMetadata(trackId)
 - searchLibrary(query)
-```
 
-### Claude Integration
-
-``` javascript
-// AI interaction methods
-- sendQueryToClaude(prompt, libraryContext)
-- generatePlaylist(criteria)
-- formatPlaylistResponse()
-- exportToM3U(playlist)
-```
+### Settings management
+- Settings management UI - Create interface for API keys and
+  database preferences
+- Claude AI integration - Add API integration for natural language
+  queries
+### Playlist generation
+- Smart Playlist generation based on user selected criteria
+- M3U export functionality - Generate and export playlists in M3U
+  format.
+- Edit playlists after they are generated. Regenerate playlist.
+- Music player to preview tracks
+### Library management
+- Library table display - Show tracks, crates, and playlists from
+  Mixxx database
+- Search and filtering - Implement library browsing with sort/filter
+  capabilities
+- Play audio files
 
 ## Error Handling Strategy
 
-### Database Lock Contention
+### Database Lock Contention (Mixxx database in use)
 
-1.  **Retry Logic**: 3 attempts with exponential backoff
-2.  **Timeout**: 10-second maximum wait
-3.  **User Notification**: Clear error message with suggested actions
-4.  **Graceful Degradation**: Show last known data state
+1.  **User Notification**: Clear error message with suggested actions
 
 ### API Failures
 
 1.  **Network Issues**: Retry with timeout
 2.  **Authentication**: Clear API key validation messages
 3.  **Rate Limiting**: Respect API limits with user feedback
-4.  **Service Unavailable**: Offline mode with cached responses
+4.  **Service Unavailable**: Offline mode
 
 ### File System Issues
 
 1.  **Missing Database**: Guide user to locate file manually
-2.  **Permission Errors**: Clear instructions for file access
-3.  **Corrupted Database**: Validation and recovery suggestions
 
 ## Security Considerations
 
@@ -223,15 +243,15 @@ CREATE TABLE sqlite_sequence(name,seq);
 
 ### **Phase 2: Core Features**
 
-  - Add Claude API integration
+  - Library view
   - Implement settings management
-  - Create chat interface for AI queries
+  - Smart playlist MVP
 
 ### **Phase 3: Advanced Features**
 
-  - Add real-time database monitoring
   - Implement M3U export functionality
   - Polish UI/UX and error handling
+  - Optional AI mode
 
 ### **Phase 4: Testing & Distribution**
 
@@ -243,55 +263,23 @@ CREATE TABLE sqlite_sequence(name,seq);
 
   - ✅ Successfully reads Mixxx database across all platforms
   - ✅ Provides intuitive library browsing with search/filter
-  - ✅ Enables natural language queries about music collection
-  - ✅ Generates contextually relevant playlist suggestions
+  - ✅ Generates playlists based on user criteria (bpm, key/harmonic mixing, genres, ...etc)
   - ✅ Exports usable M3U files for Mixxx import
   - ✅ Handles errors gracefully with clear user feedback
-  - ✅ Updates automatically when Mixxx database changes
+  - ✅ Enables natural language queries about music collection
 
 ## Questions and considerations
-
-### Claude context management
-
-  - How to handle large libraries that may exceed context window?
-  - Limit the columns to include to only the ones that would be useful.
-  - Could I have users choose which crates, playlists, or genres to
-    include in the library context?
-  - Use prompt caching
-  - Include instructions for harmonic mixing. Include the camelot wheel.
 
 ### Logging
 
 ### Additional features
 
 1.  Keyboard shortcuts
-
 2.  Dark mode
-
-3.  Playlist description
+3.  AI assisted playlist description
 
     Generate a Soundcloud description and tracklist to accompany the
     playlist
-
-### Colors
-
-In order to have Claude consider colors, I will probably have to convert
-the decimal notation that the colors are currently stored as in the
-mixxxdb into RGB notation. Claude seems to understand RGB better than
-decimal.
-
-| Color | Energy Level |
-|:------|:-------------|
-| 34952 | Low          |
-| 35071 | Medium       |
-| 255   | High         |
-| 136   | Very High    |
-
-
---- 34952 Low Intensity
---- 35071 Medium Intensity
---- 255 High Intensity
---- 136 Very High Intensity
 
 ## Current project structure
 
@@ -301,12 +289,14 @@ decimal.
 ├── eslint.config.js
 ├── launch.json
 ├── NOTES.md
-├── package.json
 ├── package-lock.json
+├── package.json
 ├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
 ├── README.md
+├── scripts
+│   └── schema-dump.js
 ├── spec
 │   ├── e2e
 │   │   ├── database-connection.spec.js
@@ -328,18 +318,23 @@ decimal.
 │   │           └── DatabaseConnectionModal.test.jsx
 │   └── setup.js
 ├── src
+│   ├── assets
 │   ├── main
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
 │   │   ├── database
 │   │   │   ├── appDatabase
-│   │   │   │   └── createTables.js
+│   │   │   │   ├── createTables.js
+│   │   │   │   ├── playlistRepository.js
+│   │   │   │   ├── settingsRepository.js
+│   │   │   │   └── userPreferenceRepository.js
 │   │   │   ├── appDatabase.js
 │   │   │   └── mixxxDatabase.js
 │   │   └── index.js
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
+│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -348,6 +343,11 @@ decimal.
 │           │   ├── beatbrain_logo.svg
 │           │   └── index.css
 │           ├── components
+│           │   ├── common
+│           │   │   ├── ConfirmationPrompt.jsx
+│           │   │   ├── FlashMessage.jsx
+│           │   │   ├── InlineEditInput.jsx
+│           │   │   └── ToastNotification.jsx
 │           │   ├── DatabaseConnectionModal.jsx
 │           │   ├── filters
 │           │   │   ├── BpmRangeInput.jsx
@@ -355,8 +355,11 @@ decimal.
 │           │   │   └── TrackCountInput.jsx
 │           │   ├── LibraryStats.jsx
 │           │   ├── MixxxDatabaseStatus.jsx
+│           │   ├── Navigation
+│           │   │   └── PlaylistList.jsx
 │           │   ├── Navigation.jsx
 │           │   ├── PlaylistForm.jsx
+│           │   ├── PlaylistTrackItem.jsx
 │           │   ├── StatusBar.jsx
 │           │   ├── SystemInformation.jsx
 │           │   └── TrackList.jsx
@@ -364,66 +367,35 @@ decimal.
 │           ├── utilities.js
 │           └── views
 │               ├── LibraryView.jsx
-│               ├── PlaylistsView.jsx
+│               ├── PlaylistCreationView.jsx
+│               ├── PlaylistDetailView.jsx
 │               └── SettingsView.jsx
+├── structure.sql
 └── vitest.config.js
 
-21 directories, 49 files
+27 directories, 61 files
 ```
 
-## Core Features
-- Settings management UI - Create interface for API keys and
-  database preferences
-- Claude AI integration - Add API integration for natural language
-  queries
-- Playlist generation - Implement AI-powered playlist creation
-- M3U export functionality - Generate and export playlists in M3U
-  format. Edit playlists after they are generated. Regenerate playlist.
-  Music player to preview tracks
-- Library table display - Show tracks, crates, and playlists from
-  Mixxx database
-- Search and filtering - Implement library browsing with sort/filter
-  capabilities
-- Play audio files
-
-## POC
-### \<2025-08-01 Fri\> Proof of concept 1
-
-Used Claude to produce a hypnotic techno playlist. It was good.
-
-### \<2025-08-08 Fri\> Proof of concept 2
-
-Used Claude to produce another techno playlist with a custom system
-message that contained instructions for harmonic mixing.
-
 # TODOS
-
 ## TODOs for initial project setup
-### DONE: Setup Electron app
+### Setup Electron app
 - [x] setup Electron desktop application using React, Bootstrap, and Vite.
-- [x] add eslint and prettier
 
 ## TODOs for Database modules
-### DONE: create database modules and initialize them on application startup
+### create database modules and initialize them on application startup
 - [x] Create `appDatabase.js` class with methods for managing settings and user preferences across two tables (`app_settings` and `user_preferences`)
-- [x] Integrated App database initialization into Electron main process with proper cleanup on app exit
 - [x] Created `mixxxDatabase.js` module for connecting and reading from the mixxx database.
 
 ## TODOs for Feature: Core Navigation & Status (Phase 1)
-### DONE: Create view routing system
+### Create view routing system
 - [x] Add navigation state management to App.jsx with default view as ‘playlist’
-- [x] Create placeholder components for playlist, library, and settings views
-- [x] Wire up navigation buttons/menu to switch between views
-### DONE: Create view components directory structure
+### Create view components directory structure
 - [x] Create src/renderer/src/views/ directory with PlaylistView.jsx, LibraryView.jsx, SettingsView.jsx
-- [x] Create src/renderer/src/components/ directory for reusable UI components
 - [x] Add Navigation.jsx component for view switching
-### DONE: Implement database status display in status bar
+### Implement database status display in status bar
 - [x] Add component StatusBar.jsx
-- [x] Add real-time status indicator to bottom status bar (🟢 Connected, 🔴 No connection, 🟡 Locked/retry, ⚪ Not configured)
-- [x] Connect status display to existing mixxxDatabase.js module
-- [x] Show current connection state and update automatically
-### DONE: Add database connection prompts at startup
+- [x] Connect status display to existing mixxxDatabase.js module and show connection state
+### Add database connection prompts at startup
 - [x] Implement auto-detection logic for Mixxx database on application startup. Update the existing logic to not automatically connect to Mixxx.
 - [x] Create DatabaseConnectionModal component - Main dialog for connection prompts
 - [x] Show user-friendly connection dialog if database is found. Ask user if they want to connect to the database that was autodetected.
@@ -432,39 +404,30 @@ message that contained instructions for harmonic mixing.
 - [x] Have checkbox to "remember my choice" / "do not prompt again", If
       selected, store the choice in the application database and use that to
       autmatically connect to the database.
-- [x] Show the database disconnet button in the modal when connected. When connected, hide the options.
 - [x] Update MixxxDatabaseStatus component to have configure database button. On click, show the modal.
-- [x] Make the database icon in the StatusBar component clickable.
-- [x] clicking the database icon brings up modal that contains the MixxxDatabaseStatus component
+- [x] Make the database icon in the StatusBar component clickable. It brings up modal that contains the MixxxDatabaseStatus component
 
 ## TODOS for setting up a test suite
-### DONE: Setup unit testing framework
+### Setup unit testing framework
 - [x] Setup vitest
 - [x] Write test for appDatabase.js
 - [x] Write test for mixxxDatabase.js
 - [x] Write test for DatabaseConnectionModal.jsx
-### DONE: Setup end-to-end testing
+### Setup end-to-end testing
 - [x] Setup playwright
 - [x] Write basic test to verify the database connection modal is presented
 
 ## TODOs continue e2e testing
-### DONE: figure out how to seed the appDatabase with user preferences and settings
-### DONE: Cache sqlite3 builds
-### DONE: write e2e test for configuring the mixxx database
+- [x] figure out how to seed the appDatabase with user preferences and settings
+- [x] Cache sqlite3 builds
+- [x] write e2e test for configuring the mixxx database
 
 ## **TODO List: Playlist Generation (Phase 1: Basic UI - MVP)**
 Build interface that allows users to filter the library to a subset of tracks
 that should be considered for smart playlist generation. The parametes will be
 used to perform a query against the Mixxx dabatase.
 
-Note filtering should be built in such a way that it can be resued in the
-library view. Also these filter criteria are multiselect for which a "tag"
-based UX might be appropriate. Given there could be many options per filter
-criteria, a type ahead UX would be nice. The filter criteria will be used to
-perform a database query to retrieve tracks to be passed to the LLM for playlist
-generation.
-### **DONE: Setup & Dependencies**
-- [x] Install react-select package (`npm install react-select`)
+### **Setup & Dependencies**
 - [x] Add react-select to project dependencies
 
 ### **Database Layer**
@@ -501,53 +464,130 @@ generation.
 - [x] On clicking button, create insert new playlist. Playlist name can default to Date time in words.
 - [x] Show success and error messages
 
-### **Create Playlist component**
-- [ ] For each playlist persisted in the database, show a link to it under the playlists navigation link
-- [ ] Create playlist component to show the name, created at and updated at.
-- [ ] Add ability to update the playlist name
+## TODOs for Feature: Playlist Management (Phase 2: View & Edit)
+### **Database Layer - Playlist CRUD Operations**
+- [x] Add method to appDatabase.js: `getAllPlaylists()` - fetch all playlists with metadata (id, name, track_count, duration, created_at, updated_at)
+- [x] Add method to appDatabase.js: `getPlaylistById(id)` - fetch single playlist with full metadata
+- [x] Add method to appDatabase.js: `getPlaylistTracks(playlistId)` - fetch all tracks for a playlist ordered by position
+- [x] Add method to appDatabase.js: `updatePlaylist(id, { name, description })` - update playlist name and updated_at timestamp
+- [x] Add method to appDatabase.js: `deletePlaylist(id)` - delete playlist and associated tracks (cascade)
+- [x] Add method to appDatabase.js: `updateTrackPosition(playlistId, trackId, newPosition)` - reorder track in playlist
+- [x] Add method to appDatabase.js: `removeTrackFromPlaylist(playlistId, trackId)` - remove single track from playlist
+- [x] Add method to appDatabase.js: `addTrackToPlaylist(playlistId, trackData)` - add track to playlist (for future manual additions)
 
-### **Create PlaylistTrack component**
-This represents a single track in a playlist
+### **Navigation Component Updates**
+- [x] Update Navigation.jsx: Add state for managing playlist list expansion/collapse
+- [x] Update Navigation.jsx: Fetch all playlists on component mount using `getAllPlaylists()`
+- [x] Update Navigation.jsx: Render dynamic playlist list under "Playlists" section
+- [x] Update Navigation.jsx: Add Bootstrap Collapse component for expandable playlist section
+- [x] Update Navigation.jsx: Show playlist count badge (e.g., "Playlists (26)")
+- [x] Update Navigation.jsx: Add "+" button next to Playlists header to navigate to PlaylistsView
+- [x] Update Navigation.jsx: Highlight active/selected playlist in navigation
+- [x] Update Navigation.jsx: Handle click events on playlist items to navigate to detail view
+- [x] Update Navigation.jsx: Add loading state while fetching playlists
+- [x] Update Navigation.jsx: Add error handling for playlist fetch failures
+
+### **Routing & View Management**
+- [x] Update App.jsx: Extend view state to support playlist detail routing (e.g., `{ view: 'playlist-detail', playlistId: 123 }`)
+- [x] Update App.jsx: Add navigation handler for playlist selection
+- [x] Update App.jsx: Pass playlist navigation functions to Navigation component
+- [x] Create view routing logic to render PlaylistDetailView when playlist is selected
+
+### **Playlist List Component**
+- [x] Create `src/renderer/src/components/PlaylistList.jsx` - component for rendering playlist items in navigation
+- [x] PlaylistList.jsx: Accept playlists array and onSelect callback as props
+- [x] PlaylistList.jsx: Render each playlist with icon, name, and track count
+- [x] PlaylistList.jsx: Apply active styling to selected playlist
+- [x] PlaylistList.jsx: Add hover effects and cursor pointer
+- [x] PlaylistList.jsx: Handle empty state (no playlists created yet)
+
+### **Playlist Detail View Component**
+- [x] Create `src/renderer/src/views/PlaylistDetailView.jsx` - main view for viewing/editing a playlist
+- [x] PlaylistDetailView.jsx: Accept playlistId as prop
+- [x] PlaylistDetailView.jsx: Fetch playlist metadata and tracks on mount
+- [x] PlaylistDetailView.jsx: Display playlist header with name, created date, track count, total duration
+- [x] PlaylistDetailView.jsx: Add Export button (placeholder for now)
+- [x] PlaylistDetailView.jsx: Add Delete button with confirmation modal
+- [x] PlaylistDetailView.jsx: Add loading state while fetching playlist data
+- [x] PlaylistDetailView.jsx: Add error handling for playlist fetch error
+- [x] PlaylistDetailView.jsx: Calculate and display playlist statistics (total duration, avg BPM)
+- [x] Extract alert component or notification component
+
+### **Playlist Track Item Component**
+- [x] Create `src/renderer/src/components/PlaylistTrackItem.jsx` - component for individual track in playlist
+- [x] PlaylistTrackItem.jsx: Display track position number
+- [x] PlaylistTrackItem.jsx: Display track metadata (title, artist, album, BPM, key, duration)
+- [x] PlaylistTrackItem.jsx: Add remove button with confirmation
+- [x] PlaylistTrackItem.jsx: Add drag handle for reordering (visual only for now)
+- [x] PlaylistTrackItem.jsx: Style with Bootstrap table row or card
+- [x] PlaylistTrackItem.jsx: Handle remove track action
+
+### **Playlist Editing Features**
+- [x] Implement inline playlist name editing in PlaylistDetailView
+- [x] Add validation for playlist name (non-empty, max length)
+- [x] Implement track removal with optimistic UI updates
+- [x] Add confirmation modal for destructive actions (delete playlist, remove track)
+- [x] Update playlist updated_at timestamp on any edit
+
+### **Drag-and-Drop Track Reordering**
+- [x] Install drag-and-drop library (use `@dnd-kit/core`)
+- [x] Wrap track list in drag-and-drop context
+- [x] Make PlaylistTrackItem components draggable
+- [x] Implement drop handler to update track positions
+- [x] Update playlist_tracks in the app database with their new track positions on drop
+- [x] Fix bug where tracks are not reorderd after removal
+
+### **Playlist Export (M3U)**
+- [ ] Create utility function to generate M3U file content from playlist tracks. Format M3U with extended metadata (#EXTINF). Meta data should be duration, artist and title. Include track file paths from Mixxx database. Encode with UTF-8.
+- [ ] Implement file save dialog using Electron's dialog API. Use a sensible default export location, like the user's Music folder if it exits, otherwise the user's home directory. This will be depend on the user's OS.
+- [ ] Add IPC handler for file system write operations
+- [ ] Add error handling for file write failures
+- [ ] Show success ToastNotification with the playlist file path after export (can the file path be a link to open the file?)
+- [ ] Store the export location is user_preferences and recall it when exporting in the future.
+
+### **Polish & UX Enhancements**
+- [ ] Add empty state message when playlist has no tracks
+- [ ] Add info icon for each track that on click shows the full track details (what should the UX be? Modal? expand row item?)
+- [ ] Add search/filter bar for playlists with many tracks
+- [ ] Show loading skeletons while fetching playlist data
+- [ ] Add keyboard shortcuts (Delete key to remove track, Esc to cancel editing)
+- [ ] Implement undo/redo for track removal (optional)
+- [ ] Add playlist duplication feature
+- [ ] Add "Add tracks" button to manually add tracks from library (future feature)
+- [ ] Style components to match existing Bootstrap theme
+- [ ] Ensure responsive design for smaller screens
 
 ### **Testing**
-- [ ] Write unit tests for new database methods
-- [ ] Write unit tests for filter components
-- [ ] Write integration test for PlaylistsView filter functionality
+- [ ] Write unit tests for new appDatabase playlist methods
+- [ ] Write unit tests for PlaylistList component
+- [ ] Write unit tests for PlaylistDetailView component
+- [ ] Write unit tests for PlaylistTrackItem component
+- [ ] Write integration test for playlist navigation flow
+- [ ] Write integration test for playlist editing (name, remove tracks)
+- [ ] Write integration test for playlist deletion
+- [ ] Write e2e test for complete playlist management workflow
+- [ ] Write tests for M3U export functionality
+- [ ] Test drag-and-drop reordering across different browsers/platforms
 
-### **Polish & UX**
-- [ ] Style react-select to match Bootstrap theme
-- [ ] Add form validation and user feedback
-- [ ] Add loading spinner during playlist generation
-- [ ] Add empty state messaging when no filters are applied
+### **Documentation**
+- [ ] Update README with playlist management features
+- [ ] Document M3U export format and compatibility
+- [ ] Add screenshots of playlist views to documentation
+- [ ] Document keyboard shortcuts for playlist management
 
-### TODO: Implement fields for user to filter tracks eligible for playlist creation
+## TODOs for Feature: Playlist (Phase 3: filter enhancements)
+### Implement fields for user to filter tracks eligible for playlist creation
 - [ ] Filter by crates
 - [ ] Filter by Groups
 - [ ] Filter by Artists
 - [ ] Filter by musicl key
 - [ ] Filter by Year range
 - [ ] Filter by date added range
-- [ ] Cache the selections in appDatabase to be used a default
-### TODO: generate playlist
-For now, the playlist can be the results from the query. Smart (AI gen) playlist can be built later.
-- [ ] Generate button submits the request.
-- [ ] Results are stored in appDatabase, playlists table.
-### TODO: playlist index
-- [ ] Provide playlist index component to select previously generated playlists
-### TODO: playlist show view
-- [ ] Show playlist in playlist show view
-
-## TODOs for Feature: Playlist (Phase 2: edit and export)
-### TODO export m3u file
-- [ ] User clicks a button to export to m3u file and is prompted for where on the local file system to save.
-### TODO edit playlist manually
-- [ ] Remove track
-- [ ] Change order
-- [ ] Add track
-### TODO add ability to play audio to preview track while editing
+## TODOs for Feature: Playlist (Phase 4: harmonic mixing engine)
+## TODOs for Feature: Playlist (Phase 4: Audio Player)
 
 ## TODOs for Feature: Settings Foundation (Phase 2: API key management)
-### DONE: Move existing components to Settings view
+### Move existing components to Settings view
 - [x] Relocate SystemInformation component from main view to SettingsView.jsx
 - [x] Relocate MixxxDatabaseStatus component from main view to SettingsView.jsx
 ### TODO: Implement API key management in Settings
@@ -574,6 +614,11 @@ For now, the playlist can be the results from the query. Smart (AI gen) playlist
 - [ ] TODO: Move datafetching from App.jsx to LibarayView.jsx
 
 ## TODOs for UI polish
+### Resizable Navigation Panel
+- [ ] Add drag handle between navigation and main content
+- [ ] Implement resize logic with min/max width constraints
+- [ ] Persist user's preferred width in app settings
+- [ ] Add double-click to reset to default width
 
 # Notes
 See also NOTES.md
