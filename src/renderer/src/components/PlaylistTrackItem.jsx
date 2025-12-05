@@ -5,7 +5,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { formatDuration } from '../utilities'
+import formatDuration from '../utilities/formatDuration'
 
 const PlaylistTrackItem = ({ track, onRemove, disabled }) => {
   const sortable = useSortable({ id: track.id })

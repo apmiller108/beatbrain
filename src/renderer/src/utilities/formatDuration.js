@@ -15,4 +15,4 @@ export const formatDuration = seconds => {
   return `${hours}h ${minutes}m`
 }
 
-export default { formatDuration }
+export default formatDuration

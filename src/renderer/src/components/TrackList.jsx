@@ -1,7 +1,7 @@
 import { Card, Table } from 'react-bootstrap'
 import propTypes from 'prop-types'
 import { MusicNoteBeamed } from 'react-bootstrap-icons'
-import { formatDuration } from '../utilities'
+import formatDuration from '../utilities/formatDuration'
 
 function TrackList({ tracks }) {
   return (
