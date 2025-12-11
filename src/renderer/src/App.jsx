@@ -34,7 +34,9 @@ function App() {
     show: false,
     type: 'success', // 'success' or 'error'
     message: '',
-    details: ''
+    details: '',
+    autohide: true,
+    filePath: null
   })
 
   useEffect(() => {
@@ -226,7 +228,10 @@ function App() {
       case 'playlists':
       return playlistCreationView()
       case 'playlist-detail':
-      return <PlaylistDetailView playlistId={activePlaylistId} onPlaylistDeleted={handlePlaylistDeleted} onPlaylistUpdated={handlePlaylistUpdated} />
+      return <PlaylistDetailView playlistId={activePlaylistId}
+                                 onPlaylistDeleted={handlePlaylistDeleted}
+                                 onPlaylistUpdated={handlePlaylistUpdated}
+                                 setNotification={setNotification} />
       case 'settings':
         return (
           <SettingsView
@@ -250,6 +255,8 @@ function App() {
         details={notification.details}
         type={notification.type}
         show={notification.show}
+        filePath={notification.filePath}
+        autohide={notification.autohide}
         onClose={() => setNotification(prev => ({ ...prev, show: false }))}
       />
       <Container fluid className="p-0">

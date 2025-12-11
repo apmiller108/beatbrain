@@ -1,8 +1,8 @@
-import {Toast, ToastContainer } from 'react-bootstrap'
-import { CheckCircleFill, ExclamationCircleFill } from 'react-bootstrap-icons'
+import {Toast, ToastContainer, Button } from 'react-bootstrap'
+import { CheckCircleFill, ExclamationCircleFill, FileEarmarkText } from 'react-bootstrap-icons'
 import PropTypes from 'prop-types'
 
-const ToastNotification = ({ message, details, type, show, onClose, delay = 5000 }) => {
+const ToastNotification = ({ message, details, type, show, onClose, filePath, autohide = true, delay = 5000 }) => {
   return (
       <ToastContainer position="top-center"
                       className="p-3"
@@ -28,6 +28,12 @@ const ToastNotification = ({ message, details, type, show, onClose, delay = 5000
             <div className="mb-1"><strong>{message}</strong></div>
             {details && (
               <small>{details}</small>
+            )}
+            {filePath && (
+              <Button className='btn btn-sm btn-light mt-2' onClick={() => {window.api.openFileInFolder(filePath)}}>
+                <FileEarmarkText className="me-2" />
+                Show playlist in folder
+              </Button>
             )}
           </Toast.Body>
         </Toast>

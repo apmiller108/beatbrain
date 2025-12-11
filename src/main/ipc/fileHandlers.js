@@ -1,10 +1,20 @@
-import { ipcMain, dialog } from 'electron';
+import { ipcMain, dialog, shell } from 'electron';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
 import { homedir } from 'os';
 
 export function registerFileHandlers() {
   ipcMain.handle('file:saveM3UPlaylist', handleSaveM3U);
+  ipcMain.handle('file:openFileInFolder', openFileInFolder);
+}
+
+/**
+ * Open file in system file explorer
+ * @param {IpcMainInvokeEvent} event
+ * @param {string} filePath
+ */
+async function openFileInFolder(event, filePath) {
+  shell.showItemInFolder(filePath);
 }
 
 /**
@@ -37,10 +47,15 @@ async function handleSaveM3U(event, options) {
     // Write file with UTF-8 encoding
     await writeFile(filePath, content, 'utf-8');
 
+    const pathParts = filePath.split("/")
+    const fileName = pathParts.pop()
+    const exportPath = pathParts.join("/")
+
     return {
       success: true,
       filePath,
-      fileName: filePath.split(/[\\/]/).pop()
+      exportPath,
+      fileName,
     };
   } catch (error) {
     console.error('Error saving M3U file:', error);

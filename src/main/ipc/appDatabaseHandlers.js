@@ -15,12 +15,22 @@ export function registerAppDatabaseHandlers(appDatabase) {
     return appDatabase.setUserPreference(category, key, value)
   })
 
+  // User settings handlers
+
   ipcMain.handle('app:getTrackFilters', async () => {
     return appDatabase.getTrackFilters()
   })
 
   ipcMain.handle('app:saveTrackFilters', async (_, filters) => {
     return appDatabase.saveTrackFilters(filters)
+  })
+
+  ipcMain.handle('app:getSetting', async (_, key) => {
+    return appDatabase.getSetting(key)
+  })
+
+  ipcMain.handle('app:setSetting', async (_, key, value) => {
+    return appDatabase.setSetting(key, value)
   })
 
   // Playlist handlers

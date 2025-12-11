@@ -1,11 +1,10 @@
 /**
  * Generates Extended M3U format content from playlist tracks
- * @param {Array} tracks - Array of track objects with metadata
- * @param {string} playlistName - Name of the playlist for header comment
+ * @param {Object} playlist - Playlist object containing name and tracks
  * @returns {string} M3U file content
  */
-export const generateM3UContent = (tracks, playlistName) => {
-  if (!Array.isArray(tracks) || tracks.length === 0) {
+export const generateM3UContent = (playlist) => {
+  if (playlist.tracks.length === 0) {
     throw new Error('Tracks array is required and must not be empty');
   }
 
@@ -13,13 +12,13 @@ export const generateM3UContent = (tracks, playlistName) => {
 
   // M3U header
   lines.push('#EXTM3U');
-  lines.push(`# Playlist: ${playlistName}`);
+  lines.push(`# Playlist: ${playlist.name}`);
   lines.push(`# Generated: ${new Date().toISOString()}`);
-  lines.push(`# Tracks: ${tracks.length}`);
+  lines.push(`# Tracks: ${playlist.tracks.length}`);
   lines.push('');
 
   // Add each track with extended metadata
-  tracks.forEach((track) => {
+  playlist.tracks.forEach((track) => {
     const duration = Math.round(track.duration || 0);
     const artist = track.artist || 'Unknown Artist';
     const title = track.title || 'Unknown Title';

@@ -42,6 +42,9 @@ class AppDatabase {
   }
 
   // Settings Repository Methods
+  // Settings are for storing application state that can be recalled later as a
+  // convenience. For example, remembering the directory the user last saved a
+  // file and recalling that the next time they save a file.
 
   getSetting(key) {
     return this.settingsRepository.getSetting(key)
@@ -68,6 +71,7 @@ class AppDatabase {
   }
 
   // User Preferences Repository Methods
+  // User preferences are explicit choices made by the user.
 
   getUserPreference(category, key) {
     return this.userPreferencesRepository.getPreference(category, key)

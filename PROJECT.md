@@ -330,7 +330,11 @@ Read-only database operations
 │   │   │   │   └── userPreferenceRepository.js
 │   │   │   ├── appDatabase.js
 │   │   │   └── mixxxDatabase.js
-│   │   └── index.js
+│   │   ├── index.js
+│   │   └── ipc
+│   │       ├── appDatabaseHandlers.js
+│   │       ├── fileHandlers.js
+│   │       └── mixxxDatabaseHandlers.js
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
@@ -364,7 +368,9 @@ Read-only database operations
 │           │   ├── SystemInformation.jsx
 │           │   └── TrackList.jsx
 │           ├── main.jsx
-│           ├── utilities.js
+│           ├── utilities
+│           │   ├── formatDuration.js
+│           │   └── generateM3UContent.js
 │           └── views
 │               ├── LibraryView.jsx
 │               ├── PlaylistCreationView.jsx
@@ -373,7 +379,7 @@ Read-only database operations
 ├── structure.sql
 └── vitest.config.js
 
-27 directories, 61 files
+29 directories, 65 files
 ```
 
 # TODOS
@@ -538,24 +544,17 @@ used to perform a query against the Mixxx dabatase.
 - [x] Fix bug where tracks are not reorderd after removal
 
 ### **Playlist Export (M3U)**
-- [ ] Create utility function to generate M3U file content from playlist tracks. Format M3U with extended metadata (#EXTINF). Meta data should be duration, artist and title. Include track file paths from Mixxx database. Encode with UTF-8.
-- [ ] Implement file save dialog using Electron's dialog API. Use a sensible default export location, like the user's Music folder if it exits, otherwise the user's home directory. This will be depend on the user's OS.
-- [ ] Add IPC handler for file system write operations
-- [ ] Add error handling for file write failures
-- [ ] Show success ToastNotification with the playlist file path after export (can the file path be a link to open the file?)
-- [ ] Store the export location is user_preferences and recall it when exporting in the future.
+- [x] Create utility function to generate M3U file content from playlist tracks. Format M3U with extended metadata (#EXTINF). Meta data should be duration, artist and title. Include track file paths from Mixxx database. Encode with UTF-8.
+- [x] Implement file save dialog using Electron's dialog API. Use a sensible default export location, like the user's Music folder if it exits, otherwise the user's home directory. This will be depend on the user's OS.
+- [x] Add IPC handler for file system write operations
+- [x] Add error handling for file write failures
+- [x] Show success ToastNotification with the playlist file path after export (can the file path be a link to open the file?)
+- [x] Store the export location is user_preferences and recall it when exporting in the future.
 
 ### **Polish & UX Enhancements**
-- [ ] Add empty state message when playlist has no tracks
 - [ ] Add info icon for each track that on click shows the full track details (what should the UX be? Modal? expand row item?)
-- [ ] Add search/filter bar for playlists with many tracks
-- [ ] Show loading skeletons while fetching playlist data
-- [ ] Add keyboard shortcuts (Delete key to remove track, Esc to cancel editing)
-- [ ] Implement undo/redo for track removal (optional)
 - [ ] Add playlist duplication feature
-- [ ] Add "Add tracks" button to manually add tracks from library (future feature)
-- [ ] Style components to match existing Bootstrap theme
-- [ ] Ensure responsive design for smaller screens
+- [ ] Add "Add tracks" button to manually add tracks from library. Use react-select. User keywords search artist, track name, group.
 
 ### **Testing**
 - [ ] Write unit tests for new appDatabase playlist methods
@@ -569,22 +568,24 @@ used to perform a query against the Mixxx dabatase.
 - [ ] Write tests for M3U export functionality
 - [ ] Test drag-and-drop reordering across different browsers/platforms
 
-### **Documentation**
-- [ ] Update README with playlist management features
-- [ ] Document M3U export format and compatibility
-- [ ] Add screenshots of playlist views to documentation
-- [ ] Document keyboard shortcuts for playlist management
-
 ## TODOs for Feature: Playlist (Phase 3: filter enhancements)
 ### Implement fields for user to filter tracks eligible for playlist creation
 - [ ] Filter by crates
 - [ ] Filter by Groups
 - [ ] Filter by Artists
-- [ ] Filter by musicl key
+- [ ] Filter by musical key
 - [ ] Filter by Year range
 - [ ] Filter by date added range
 ## TODOs for Feature: Playlist (Phase 4: harmonic mixing engine)
+- [ ] Remove limit from DB query
+- [ ] Add harmonic mixing select with options none, strict and creative (discuss this)
+- [ ] Build harmonic mixing engine that creates a playlist order where tracks are harmonically compatible
 ## TODOs for Feature: Playlist (Phase 4: Audio Player)
+
+## TODOs for Documentation
+- [ ] Update README with playlist management features
+- [ ] Document M3U export format and compatibility
+- [ ] Add screenshots of playlist views to documentation
 
 ## TODOs for Feature: Settings Foundation (Phase 2: API key management)
 ### Move existing components to Settings view

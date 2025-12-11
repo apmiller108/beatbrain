@@ -26,7 +26,7 @@ import FlashMessage from '../components/common/FlashMessage'
 import InlineEditInput from '../components/common/InlineEditInput'
 import PlaylistTrackItem from '../components/PlaylistTrackItem'
 
-const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }) => {
+const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, setNotification }) => {
   const [playlist, setPlaylist] = useState(null)
   const [playlistStats, setPlaylistStats] = useState({
     totalDuration: 0,
@@ -164,10 +164,23 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
     setIsExporting(true)
 
     try {
-      // TODO : Generate M3U content with generateM3UContent utility
-      // TODO : Use window.api.saveM3UPlaylist to save file
-      // TODO : Store last export path in user preferences
-      // TODO : Show toast notification on success/failure with link to file location if successful
+      const m3uContent = generateM3UContent(playlist)
+      const lastExportPath = await window.api.getSetting('playlist_export_path')
+      const result = await window.api.saveM3UPlaylist({ content: m3uContent, playlistName: playlist.name, lastExportPath })
+      if (result.success) {
+        await window.api.setSetting('playlist_export_path', result.exportPath)
+
+        setNotification({
+          show: true,
+          type: 'success',
+          message: `Playlist exported successfully to ${result.fileName}`,
+          filePath: result.filePath
+        })
+      }
+
+      if (!result.success && !result.canceled) {
+        throw new Error(result.error?.message || 'Unknown error during export')
+      }
     } catch (err) {
       console.error('Failed to export playlist:', err)
       setPlaylistError(`Failed to export playlist: ${err.message}`)
@@ -285,7 +298,6 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated }
               </div>
             </div>
 
-            {/* Action Buttons - Export is a placeholder for now */}
             <div className="d-flex gap-2">
               <OverlayTrigger overlay={<Tooltip>Export Playlist</Tooltip>}>
                 <Button variant="primary" onClick={handleExportPlaylist} disabled={isExporting}>

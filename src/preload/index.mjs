@@ -16,10 +16,15 @@ const api = {
   getUserPreferencesForCategory: category =>
     ipcRenderer.invoke('app:getUserPreferencesForCategory', category),
 
-  selectDatabaseFile: () => ipcRenderer.invoke('app:selectDatabaseFile'),
-
+  // User settings
   getTrackFilters: () => ipcRenderer.invoke('app:getTrackFilters'),
   saveTrackFilters: filters => ipcRenderer.invoke('app:saveTrackFilters', filters),
+  getSetting: key => ipcRenderer.invoke('app:getSetting', key),
+  setSetting: (key, value) => ipcRenderer.invoke('app:setSetting', key, value),
+
+  selectDatabaseFile: () => ipcRenderer.invoke('app:selectDatabaseFile'),
+
+  // Playlists
   createPlaylist: (playlistData, tracks) => ipcRenderer.invoke('app:createPlaylist', playlistData, tracks),
   getAllPlaylists: () => ipcRenderer.invoke('app:getAllPlaylists'),
   getPlaylistById: id => ipcRenderer.invoke('app:getPlaylistById', id),
@@ -30,8 +35,11 @@ const api = {
   removeTrackFromPlaylist: (playlistId, trackId) => ipcRenderer.invoke('app:removeTrackFromPlaylist', playlistId, trackId),
   deletePlaylist: id => ipcRenderer.invoke('app:deletePlaylist', id),
 
+  // File operations
   saveM3UPlaylist: (options) => ipcRenderer.invoke('file:saveM3UPlaylist', options),
+  openFileInFolder: (filePath) => ipcRenderer.invoke('file:openFileInFolder', filePath),
 
+  // Mixxx integration
   mixxx: {
     getStatus: () => ipcRenderer.invoke('mixxx:getStatus'),
     connect: dbPath => ipcRenderer.invoke('mixxx:connect', dbPath),
