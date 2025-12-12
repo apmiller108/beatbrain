@@ -366,9 +366,11 @@ Read-only database operations
 │           │   ├── PlaylistTrackItem.jsx
 │           │   ├── StatusBar.jsx
 │           │   ├── SystemInformation.jsx
+│           │   ├── TrackInfoModal.jsx
 │           │   └── TrackList.jsx
 │           ├── main.jsx
 │           ├── utilities
+│           │   ├── formatDate.js
 │           │   ├── formatDuration.js
 │           │   └── generateM3UContent.js
 │           └── views
@@ -379,7 +381,7 @@ Read-only database operations
 ├── structure.sql
 └── vitest.config.js
 
-29 directories, 65 files
+29 directories, 67 files
 ```
 
 # TODOS
@@ -552,8 +554,7 @@ used to perform a query against the Mixxx dabatase.
 - [x] Store the export location is user_preferences and recall it when exporting in the future.
 
 ### **Polish & UX Enhancements**
-- [ ] Add info icon for each track that on click shows the full track details (what should the UX be? Modal? expand row item?)
-- [ ] Add playlist duplication feature
+- [x] Add info icon for each track that on click shows the full track details (what should the UX be? Modal? expand row item?)
 - [ ] Add "Add tracks" button to manually add tracks from library. Use react-select. User keywords search artist, track name, group.
 
 ### **Testing**
@@ -580,8 +581,15 @@ used to perform a query against the Mixxx dabatase.
 - [ ] Remove limit from DB query
 - [ ] Add harmonic mixing select with options none, strict and creative (discuss this)
 - [ ] Build harmonic mixing engine that creates a playlist order where tracks are harmonically compatible
-## TODOs for Feature: Playlist (Phase 4: Audio Player)
-
+## TODOs for Feature: Playlist (Phase 5: Audio Player)
+- [ ] enqueue/play single track
+- [ ] enqueue/play entire playlist in order
+- [ ] show track waveform
+## TODOs for Feature: Playlist (Phase 6: UX enhancements)
+- [ ] Add option on playlist to set target BPM. Show how much percent the track will need to be pitched up or down next to the BPM value for each track.
+- [ ] Show the transposed key next to the track's key based on the target BPM. (eg, the actual musical key expected based on the BPM the track will be played at)
+- [ ] Add playlist duplication feature
+- [ ] R click on table header to select columns to show/hide
 ## TODOs for Documentation
 - [ ] Update README with playlist management features
 - [ ] Document M3U export format and compatibility

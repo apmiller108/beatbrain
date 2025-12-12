@@ -38,6 +38,7 @@ const api = {
   // File operations
   saveM3UPlaylist: (options) => ipcRenderer.invoke('file:saveM3UPlaylist', options),
   openFileInFolder: (filePath) => ipcRenderer.invoke('file:openFileInFolder', filePath),
+  openFile: (filePath) => ipcRenderer.invoke('file:openFile', filePath),
 
   // Mixxx integration
   mixxx: {
@@ -48,7 +49,8 @@ const api = {
     getSampleTracks: (limit = 10) =>
       ipcRenderer.invoke('mixxx:getSampleTracks', limit),
     getGenres: () => ipcRenderer.invoke('mixxx:getGenres'),
-    getTracks: (filters) => ipcRenderer.invoke('mixxx:getTracks', filters)
+    getTracks: (filters) => ipcRenderer.invoke('mixxx:getTracks', filters),
+    getTrackById: (trackId) => ipcRenderer.invoke('mixxx:getTrackById', trackId)
   }
 }
 

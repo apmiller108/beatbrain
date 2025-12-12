@@ -44,4 +44,8 @@ export function registerMixxxDatabaseHandlers(mixxxDatabase) {
   ipcMain.handle('mixxx:getTracks', async (_, filters) => {
     return mixxxDatabase.getTracks(filters)
   })
+
+  ipcMain.handle('mixxx:getTrackById', async (_, trackId) => {
+    return mixxxDatabase.getTrackById(trackId)
+  })
 }

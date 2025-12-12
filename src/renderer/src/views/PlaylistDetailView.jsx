@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Card, Spinner, Badge, Table, Button } from 'react-bootstrap'
-import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3 } from 'react-bootstrap-icons'
+import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3, InfoCircleFill } from 'react-bootstrap-icons'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import {
@@ -282,11 +282,9 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
                   <Clock className="me-2" />
                   <span>{formatDuration(playlistStats.totalDuration)}</span>
                 </div>
-                {playlistStats.avgBpm > 0 && (
                   <div>
                     <Badge bg="info">Avg BPM: {playlistStats.avgBpm}</Badge>
                   </div>
-                )}
                 <div className="d-flex align-items-center">
                   <Calendar className="me-2" />
                   <span>Created {new Date(playlist.created_at).toLocaleDateString()}</span>
@@ -333,7 +331,8 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
                 <Table hover responsive className="mb-0">
                   <thead>
                     <tr>
-                      <th style={{ width: '50px' }}>#</th>
+                      <th>#</th>
+                      <th><InfoCircleFill/></th>
                       <th>Title</th>
                       <th>Artist</th>
                       <th>Album</th>

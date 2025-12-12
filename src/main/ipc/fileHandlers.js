@@ -6,6 +6,7 @@ import { homedir } from 'os';
 export function registerFileHandlers() {
   ipcMain.handle('file:saveM3UPlaylist', handleSaveM3U);
   ipcMain.handle('file:openFileInFolder', openFileInFolder);
+  ipcMain.handle('file:openFile', handleOpenFile);
 }
 
 /**
@@ -14,7 +15,16 @@ export function registerFileHandlers() {
  * @param {string} filePath
  */
 async function openFileInFolder(event, filePath) {
-  shell.showItemInFolder(filePath);
+  await shell.showItemInFolder(filePath);
+}
+
+/**
+  * Open file with default application
+  * @param {IpcMainInvokeEvent} event
+  * @param {string} filePath
+  */
+async function handleOpenFile(event, filePath) {
+  await shell.openPath(filePath);
 }
 
 /**
