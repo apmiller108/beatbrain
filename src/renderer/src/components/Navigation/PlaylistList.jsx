@@ -14,11 +14,16 @@ const PlaylistList = ({ playlists, loading, error, activePlaylistId, onSelectPla
     setIsExpanded(!isExpanded)
   }
 
+  const badgeStyles = {
+    bg: activePlaylistId === null ? "secondary" : "light",
+    text: activePlaylistId === null ? "light" : "dark"
+  }
+
   return (
     <div className="playlist-navigation">
       <div
-        className="d-flex align-items-center justify-content-start px-3 py-2 playlist-header"
-        style={{ cursor: 'pointer' }}
+        className={`d-flex px-3 py-2 playlist-header nav-link ${activePlaylistId === null ? '' : 'active'}`}
+        style={{ cursor: 'pointer', 'border-radius': 0 }}
         onClick={toggleExpanded}
       >
         <div className="d-flex align-items-center">
@@ -26,7 +31,7 @@ const PlaylistList = ({ playlists, loading, error, activePlaylistId, onSelectPla
           <MusicNoteList className="mx-2" />
           <span>Playlists</span>
           {playlists.length > 0 && (
-            <Badge bg="secondary" className="ms-2">
+            <Badge bg={badgeStyles.bg} text={badgeStyles.text} className="ms-2">
               {playlists.length}
             </Badge>
           )}
@@ -41,7 +46,7 @@ const PlaylistList = ({ playlists, loading, error, activePlaylistId, onSelectPla
           }}
           title="Create new playlist"
         >
-          <Plus size={32} />
+      <Plus size={32} color={activePlaylistId === null ? '' : 'white'} />
         </Button>
       </div>
 
@@ -74,12 +79,14 @@ const PlaylistList = ({ playlists, loading, error, activePlaylistId, onSelectPla
                     active={activePlaylistId === playlist.id}
                     onClick={() => handlePlaylistClick(playlist.id)}
                     className="ps-5 py-2 d-flex align-items-center justify-content-between"
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: 'pointer', "border-radius": 0, filter: activePlaylistId === playlist.id ? "brightness(150%)" : "none" }}
                   >
                     <span className="text-truncate" title={playlist.name}>
                       {playlist.name}
                     </span>
-                    <Badge bg="light" text="dark" className="ms-2">
+                    <Badge bg={activePlaylistId === playlist.id ? "light" : "secondary"}
+                           text={activePlaylistId === playlist.id ? "dark" : "light"}
+                           className="ms-2">
                       {playlist.track_count}
                     </Badge>
                   </Nav.Link>

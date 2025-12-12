@@ -46,8 +46,7 @@ code {
 }
 
 .beatbrain-logo {
-  width: 4rem;
-  margin: -1rem;
+  width: 3rem;
 }
 
 .database-connection-modal {
@@ -68,6 +67,12 @@ code {
   overflow-y: auto;
   overflow-x: hidden;
   background-color: #f8f9fa;
+  .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    max-height: 32px;
+  }
 }
 
 .c-flash-message {

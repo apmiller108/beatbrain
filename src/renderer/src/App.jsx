@@ -259,29 +259,6 @@ function App() {
         autohide={notification.autohide}
         onClose={() => setNotification(prev => ({ ...prev, show: false }))}
       />
-      <Container fluid className="p-0">
-        <Row>
-          <Col>
-            <Navbar
-              bg="dark"
-              variant="dark"
-              expand="md"
-              className="shadow mb-2 px-3"
-            >
-              <Navbar.Brand>
-                <div className="d-flex justify-content-start align-items-center">
-                  <img
-                    className="beatbrain-logo"
-                    src={logo}
-                    alt="BeatBrain"
-                  />
-                  <span className="ms-4">BeatBrain</span>
-                </div>
-              </Navbar.Brand>
-            </Navbar>
-          </Col>
-        </Row>
-      </Container>
       <Container fluid className="pb-5">
         <Row>
           <Col xs={2} sm={2} className="p-0">

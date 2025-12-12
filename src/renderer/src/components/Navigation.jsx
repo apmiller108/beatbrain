@@ -74,7 +74,7 @@ const Navigation = ({ view, setView, onSelectPlaylist, activePlaylistId, deleted
         onSelect={handleNavSelect}
       >
         <Nav.Item>
-          <Nav.Link eventKey="library">
+          <Nav.Link eventKey="library" style={{ borderRadius: 0 }}>
             <CollectionPlay className="me-2" /> Library
           </Nav.Link>
         </Nav.Item>
@@ -90,7 +90,7 @@ const Navigation = ({ view, setView, onSelectPlaylist, activePlaylistId, deleted
         />
 
         <Nav.Item className="mt-2">
-          <Nav.Link eventKey="settings">
+          <Nav.Link eventKey="settings" style={{ borderRadius: 0 }}>
             <Gear className="me-2" /> Settings
           </Nav.Link>
         </Nav.Item>
