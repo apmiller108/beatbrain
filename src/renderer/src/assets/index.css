@@ -8,10 +8,6 @@ body {
   background-color: #f8f9fa;
 }
 
-.App {
-  min-height: 100vh;
-}
-
 /* Status indicator */
 .status-indicator {
   width: 12px;
@@ -50,8 +46,7 @@ code {
 }
 
 .beatbrain-logo {
-  width: 4rem;
-  margin: -1rem;
+  width: 3rem;
 }
 
 .database-connection-modal {
@@ -65,5 +60,29 @@ code {
 .status-bar {
   .database-connection-modal-opener {
     color: currentColor;
+  }
+}
+
+.c-navigation {
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #f8f9fa;
+  .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    max-height: 32px;
+  }
+}
+
+.c-flash-message {
+  .btn-close {
+    padding: 0.75rem 0.75rem
+  }
+}
+
+.c-playlist-track-item {
+  td {
+    vertical-align: middle;
   }
 }

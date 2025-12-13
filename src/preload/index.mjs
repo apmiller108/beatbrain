@@ -16,12 +16,31 @@ const api = {
   getUserPreferencesForCategory: category =>
     ipcRenderer.invoke('app:getUserPreferencesForCategory', category),
 
-  selectDatabaseFile: () => ipcRenderer.invoke('app:selectDatabaseFile'),
-
+  // User settings
   getTrackFilters: () => ipcRenderer.invoke('app:getTrackFilters'),
   saveTrackFilters: filters => ipcRenderer.invoke('app:saveTrackFilters', filters),
-  createPlaylist: (playlistData, tracks) => ipcRenderer.invoke('app:createPlaylist', playlistData, tracks),
+  getSetting: key => ipcRenderer.invoke('app:getSetting', key),
+  setSetting: (key, value) => ipcRenderer.invoke('app:setSetting', key, value),
 
+  selectDatabaseFile: () => ipcRenderer.invoke('app:selectDatabaseFile'),
+
+  // Playlists
+  createPlaylist: (playlistData, tracks) => ipcRenderer.invoke('app:createPlaylist', playlistData, tracks),
+  getAllPlaylists: () => ipcRenderer.invoke('app:getAllPlaylists'),
+  getPlaylistById: id => ipcRenderer.invoke('app:getPlaylistById', id),
+  updatePlaylist: (id, playlistData) => ipcRenderer.invoke('app:updatePlaylist', id, playlistData),
+  updateTrackPosition: (playlistId, trackId, newPosition) => ipcRenderer.invoke('app:updateTrackPosition', playlistId, trackId, newPosition),
+  updateTrackPositions: (playlistId, tracks) => ipcRenderer.invoke('app:updateTrackPositions', playlistId, tracks),
+  addTrackToPlaylist: (playlistId, trackData) => ipcRenderer.invoke('app:addTrackToPlaylist', playlistId, trackData),
+  removeTrackFromPlaylist: (playlistId, trackId) => ipcRenderer.invoke('app:removeTrackFromPlaylist', playlistId, trackId),
+  deletePlaylist: id => ipcRenderer.invoke('app:deletePlaylist', id),
+
+  // File operations
+  saveM3UPlaylist: (options) => ipcRenderer.invoke('file:saveM3UPlaylist', options),
+  openFileInFolder: (filePath) => ipcRenderer.invoke('file:openFileInFolder', filePath),
+  openFile: (filePath) => ipcRenderer.invoke('file:openFile', filePath),
+
+  // Mixxx integration
   mixxx: {
     getStatus: () => ipcRenderer.invoke('mixxx:getStatus'),
     connect: dbPath => ipcRenderer.invoke('mixxx:connect', dbPath),
@@ -30,11 +49,9 @@ const api = {
     getSampleTracks: (limit = 10) =>
       ipcRenderer.invoke('mixxx:getSampleTracks', limit),
     getGenres: () => ipcRenderer.invoke('mixxx:getGenres'),
-    getTracks: (filters) => ipcRenderer.invoke('mixxx:getTracks', filters)
-  },
-
-  // Future Claude API operations
-  // sendQuery: (query) => ipcRenderer.invoke('claude:query', query),
+    getTracks: (filters) => ipcRenderer.invoke('mixxx:getTracks', filters),
+    getTrackById: (trackId) => ipcRenderer.invoke('mixxx:getTrackById', trackId)
+  }
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

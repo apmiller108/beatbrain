@@ -5,6 +5,7 @@ import {
   Circle,
   ExclamationTriangleFill,
 } from 'react-bootstrap-icons'
+import logo from '../assets/beatbrain_logo.png'
 import propTypes from 'prop-types'
 
 const StatusBar = ({
@@ -57,7 +58,7 @@ const StatusBar = ({
       fixed="bottom"
       bg="light"
       variant="light"
-      className="border-top shadow-sm status-bar"
+      className="border-top status-bar p-0"
     >
       <Container fluid className="px-4">
         <small
@@ -73,7 +74,14 @@ const StatusBar = ({
             <span className="ms-2">{statusContent.text}</span>
           </Button>
         </small>
-        <small className="text-muted">BeatBrain v{appInfo.version}</small>
+        <div className="d-flex align-items-center justify-content-end">
+          <img
+            className="beatbrain-logo me-1"
+            src={logo}
+            alt="BeatBrain"
+          />
+          <small className="text-muted">BeatBrain v{appInfo.version}</small>
+        </div>
       </Container>
     </Navbar>
   )

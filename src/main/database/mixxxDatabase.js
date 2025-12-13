@@ -279,6 +279,53 @@ class MixxxDatabase {
     }
   }
 
+  getTrackById(trackId) {
+    if (!this.isConnected || !this.db) {
+      throw new Error('Database not connected')
+    }
+
+    try {
+      const track = this.db
+        .prepare(
+          `
+        SELECT DISTINCT
+            l.id,
+            l.title,
+            l.artist,
+            l.album,
+            l.grouping,
+            l.year,
+            l.datetime_added,
+            l.genre,
+            l.duration,
+            l.bpm,
+            l.bpm_lock,
+            l.rating,
+            l.key,
+            l.comment,
+            l.datetime_added,
+            l.timesplayed,
+            l.last_played_at,
+            l.bitrate,
+            l.samplerate,
+            l.filetype,
+            tl.location AS "file_path"
+        FROM
+            "library" l
+            JOIN track_locations tl ON tl.id = l."location"
+        WHERE l.id = ?
+          AND l.mixxx_deleted = 0
+      `
+        )
+        .get(trackId)
+
+      return track
+    } catch (error) {
+      console.error('Error getting track by ID:', error)
+      throw error
+    }
+  }
+
   getGenres() {
     if (!this.isConnected || !this.db) {
       throw new Error('Database not connected')
