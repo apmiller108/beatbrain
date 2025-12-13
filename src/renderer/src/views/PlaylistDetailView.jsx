@@ -259,17 +259,17 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
             <div>
               <InlineEditInput value={playlist.name}
                                onSave={handleSaveName}
-                               id="playlist-name-input"
-                               slot={ <h2 className="mb-0">{playlist.name}</h2> }/>
+                               id="playlist-name-input">
+                <h2 className="mb-0">{playlist.name}</h2>
+              </InlineEditInput>
               <div className="mt-1">
                 <InlineEditInput value={playlist.description}
                                  onSave={handleSaveDescription}
-                                 id="playlist-description-input"
-                                 slot={
-                                   <p className="text-muted mb-0">
-                                     {playlist.description || <span className="text-muted fst-italic">No description</span>}
-                                   </p>
-                                 }/>
+                                 id="playlist-description-input">
+                  <p className="text-muted mb-0">
+                    {playlist.description || <span className="text-muted fst-italic">No description</span>}
+                  </p>
+                </InlineEditInput>
               </div>
 
               {/* Playlist Metadata */}

@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap';
 import { Pencil } from 'react-bootstrap-icons';
 import propTypes from 'prop-types';
 
-const InlineEditInput = ({ value, onSave, id, slot }) => {
+const InlineEditInput = ({ value, onSave, id, children }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState(value);
 
@@ -45,7 +45,7 @@ const InlineEditInput = ({ value, onSave, id, slot }) => {
     </div>
   ) : (
     <div className="d-flex align-items-center justify-content-start">
-      {slot ? slot : value}
+      {children ? children : value}
       <Button variant="link" onClick={onEdit} className="ms-2"><Pencil/></Button>
     </div>
   );
