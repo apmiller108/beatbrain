@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Container, Navbar, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap'
+import { MixxxStatsContext } from './contexts/MixxxStatsContext'
 
 import PlaylistCreationView from './views/PlaylistCreationView'
 import PlaylistDetailView from './views/PlaylistDetailView'
@@ -9,7 +10,6 @@ import Navigation from './components/Navigation'
 import StatusBar from './components/StatusBar'
 import ToastNotification from './components/common/ToastNotification'
 import DatabaseConnectionModal from './components/DatabaseConnectionModal'
-import logo from './assets/beatbrain_logo.png'
 
 function App() {
   const [currentView, setCurrentView] = useState('playlists')
@@ -210,8 +210,7 @@ function App() {
 
   const playlistCreationView = () => {
     return (
-      <PlaylistCreationView mixxxStats={mixxxStats}
-                            mixxxStatus={mixxxStatus}
+      <PlaylistCreationView mixxxStatus={mixxxStatus}
                             onPlaylistCreated={handlePlaylistCreated}
                             handleShowConnectionModal={handleShowConnectionModal}
                             setNotification={setNotification}/>
@@ -223,7 +222,7 @@ function App() {
     switch (currentView) {
       case 'library':
         return (
-          <LibraryView mixxxStats={mixxxStats} sampleTracks={sampleTracks} />
+          <LibraryView sampleTracks={sampleTracks} />
         )
       case 'playlists':
       return playlistCreationView()
@@ -249,53 +248,55 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <ToastNotification
-        message={notification.message}
-        details={notification.details}
-        type={notification.type}
-        show={notification.show}
-        filePath={notification.filePath}
-        autohide={notification.autohide}
-        onClose={() => setNotification(prev => ({ ...prev, show: false }))}
-      />
-      <Container fluid className="pb-5">
-        <Row>
-          <Col xs={2} sm={2} className="p-0">
-            <Navigation view={currentView}
-                        setView={handleSetView}
-                        onSelectPlaylist={handleSelectPlaylist}
-                        deletedPlaylistId={deletedPlaylistId}
-                        createdPlaylistId={createdPlaylistId}
-                        updatedPlaylist={updatedPlaylist}
-                        activePlaylistId={activePlaylistId}/>
-          </Col>
-          <Col xs={10} xm={10}>
-            <Container className="mt-3">
-              {renderCurrentView()}
-            </Container>
-          </Col>
-        </Row>
-      </Container>
+    <MixxxStatsContext.Provider value={mixxxStats}>
+      <div className="App">
+        <ToastNotification
+          message={notification.message}
+          details={notification.details}
+          type={notification.type}
+          show={notification.show}
+          filePath={notification.filePath}
+          autohide={notification.autohide}
+          onClose={() => setNotification(prev => ({ ...prev, show: false }))}
+        />
+        <Container fluid className="pb-5">
+          <Row>
+            <Col xs={2} sm={2} className="p-0">
+              <Navigation view={currentView}
+                          setView={handleSetView}
+                          onSelectPlaylist={handleSelectPlaylist}
+                          deletedPlaylistId={deletedPlaylistId}
+                          createdPlaylistId={createdPlaylistId}
+                          updatedPlaylist={updatedPlaylist}
+                          activePlaylistId={activePlaylistId}/>
+            </Col>
+            <Col xs={10} xm={10}>
+              <Container className="mt-3">
+                {renderCurrentView()}
+              </Container>
+            </Col>
+          </Row>
+        </Container>
 
-      <DatabaseConnectionModal
-        show={showConnectionModal}
-        onHide={handleConnectionModalHide}
-        onConnect={handleConnectionModalConnect}
-        onManualSelect={handleManualDatabaseFileSelect}
-        onDisconnect={handleDisconnect}
-        mixxxStatus={mixxxStatus}
-        databasePreferences={databasePreferences}
-        loading={loading}
-      />
+        <DatabaseConnectionModal
+          show={showConnectionModal}
+          onHide={handleConnectionModalHide}
+          onConnect={handleConnectionModalConnect}
+          onManualSelect={handleManualDatabaseFileSelect}
+          onDisconnect={handleDisconnect}
+          mixxxStatus={mixxxStatus}
+          databasePreferences={databasePreferences}
+          loading={loading}
+        />
 
-      <StatusBar
-        mixxxStatus={mixxxStatus}
-        loading={loading}
-        appInfo={appInfo}
-        handleShowConnectionModal={handleShowConnectionModal}
-      />
-    </div>
+        <StatusBar
+          mixxxStatus={mixxxStatus}
+          loading={loading}
+          appInfo={appInfo}
+          handleShowConnectionModal={handleShowConnectionModal}
+        />
+      </div>
+    </MixxxStatsContext.Provider>
   )
 }
 

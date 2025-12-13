@@ -1,8 +1,11 @@
+import { useContext } from 'react'
+import { MixxxStatsContext } from '../contexts/MixxxStatsContext'
 import { Card, Row, Col, Badge } from 'react-bootstrap'
 import propTypes from 'prop-types'
 import formatDuration from '../utilities/formatDuration'
 
-function LibraryStatistics({ mixxxStats }) {
+function LibraryStatistics() {
+  const mixxxStats = useContext(MixxxStatsContext)
   return (
     <Card className="mt-4 shadow-sm">
       <Card.Header className="bg-info text-white">

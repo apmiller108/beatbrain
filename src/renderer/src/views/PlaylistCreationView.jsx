@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react'
-import { Button, Spinner, Badge} from 'react-bootstrap'
+import { useContext, useState, useEffect } from 'react'
+import { MixxxStatsContext } from '../contexts/MixxxStatsContext'
+import { Button, Spinner, Badge } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import { MusicNoteList } from 'react-bootstrap-icons'
 import PlaylistForm from '../components/PlaylistForm'
 import FlashMessage from '../components/common/FlashMessage'
 
-const PlaylistCreationView = ({ mixxxStats, mixxxStatus, onPlaylistCreated, handleShowConnectionModal, setNotification }) => {
+const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnectionModal, setNotification }) => {
   const [loading, setLoading] = useState(true)
   const [maxCount, setMaxCount] = useState(100)
   const [bpmRange, setBpmRange] = useState({ minBpm: 0, maxBpm: 300 })
@@ -17,6 +18,8 @@ const PlaylistCreationView = ({ mixxxStats, mixxxStatus, onPlaylistCreated, hand
     genres: [],
   })
   const [filteredTracks, setFilteredTracks] = useState([])
+
+  const mixxxStats = useContext(MixxxStatsContext)
 
   useEffect(() => {
     const loadSavedFilters = async () => {
@@ -185,13 +188,6 @@ const PlaylistCreationView = ({ mixxxStats, mixxxStatus, onPlaylistCreated, hand
 }
 
 PlaylistCreationView.propTypes = {
-  mixxxStats: PropTypes.shape({
-    totalTracks: PropTypes.number,
-    bpmRange: PropTypes.shape({
-      minBpm: PropTypes.number,
-      maxBpm: PropTypes.number,
-    })
-  }),
   mixxxStatus: PropTypes.shape({
     isConnected: PropTypes.bool.isRequired,
   }),
