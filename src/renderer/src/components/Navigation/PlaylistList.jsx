@@ -23,7 +23,7 @@ const PlaylistList = ({ playlists, loading, error, activePlaylistId, onSelectPla
     <div className="playlist-navigation">
       <div
         className={`d-flex px-3 py-2 playlist-header nav-link ${activePlaylistId === null ? '' : 'active'}`}
-        style={{ cursor: 'pointer', 'border-radius': 0 }}
+        style={{ cursor: 'pointer', borderRadius: 0 }}
         onClick={toggleExpanded}
       >
         <div className="d-flex align-items-center">
@@ -79,7 +79,7 @@ const PlaylistList = ({ playlists, loading, error, activePlaylistId, onSelectPla
                     active={activePlaylistId === playlist.id}
                     onClick={() => handlePlaylistClick(playlist.id)}
                     className="ps-5 py-2 d-flex align-items-center justify-content-between"
-                    style={{ cursor: 'pointer', "border-radius": 0, filter: activePlaylistId === playlist.id ? "brightness(150%)" : "none" }}
+                    style={{ cursor: 'pointer', borderRadius: 0, filter: activePlaylistId === playlist.id ? "brightness(150%)" : "none" }}
                   >
                     <span className="text-truncate" title={playlist.name}>
                       {playlist.name}
