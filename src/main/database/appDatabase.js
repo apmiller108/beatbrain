@@ -111,8 +111,8 @@ class AppDatabase {
     return this.playlistRepository.updateTrackPositions(playlistId, tracks)
   }
 
-  addTrackToPlaylist(playlistId, trackData) {
-    return this.playlistRepository.addTrackToPlaylist(playlistId, trackData)
+  addTracksToPlaylist(playlistId, trackSourceIds) {
+    return this.playlistRepository.addTracksToPlaylist(playlistId, trackSourceIds)
   }
 
   removeTrackFromPlaylist(playlistId, trackId) {

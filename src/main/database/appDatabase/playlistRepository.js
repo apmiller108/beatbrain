@@ -149,36 +149,42 @@ export default class PlaylistRepository {
     })
   }
 
-  // append a track to the end of the playlist
-  addTrackToPlaylist(playlistId, trackData) {
-    try {
-      const playlist = this.getPlaylistById(playlistId)
-      const lastTrack = playlist.tracks[playlist.tracks.length - 1]
-      const position = lastTrack ? lastTrack.position + 1 : 1
+  addTracksToPlaylist(playlistId, tracks) {
+    if (!tracks || tracks.length === 0) {
+      return { success: true, changes: 0 }
+    }
 
-      const insertTrackStmt = this.db.prepare(`
+    return this.db.transaction(() => {
+      const maxPositionResult = this.db.prepare(
+        'SELECT MAX(position) as maxPosition FROM playlist_tracks WHERE playlist_id = ?'
+      ).get(playlistId)
+      let nextPosition = (maxPositionResult?.maxPosition ?? -1) + 1
+
+      const insertStmt = this.db.prepare(`
         INSERT INTO playlist_tracks (playlist_id, source_track_id, file_path, duration, artist, title, album, genre, bpm, key, position, created_at, updated_at)
         VALUES ($playlist_id, $source_track_id, $file_path, $duration, $artist, $title, $album, $genre, $bpm, $key, $position, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `)
-      insertTrackStmt.run({
-        playlist_id: playlistId,
-        source_track_id: trackData.id,
-        file_path: trackData.file_path,
-        duration: trackData.duration,
-        artist: trackData.artist,
-        title: trackData.title,
-        album: trackData.album,
-        genre: trackData.genre,
-        bpm: trackData.bpm,
-        key: trackData.key,
-        position: position
-      })
 
-      return true
-    } catch (error) {
-      console.error('Error adding track to playlist:', error)
-      throw error
-    }
+      for (const track of tracks) {
+        insertStmt.run({
+          playlist_id: playlistId,
+          source_track_id: track.id,
+          file_path: track.file_path,
+          duration: track.duration,
+          artist: track.artist,
+          title: track.title,
+          album: track.album,
+          genre: track.genre,
+          bpm: track.bpm,
+          key: track.key,
+          position: nextPosition
+        })
+        nextPosition++
+      }
+
+      this.updatePlaylist(playlistId, {}) // update the playlist's updated_at timestamp
+      return { success: true, changes: tracks.length }
+    })
   }
 
   removeTrackFromPlaylist(playlistId, trackId) {

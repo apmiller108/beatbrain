@@ -3,6 +3,67 @@ import path from 'path'
 import fs from 'fs'
 import os from 'os'
 
+const toCamelot = (key) => {
+  if (!key) return key
+
+  // If key already contains Camelot notation (has A or B followed by space and parenthesis)
+  if (key.includes('A (') || key.includes('B (')) {
+    return key.split(' ')[0]
+  }
+
+  const mapping = {
+    'Am': '8A', 'E': '12B', 'B': '1B', 'F#': '2B', 'C#': '3B', 'G#': '4B',
+    'D#': '5B', 'A#': '6B', 'F': '7B', 'C': '8B', 'G': '9B', 'D': '10B',
+    'A': '11B', 'Em': '9A', 'Bm': '10A', 'F#m': '11A', 'C#m': '12A',
+    'G#m': '1A', 'D#m': '2A', 'A#m': '3A', 'Fm': '4A', 'Cm': '5A',
+    'Gm': '6A', 'Dm': '7A', 'Amin': '8A', 'Emaj': '12B', 'Bmaj': '1B',
+    'F#maj': '2B', 'C#maj': '3B', 'G#maj': '4B', 'D#maj': '5B', 'A#maj': '6B',
+    'Fmaj': '7B', 'Cmaj': '8B', 'Gmaj': '9B', 'Dmaj': '10B', 'Amaj': '11B',
+    'Emin': '9A', 'Bmin': '10A', 'F#min': '11A', 'C#min': '12A', 'G#min': '1A',
+    'D#min': '2A', 'A#min': '3A', 'Fmin': '4A', 'Cmin': '5A', 'Gmin': '6A',
+    'Dmin': '7A', 'Gbm': '11A', 'Dbm': '12A', 'Abm': '1A', 'Ebm': '2A',
+    'Bbm': '3A', 'Gbmin': '11A', 'Dbmin': '12A', 'Abmin': '1A', 'Ebmin': '2A',
+    'Bbmin': '3A', 'BM': '1B', 'F#M': '2B', 'C#M': '3B', 'G#M': '4B',
+    'D#M': '5B', 'A#M': '6B', 'FM': '7B', 'CM': '8B', 'GM': '9B',
+    'DM': '10B', 'AM': '11B', 'Cb': '1B', 'Gb': '2B', 'Db': '3B',
+    'Ab': '4B', 'Eb': '5B', 'Bb': '6B', 'Cbmaj': '1B', 'Gbmaj': '2B',
+    'Dbmaj': '3B', 'Abmaj': '4B', 'Ebmaj': '5B', 'Bbmaj': '6B'
+  }
+
+  return mapping[key] || key
+}
+
+const camelotCaseStatement = `
+  CASE
+    WHEN l.key LIKE '%A (%' OR l.key LIKE '%B (%' THEN SUBSTR(l.key, 1, INSTR(l.key, ' ') - 1)
+    WHEN l.key = 'Am' OR l.key = 'Amin' THEN '8A'
+    WHEN l.key = 'Em' OR l.key = 'Emin' THEN '9A'
+    WHEN l.key = 'Bm' OR l.key = 'Bmin' THEN '10A'
+    WHEN l.key = 'F#m' OR l.key = 'F#min' OR l.key = 'Gbm' OR l.key = 'Gbmin' THEN '11A'
+    WHEN l.key = 'C#m' OR l.key = 'C#min' OR l.key = 'Dbm' OR l.key = 'Dbmin' THEN '12A'
+    WHEN l.key = 'G#m' OR l.key = 'G#min' OR l.key = 'Abm' OR l.key = 'Abmin' THEN '1A'
+    WHEN l.key = 'D#m' OR l.key = 'D#min' OR l.key = 'Ebm' OR l.key = 'Ebmin' THEN '2A'
+    WHEN l.key = 'A#m' OR l.key = 'A#min' OR l.key = 'Bbm' OR l.key = 'Bbmin' THEN '3A'
+    WHEN l.key = 'Fm' OR l.key = 'Fmin' THEN '4A'
+    WHEN l.key = 'Cm' OR l.key = 'Cmin' THEN '5A'
+    WHEN l.key = 'Gm' OR l.key = 'Gmin' THEN '6A'
+    WHEN l.key = 'Dm' OR l.key = 'Dmin' THEN '7A'
+    WHEN l.key = 'C' OR l.key = 'Cmaj' OR l.key = 'CM' THEN '8B'
+    WHEN l.key = 'G' OR l.key = 'Gmaj' OR l.key = 'GM' THEN '9B'
+    WHEN l.key = 'D' OR l.key = 'Dmaj' OR l.key = 'DM' THEN '10B'
+    WHEN l.key = 'A' OR l.key = 'Amaj' OR l.key = 'AM' THEN '11B'
+    WHEN l.key = 'E' OR l.key = 'Emaj' OR l.key = 'EM' THEN '12B'
+    WHEN l.key = 'B' OR l.key = 'Bmaj' OR l.key = 'BM' OR l.key = 'Cb' OR l.key = 'Cbmaj' THEN '1B'
+    WHEN l.key = 'F#' OR l.key = 'F#maj' OR l.key = 'F#M' OR l.key = 'Gb' OR l.key = 'Gbmaj' THEN '2B'
+    WHEN l.key = 'C#' OR l.key = 'C#maj' OR l.key = 'C#M' OR l.key = 'Db' OR l.key = 'Dbmaj' THEN '3B'
+    WHEN l.key = 'G#' OR l.key = 'G#maj' OR l.key = 'G#M' OR l.key = 'Ab' OR l.key = 'Abmaj' THEN '4B'
+    WHEN l.key = 'D#' OR l.key = 'D#maj' OR l.key = 'D#M' OR l.key = 'Eb' OR l.key = 'Ebmaj' THEN '5B'
+    WHEN l.key = 'A#' OR l.key = 'A#maj' OR l.key = 'A#M' OR l.key = 'Bb' OR l.key = 'Bbmaj' THEN '6B'
+    WHEN l.key = 'F' OR l.key = 'Fmaj' OR l.key = 'FM' THEN '7B'
+    ELSE l.key
+  END
+`
+
 class MixxxDatabase {
   constructor() {
     this.db = null
@@ -183,14 +244,17 @@ class MixxxDatabase {
     return this.getTracks({ trackCount: limit } )
   }
 
-  getTracks({ minBpm, maxBpm, genres, trackCount } = {}) {
+  getTracks({ minBpm, maxBpm, genres, trackCount, query, keys, crates } = {}) {
     if (!this.isConnected || !this.db) {
       throw new Error('Database not connected')
     }
 
     try {
-      let query = `
-        SELECT DISTINCT
+      const params = {}
+      const whereClauses = ['l.mixxx_deleted = 0']
+
+      let baseQuery = `
+        SELECT
             l.id,
             l.title,
             l.artist,
@@ -202,76 +266,66 @@ class MixxxDatabase {
             l.duration,
             l.bpm,
             l.rating,
-            CASE
-                -- If key already contains Camelot notation (has A or B followed by space and parenthesis)
-                WHEN l.key LIKE '%A (%' OR l.key LIKE '%B (%' THEN
-                    SUBSTR(l.key, 1, INSTR(l.key, ' ') - 1)
-                -- Minor keys - individual WHEN statements
-                WHEN l.key = 'Am' OR l.key = 'Amin' THEN '8A'
-                WHEN l.key = 'Em' OR l.key = 'Emin' THEN '9A'
-                WHEN l.key = 'Bm' OR l.key = 'Bmin' THEN '10A'
-                WHEN l.key = 'F#m' OR l.key = 'F#min' OR l.key = 'Gbm' OR l.key = 'Gbmin' THEN '11A'
-                WHEN l.key = 'C#m' OR l.key = 'C#min' OR l.key = 'Dbm' OR l.key = 'Dbmin' THEN '12A'
-                WHEN l.key = 'G#m' OR l.key = 'G#min' OR l.key = 'Abm' OR l.key = 'Abmin' THEN '1A'
-                WHEN l.key = 'D#m' OR l.key = 'D#min' OR l.key = 'Ebm' OR l.key = 'Ebmin' THEN '2A'
-                WHEN l.key = 'A#m' OR l.key = 'A#min' OR l.key = 'Bbm' OR l.key = 'Bbmin' THEN '3A'
-                WHEN l.key = 'Fm' OR l.key = 'Fmin' THEN '4A'
-                WHEN l.key = 'Cm' OR l.key = 'Cmin' THEN '5A'
-                WHEN l.key = 'Gm' OR l.key = 'Gmin' THEN '6A'
-                WHEN l.key = 'Dm' OR l.key = 'Dmin' THEN '7A'
-                -- Major keys - individual WHEN statements
-                WHEN l.key = 'C' OR l.key = 'Cmaj' OR l.key = 'CM' THEN '8B'
-                WHEN l.key = 'G' OR l.key = 'Gmaj' OR l.key = 'GM' THEN '9B'
-                WHEN l.key = 'D' OR l.key = 'Dmaj' OR l.key = 'DM' THEN '10B'
-                WHEN l.key = 'A' OR l.key = 'Amaj' OR l.key = 'AM' THEN '11B'
-                WHEN l.key = 'E' OR l.key = 'Emaj' OR l.key = 'EM' THEN '12B'
-                WHEN l.key = 'B' OR l.key = 'Bmaj' OR l.key = 'BM' OR l.key = 'Cb' OR l.key = 'Cbmaj' THEN '1B'
-                WHEN l.key = 'F#' OR l.key = 'F#maj' OR l.key = 'F#M' OR l.key = 'Gb' OR l.key = 'Gbmaj' THEN '2B'
-                WHEN l.key = 'C#' OR l.key = 'C#maj' OR l.key = 'C#M' OR l.key = 'Db' OR l.key = 'Dbmaj' THEN '3B'
-                WHEN l.key = 'G#' OR l.key = 'G#maj' OR l.key = 'G#M' OR l.key = 'Ab' OR l.key = 'Abmaj' THEN '4B'
-                WHEN l.key = 'D#' OR l.key = 'D#maj' OR l.key = 'D#M' OR l.key = 'Eb' OR l.key = 'Ebmaj' THEN '5B'
-                WHEN l.key = 'A#' OR l.key = 'A#maj' OR l.key = 'A#M' OR l.key = 'Bb' OR l.key = 'Bbmaj' THEN '6B'
-                WHEN l.key = 'F' OR l.key = 'Fmaj' OR l.key = 'FM' THEN '7B'
-                ELSE l.key -- Return original if no match
-            END AS "key",
-            c.name "crate_name",
+            ${camelotCaseStatement} AS "camelot_key",
+            l.key,
             tl."location" AS "file_path"
         FROM
             "library" l
-            LEFT JOIN crate_tracks ct ON ct.track_id = l.id
-            lEFT JOIN crates c ON c.id = ct.crate_id
             JOIN track_locations tl ON tl.id = l."location"
-            WHERE l.mixxx_deleted = 0
       `
-      const params = {}
+
+      if (Array.isArray(crates) && crates.length > 0) {
+        baseQuery += ' JOIN crate_tracks ct ON ct.track_id = l.id'
+        const crateNamedParams = crates.map((g, index) => {
+          const name = `crate${index}`
+          params[name] = g
+          return `@${name}`
+        })
+        whereClauses.push(`ct.crate_id IN (${crateNamedParams.join(', ')})`)
+      }
+
+      if (query) {
+        whereClauses.push('(l.artist LIKE @query OR l.title LIKE @query OR l.album LIKE @query)')
+        params.query = `%${query}%`
+      }
 
       if (minBpm !== undefined) {
-        query += ' AND bpm >= @minBpm'
+        whereClauses.push('l.bpm >= @minBpm')
         params.minBpm = minBpm
       }
       if (maxBpm !== undefined) {
-        query += ' AND bpm <= @maxBpm'
+        whereClauses.push('l.bpm <= @maxBpm')
         params.maxBpm = maxBpm
       }
 
-      if (genres !== undefined && Array.isArray(genres) && genres.length > 0) {
-        const genreNamedParams = []
-        genres.forEach((g, index) => {
+      if (Array.isArray(genres) && genres.length > 0) {
+        const genreNamedParams = genres.map((g, index) => {
           const name = `genre${index}`
-          genreNamedParams.push(`@${name}`)
           params[name] = g.toLowerCase()
+          return `@${name}`
         })
-        query += ` AND LOWER(genre) IN (${genreNamedParams})`
+        whereClauses.push(`LOWER(l.genre) IN (${genreNamedParams.join(', ')})`)
       }
 
-      query += ' ORDER BY RANDOM()'
+      if (Array.isArray(keys) && keys.length > 0) {
+        const keyNamedParams = keys.map((k, index) => {
+          const name = `key${index}`
+          params[name] = k
+          return `@${name}`
+        })
+
+        whereClauses.push(`l.key in (${keyNamedParams.join(', ')})`)
+      }
+      let finalQuery = `${baseQuery} WHERE ${whereClauses.join(' AND ')}`
+
+      finalQuery += ' ORDER BY RANDOM()'
 
       if (trackCount !== undefined) {
-        query += ' LIMIT @limit'
+        finalQuery += ' LIMIT @limit'
         params.limit = trackCount
       }
 
-      const tracks = this.db.prepare(query).all(params)
+      const tracks = this.db.prepare(finalQuery).all(params)
       return tracks
     } catch (error) {
       console.error('Error getting tracks:', error)
@@ -326,6 +380,33 @@ class MixxxDatabase {
     }
   }
 
+  getTracksByIds(trackIds) {
+    if (!this.isConnected || !this.db) {
+      throw new Error('Database not connected')
+    }
+    if (!trackIds || trackIds.length === 0) {
+      return []
+    }
+
+    try {
+      const placeholders = trackIds.map(() => '?').join(',')
+      const tracks = this.db.prepare(`
+        SELECT
+            l.id, l.title, l.artist, l.album, l.genre, l.duration, l.bpm, l.key,
+            tl.location AS "file_path"
+        FROM
+            "library" l
+            JOIN track_locations tl ON tl.id = l."location"
+        WHERE l.id IN (${placeholders}) AND l.mixxx_deleted = 0
+      `).all(trackIds)
+
+      return tracks
+    } catch (error) {
+      console.error('Error getting tracks by IDs:', error)
+      throw error
+    }
+  }
+
   getGenres() {
     if (!this.isConnected || !this.db) {
       throw new Error('Database not connected')
@@ -347,6 +428,57 @@ class MixxxDatabase {
     } catch (error) {
       console.error('Error getting available genres:', error)
       throw error
+    }
+  }
+
+  getAvailableCrates() {
+    if (!this.isConnected || !this.db) {
+      throw new Error('Database not connected');
+    }
+
+    try {
+      const crates = this.db
+        .prepare(`
+          SELECT id, name
+          FROM crates
+          ORDER BY name COLLATE NOCASE ASC
+        `)
+        .all();
+      return crates;
+    } catch (error) {
+      console.error('Error getting available crates:', error);
+      throw error;
+    }
+  }
+
+  getAvailableKeys() {
+    if (!this.isConnected || !this.db) {
+      throw new Error('Database not connected');
+    }
+
+    try {
+      const keys = this.db
+        .prepare(`
+          SELECT DISTINCT key
+          FROM library
+          WHERE key IS NOT NULL AND key != ''
+          AND mixxx_deleted = 0
+        `)
+        .all()
+        .map(row => {
+          const original = row.key
+          const camelot = toCamelot(original)
+          return {
+            original,
+            camelot,
+            label: camelot === original ? original : `${camelot} - ${original}`
+          }
+        });
+
+      return keys;
+    } catch (error) {
+      console.error('Error getting available keys:', error);
+      throw error;
     }
   }
 

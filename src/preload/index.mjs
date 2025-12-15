@@ -31,9 +31,9 @@ const api = {
   updatePlaylist: (id, playlistData) => ipcRenderer.invoke('app:updatePlaylist', id, playlistData),
   updateTrackPosition: (playlistId, trackId, newPosition) => ipcRenderer.invoke('app:updateTrackPosition', playlistId, trackId, newPosition),
   updateTrackPositions: (playlistId, tracks) => ipcRenderer.invoke('app:updateTrackPositions', playlistId, tracks),
-  addTrackToPlaylist: (playlistId, trackData) => ipcRenderer.invoke('app:addTrackToPlaylist', playlistId, trackData),
   removeTrackFromPlaylist: (playlistId, trackId) => ipcRenderer.invoke('app:removeTrackFromPlaylist', playlistId, trackId),
   deletePlaylist: id => ipcRenderer.invoke('app:deletePlaylist', id),
+  addTracksToPlaylist: (playlistId, trackSourceIds) => ipcRenderer.invoke('app:addTracksToPlaylist', playlistId, trackSourceIds),
 
   // File operations
   saveM3UPlaylist: (options) => ipcRenderer.invoke('file:saveM3UPlaylist', options),
@@ -49,6 +49,8 @@ const api = {
     getSampleTracks: (limit = 10) =>
       ipcRenderer.invoke('mixxx:getSampleTracks', limit),
     getGenres: () => ipcRenderer.invoke('mixxx:getGenres'),
+    getAvailableCrates: () => ipcRenderer.invoke('mixxx:getAvailableCrates'),
+    getAvailableKeys: () => ipcRenderer.invoke('mixxx:getAvailableKeys'),
     getTracks: (filters) => ipcRenderer.invoke('mixxx:getTracks', filters),
     getTrackById: (trackId) => ipcRenderer.invoke('mixxx:getTrackById', trackId)
   }

@@ -135,6 +135,94 @@ describe('MixxxDatabase', () => {
         )
       })
     })
+
+    describe('getTracks', () => {
+      it('returns all tracks when no filters are provided', () => {
+        const tracks = mixxxDatabase.getTracks()
+        expect(tracks.length).toBe(seedData.library.length)
+      })
+
+      it('filters by a query string', () => {
+        const tracks = mixxxDatabase.getTracks({ query: 'Logotech' })
+        expect(tracks.length).toBe(1)
+        expect(tracks[0].artist).toBe('Logotech')
+      })
+
+      it('filters by BPM range', () => {
+        const tracks = mixxxDatabase.getTracks({ minBpm: 124, maxBpm: 126 })
+        expect(tracks.length).toBe(1)
+        expect(tracks[0].bpm).toBe(125)
+      })
+
+      it('filters by genres', () => {
+        const tracks = mixxxDatabase.getTracks({ genres: ['Techno (Raw / Deep / Hypnotic)', 'Techno'] })
+        expect(tracks.length).toBe(3)
+        const receivedGenres = tracks.map(t => t.genre).sort()
+        expect(receivedGenres).toEqual(['Techno', 'Techno', 'Techno (Raw / Deep / Hypnotic)'])
+      })
+
+      it('filters by Camelot keys', () => {
+        const tracks = mixxxDatabase.getTracks({ keys: ['Emin'] })
+        expect(tracks.length).toBe(1)
+        expect(tracks[0].key).toBe('Emin')
+      })
+
+      it('filters by crates', () => {
+        const crate1 = seedData.crates.find(c => c.name === 'Crate 1')
+        const tracks = mixxxDatabase.getTracks({ crates: [crate1.id] })
+        expect(tracks.length).toBe(2)
+        expect(tracks.map(t => t.title).sort()).toEqual(['Leda', 'Sub Lunar Phase II (Original M)'])
+      })
+
+      it('combines multiple filters', () => {
+        const track = seedData.library.find(t => t.title === 'Elevate')
+        const crate = seedData.crates.find(c => c.id === seedData.crate_tracks.find(ct => ct.track_id === track.id).crate_id)
+        const tracks = mixxxDatabase.getTracks({
+          genres: track.genre,
+          crates: [crate.id],
+          minBpm: track.bpm - 1,
+          maxBpm: track.bpm + 1,
+        })
+        expect(tracks.length).toBe(1)
+        expect(tracks[0].title).toBe(track.title)
+      })
+    })
+
+    describe('getAvailableCrates', () => {
+      it('returns all available crates', () => {
+        const crates = mixxxDatabase.getAvailableCrates()
+        expect(crates.length).toBe(seedData.crates.length)
+        expect(crates[0]).toHaveProperty('id')
+        expect(crates[0]).toHaveProperty('name')
+      })
+    })
+
+    describe('getAvailableKeys', () => {
+      it('returns unique keys with original and Camelot notation', () => {
+        const keys = mixxxDatabase.getAvailableKeys()
+        expect(keys).toEqual(expect.arrayContaining([
+          {
+            original: "Emin",
+            camelot: "9A",
+            label: "9A - Emin"
+          }
+        ]))
+      })
+    })
+
+    describe('getTracksByIds', () => {
+      it('returns the correct tracks for the given IDs', () => {
+        const trackIds = [1, 3]
+        const tracks = mixxxDatabase.getTracksByIds(trackIds)
+        expect(tracks.length).toBe(2)
+        expect(tracks.map(t => t.id).sort()).toEqual([1, 3])
+      })
+
+      it('returns an empty array if no IDs are provided', () => {
+        const tracks = mixxxDatabase.getTracksByIds([])
+        expect(tracks.length).toBe(0)
+      })
+    })
   })
 
   describe('getStatus', () => {

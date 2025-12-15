@@ -41,6 +41,14 @@ export function registerMixxxDatabaseHandlers(mixxxDatabase) {
     return mixxxDatabase.getGenres()
   })
 
+  ipcMain.handle('mixxx:getAvailableCrates', async () => {
+    return mixxxDatabase.getAvailableCrates()
+  })
+
+  ipcMain.handle('mixxx:getAvailableKeys', async () => {
+    return mixxxDatabase.getAvailableKeys()
+  })
+
   ipcMain.handle('mixxx:getTracks', async (_, filters) => {
     return mixxxDatabase.getTracks(filters)
   })

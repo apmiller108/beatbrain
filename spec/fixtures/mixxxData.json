@@ -1,6 +1,7 @@
 {
   "library": [
     {
+      "id": 1,
       "artist": "Bartig Move",
       "title": "Leda",
       "album": "Abandon All Hope",
@@ -31,7 +32,7 @@
       "composer": "",
       "bpm_lock": 0,
       "beats_sub_version": "rounding=V4|vamp_plugin_id=qm-tempotracker:0",
-      "keys": "Emin ",
+      "keys": "Emin",
       "keys_version": "KeyMap-1.0",
       "keys_sub_version": "",
       "key_id": 17,
@@ -50,6 +51,7 @@
       "source_synchronized_ms": 1757194695997
     },
     {
+      "id": 2,
       "artist": "Logotech",
       "title": "Sub Lunar Phase II (Original M)",
       "album": "Sub Lunar EP",
@@ -99,7 +101,7 @@
       "source_synchronized_ms": null
     },
     {
-      "id": 3194,
+      "id": 3,
       "artist": "Kashpitzky",
       "title": "Elevate",
       "album": "Elevate",

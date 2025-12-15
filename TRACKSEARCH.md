@@ -175,4 +175,106 @@ searchTracks({ query, bpmMin, bpmMax, genres, keys, crates, yearRange, label })
 ✅ **Scalable** - Easy to add more filters later
 ✅ **Mobile-friendly** - Modal adapts well to smaller screens
 
-Would you like me to create the initial implementation of `AddTracksModal.jsx` with the search input and filter components?
+# Implementation Plan (TODOs)
+
+This plan breaks down the work required to implement the "Add Tracks to Playlist" feature based on the UX recommendations above.
+
+### **Phase 1: Backend & Core Logic**
+
+#### **1. Database Layer (`src/main/database/mixxxDatabase.js`)**
+- [x] Update search method: `getTracks(filters)`.
+    - `filters` object should support:
+        - `query` (for string-based search on artist, title, album)
+        - `bpmMin`, `bpmMax`
+        - `genres` (array)
+        - `keys` (array of harmonic keys that could be the camelot or original key notation)
+        - `crates` (array of crate IDs)
+- [x] Create methods to fetch options for advanced filters:
+    - [x] `getAvailableKeys()` - Return all unique, non-empty keys from the `library` table. Convert to the Camelot key notation, but also return the original notiation.
+    - [x] `getAvailableCrates()` - Return all crates (id, name) from the `crates` table.
+
+#### **2. App Database Layer (`src/main/database/appDatabase.js`)**
+- [x] Create a new method `addTracksToPlaylist(playlistId, tracks)` that takes an array of Mixxx tracks, and adds them as new entries in the `playlist_tracks` table.
+
+#### **3. Main Process - IPC Handlers**
+- [x] In `src/main/ipc/mixxxDatabaseHandlers.js` Add handlers for `mixxx:getAvailableKeys` and `mixxx:getAvailableCrates`.
+- [x] In `src/main/ipc/appDatabaseHandlers.js` Add handler for `app:addTracksToPlaylist` that calls `appDatabase.addTracksToPlaylist()`.
+
+#### **4. Preload Script (`src/preload/index.mjs`)**
+- [x] Expose the new IPC channels: `getAvailableKeys`, `getAvailableCrates`, and `addTracksToPlaylist` on the `window.api` object.
+
+---
+
+### **Phase 2: Frontend - UI Components**
+
+#### **1. Create New Filter Components (`src/renderer/src/components/filters/`)**
+- [ ] Create `KeyMultiSelect.jsx` for filtering by musical key, using `react-select`.
+- [ ] Create `CrateMultiSelect.jsx` for filtering by Mixxx crates, using `react-select`.
+
+#### **2. Create Search Modal Components (`src/renderer/src/components/`)**
+- [ ] **`AddTracksModal.jsx`**: The main modal container (`react-bootstrap/Modal`).
+    - Manages state for search, filters, results, and selected tracks.
+    - Fetches filter options (genres, keys, crates) on mount.
+    - Renders the other search components.
+    - Contains "Cancel" and "Add X Selected Tracks" buttons.
+- [ ] **`TrackSearchInput.jsx`**: A simple, debounced text input for the quick search.
+- [ ] **`AdvancedTrackFilters.jsx`**: A collapsible section containing:
+    - Reused `BpmRangeInput.jsx` and `GenreMultiSelect.jsx`.
+    - New `KeyMultiSelect.jsx` and `CrateMultiSelect.jsx`.
+- [ ] **`TrackSearchResults.jsx`**: Container for the results list.
+    - Implements virtual scrolling (e.g., with `react-window`) for performance.
+    - Includes "Select All" / "Deselect All" functionality.
+- [ ] **`TrackSearchResultItem.jsx`**: An individual item in the results list.
+    - Displays track info (title, artist, BPM, key).
+    - Has a checkbox for selection.
+    - Is disabled/styled differently if the track is already in the current playlist.
+
+---
+
+### **Phase 3: Integration & State Management**
+
+#### **1. `PlaylistDetailView.jsx` Integration**
+- [ ] Add an "Add Tracks" button to the header, next to the "Export" button.
+- [ ] Add state to manage the visibility of `AddTracksModal` (e.g., `const [showAddTracksModal, setShowAddTracksModal] = useState(false)`).
+- [ ] Pass the current playlist's track IDs to `AddTracksModal` for duplicate detection.
+- [ ] Pass a handler to `AddTracksModal` that is called when tracks are added.
+    - The handler should call `window.api.addTracksToPlaylist(playlistId, selectedTrackIds)`.
+    - On success, it should refresh the playlist data (`loadPlaylist()`) and trigger `onPlaylistUpdated()`.
+    - It should also show a success notification/toast.
+
+#### **2. State Management within `AddTracksModal.jsx`**
+- [ ] Manage state for all filter values.
+- [ ] Manage loading/error states for search execution and filter option fetching.
+- [ ] Manage the array of search results.
+- [ ] Manage the `Set` of selected track IDs.
+
+---
+
+### **Phase 4: Polish & UX**
+
+- [ ] Implement debouncing for the quick search input (300ms).
+- [ ] Display a "Found X tracks" count in the results area.
+- [ ] Add loading indicators while a search is in progress.
+- [ ] Disable the "Add Selected Tracks" button if no tracks are selected, and update its text dynamically.
+- [ ] Add a keyboard shortcut (`Esc`) to close the modal.
+- [ ] Show a toast notification upon successful addition of tracks.
+
+---
+
+### **Phase 5: Testing**
+
+- [ ] **Unit Tests**:
+    - `mixxxDatabase.searchTracks()` with various filter combinations.
+    - `appDatabase.addTracksToPlaylist()` logic.
+    - New filter components (`KeyMultiSelect`, `CrateMultiSelect`).
+- [ ] **Component Tests**:
+    - `AddTracksModal.jsx` (mocking API calls) to verify state changes and interactions.
+    - `TrackSearchResults.jsx` to verify selection and virtual scrolling behavior.
+- [ ] **E2E Test (Playwright)**:
+    - Create a test that:
+        1. Navigates to a playlist.
+        2. Clicks the "Add Tracks" button.
+        3. Uses the quick search and an advanced filter.
+        4. Selects a few tracks.
+        5. Clicks "Add".
+        6. Verifies the modal closes and the new tracks appear in the `PlaylistDetailView`.

@@ -41,7 +41,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
 
   useEffect(() => {
     // TODO remove this. Debug logging for filters during development
-    console.log('Filters updated:', JSON.stringify(filters, null, 2))
+    // console.log('Filters updated:', JSON.stringify(filters, null, 2))
 
     const getTracks = async () => {
       try {

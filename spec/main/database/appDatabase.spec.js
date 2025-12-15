@@ -293,49 +293,6 @@ describe('AppDatabase', () => {
       })
     })
 
-    describe('addTrackToPlaylist', () => {
-      it('adds a track to an existing playlist', () => {
-        const playlistData = {
-          name: 'Test Playlist',
-          description: 'A test playlist',
-          trackSource: 'mixxx'
-        }
-        const initialTracks = [
-          {
-            id: 1,
-            file_path: '/path/to/track1.mp3',
-            duration: 180,
-            artist: 'Artist 1',
-            title: 'Track 1',
-            album: 'Album 1',
-            genre: 'Genre 1',
-            bpm: 120,
-            key: '8A'
-          }
-        ]
-
-        const playlist = appDatabase.createPlaylist(playlistData, initialTracks)
-
-        const newTrackData = {
-          id: 2,
-          file_path: '/path/to/track2.mp3',
-          duration: 240,
-          artist: 'Artist 2',
-          title: 'Track 2',
-          album: 'Album 2',
-          genre: 'Genre 2',
-          bpm: 125,
-          key: '1B'
-        }
-
-        appDatabase.addTrackToPlaylist(playlist.id, newTrackData)
-
-        const updatedPlaylist = appDatabase.getPlaylist(playlist.id)
-
-        expect(updatedPlaylist.tracks.length).toBe(2)
-      })
-    })
-
     describe('removeTrackFromPlaylist', () => {
       it('removes a track from a playlist', () => {
         const playlistData = {
@@ -366,6 +323,21 @@ describe('AppDatabase', () => {
         const updatedPlaylist = appDatabase.getPlaylist(playlist.id)
 
         expect(updatedPlaylist.tracks.length).toBe(0)
+      })
+    })
+
+    describe('addTracksToPlaylist', () => {
+      it('adds multiple tracks to an existing playlist', () => {
+        const tracks = [
+          { id: 101, title: 'New Track 1', artist: 'New Artist 1', bpm: 130, key: '9A', duration: 200, file_path: '/new/1' },
+          { id: 102, title: 'New Track 2', artist: 'New Artist 2', bpm: 132, key: '10A', duration: 210, file_path: '/new/2' }
+        ]
+        const playlist = appDatabase.createPlaylist({ name: 'Initial Playlist' }, [])
+
+        appDatabase.addTracksToPlaylist(playlist.id, tracks)
+
+        const updatedPlaylist = appDatabase.getPlaylist(playlist.id)
+        expect(updatedPlaylist.tracks.length).toBe(2)
       })
     })
   })

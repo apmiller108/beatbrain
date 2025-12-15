@@ -59,16 +59,16 @@ export function registerAppDatabaseHandlers(appDatabase) {
     return appDatabase.updateTrackPositions(playlistId, tracks)
   })
 
-  ipcMain.handle('app:addTrackToPlaylist', async (_, playlistId, trackData) => {
-    return appDatabase.addTrackToPlaylist(playlistId, trackData)
-  })
-
   ipcMain.handle('app:removeTrackFromPlaylist', async (_, playlistId, trackId) => {
     return appDatabase.removeTrackFromPlaylist(playlistId, trackId)
   })
 
   ipcMain.handle('app:deletePlaylist', async (_, id) => {
     return appDatabase.deletePlaylist(id)
+  })
+
+  ipcMain.handle('app:addTracksToPlaylist', async (_, playlistId, trackSourceIds) => {
+    return appDatabase.addTracksToPlaylist(playlistId, trackSourceIds)
   })
 
 }
