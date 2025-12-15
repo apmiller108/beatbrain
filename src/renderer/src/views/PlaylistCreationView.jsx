@@ -11,11 +11,13 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
   const [maxCount, setMaxCount] = useState(100)
   const [bpmRange, setBpmRange] = useState({ minBpm: 0, maxBpm: 300 })
   const [genres, setGenres] = useState([])
+  const [keys, setKeys] = useState([])
   const [filters, setFilters] = useState({
     trackCount: 25,
     minBpm: null,
     maxBpm: null,
     genres: [],
+    keys: []
   })
   const [filteredTracks, setFilteredTracks] = useState([])
 
@@ -27,7 +29,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
         const savedFilters = await window.api.getTrackFilters()
         if (savedFilters) {
           const parsedFilters = JSON.parse(savedFilters)
-          setFilters(parsedFilters)
+          setFilters(prevFilters => ({ ...prevFilters, ...parsedFilters }))
         }
         setLoading(false)
       } catch (error) {
@@ -60,13 +62,16 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
   }, [filters, mixxxStatus])
 
   useEffect(() => {
-    const getGenres = async () => {
+    const getFilterOptions = async () => {
       const availableGenres = await window.api.mixxx.getGenres() || []
       setGenres(availableGenres)
+
+      const availableKeys = await window.api.mixxx.getAvailableKeys() || []
+      setKeys(availableKeys)
     }
 
     if (mixxxStatus?.isConnected) {
-      getGenres()
+      getFilterOptions()
     }
 
     if (mixxxStats) {
@@ -163,23 +168,24 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
                 maxTrackCount={maxCount}
                 bpmRange={bpmRange}
                 availableGenres={genres}
+                availableKeys={keys}
                 onGeneratePlaylist={onGeneratePlaylist}
                 isValid={canGeneratePlaylist}
               />
             </>
           ) : (
-                <FlashMessage variant="warning"
-                              heading="Database Not Connected"
-                              message="Connect to your Mixxx database to start creating playlists."
-                              action={
-                                <Button
-                                  variant="primary"
-                                  onClick={handleShowConnectionModal}
-                                  className="ms-3"
-                                >
-                                  Configure Database
-                                </Button>
-                              }/>
+            <FlashMessage variant="warning"
+                          heading="Database Not Connected"
+                          message="Connect to your Mixxx database to start creating playlists."
+                          action={
+                            <Button
+                              variant="primary"
+                              onClick={handleShowConnectionModal}
+                              className="ms-3"
+                            >
+                              Configure Database
+                            </Button>
+                          }/>
           )}
         </>
       )}

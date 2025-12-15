@@ -29,13 +29,31 @@ export const toCamelot = (key) => {
 }
 
 export const toTraditional = (key) => {
-  // Extract camelot part if the original notation contains both notations
-  // e.g., "8A (Am)" -> "8A"
-  const camelotKey = (key.toUpperCase().match(/[0-9]{1,2}[AB]/) || [])[0]
-  if (!camelotKey) return key // Assume it's already traditional if no Camelot part found
+  let traditionalKey;
 
-  const entry = Object.entries(keyMap).find(([traditional, camelot]) => camelot === camelotKey)
-  return entry ? entry[0] : key
+  // Extract camelot part if the original notation contains both notations or its just a Camelot key
+  // e.g., "8A (Am)" -> "8A"
+  const camelotKey = (key.match(/[0-9]{1,2}[AB]/) || [])[0]
+
+  // If this is a Camelot key, find the corresponding traditional key. Otherwise, use the original key.
+  if (camelotKey) {
+    let entry = Object.entries(keyMap).find(([traditional, camelot]) => camelot === camelotKey)
+    traditionalKey = entry[0]
+  } else {
+    traditionalKey = key
+  }
+
+  // Handle multiple traditional keys mapping to the same Camelot key by
+  // normalizing the traditional key: Convert maj to M and min to m for
+  // consistency. E.g., "Amin" -> "Am", "Cmaj" -> "CM". For example 8A will
+  // always map to "Am" instead of sometimes "Amin".
+  if (traditionalKey.endsWith('min')) {
+    return traditionalKey.slice(0, -3) + 'm'
+  } else if (traditionalKey.endsWith('maj')) {
+    return traditionalKey.slice(0, -3) + 'M'
+  } else {
+    return traditionalKey
+  }
 }
 
 export default {

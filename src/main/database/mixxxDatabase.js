@@ -4,6 +4,7 @@ import fs from 'fs'
 import os from 'os'
 
 // NOTE: this may not longer be necessary as the components will convert keys per users preference
+// It might be useful to have this logic here for future features though (eg, harmonic mixing algorithm)
 const camelotCaseStatement = `
   CASE
     WHEN l.key LIKE '%A (%' OR l.key LIKE '%B (%' THEN SUBSTR(l.key, 1, INSTR(l.key, ' ') - 1)
