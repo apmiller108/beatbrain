@@ -1,7 +1,7 @@
 {
   "name": "beatbrain",
   "version": "0.1.0",
-  "description": "DJ assistant and playlist creator",
+  "description": "Smart playlist creator for DJs",
   "main": "./out/main/index.js",
   "type": "module",
   "scripts": {
