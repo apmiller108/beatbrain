@@ -3,7 +3,7 @@ import { Modal, Badge, Row, Col } from 'react-bootstrap'
 import formatDuration from '../utilities/formatDuration'
 import formatDate from '../utilities/formatDate'
 
-const TrackInfoModal = ({ show, onHide, track }) => {
+const TrackInfoModal = ({ show, onHide, track, keyNotation, trackKey }) => {
   if (!track) return null
 
   const InfoRow = ({ label, value, badge = false, badgeVariant = 'secondary' }) => (
@@ -40,6 +40,9 @@ const TrackInfoModal = ({ show, onHide, track }) => {
 
         <InfoRow label="BPM" value={track.bpm ? Math.round(track.bpm) : null} badge badgeVariant="secondary" />
         <InfoRow label="Key" value={track.key} badge badgeVariant="primary" />
+        {keyNotation !== 'original' && (
+          <InfoRow label={`Key (${keyNotation})`} value={trackKey} badge badgeVariant="primary" />
+        )}
         <InfoRow label="Duration" value={track.duration ? formatDuration(track.duration) : null} />
         <InfoRow label="Rating" value={track.rating ? `${track.rating}/5` : 'Not rated'} />
 

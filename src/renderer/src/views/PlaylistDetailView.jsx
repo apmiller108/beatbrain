@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Card, Spinner, Badge, Table, Button } from 'react-bootstrap'
-import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3, InfoCircleFill } from 'react-bootstrap-icons'
+import { Card, Spinner, Badge, Table, Button, Form, FloatingLabel } from 'react-bootstrap'
+import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3, InfoCircleFill, MusicNoteBeamed } from 'react-bootstrap-icons'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import {
@@ -41,6 +41,15 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
   const [playlistError , setPlaylistError] = useState(null)
   const [isUpdatingOrder, setIsUpdatingOrder] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
+  const [keyNotation, setKeyNotation] = useState('original') // could be 'original', 'camelot', 'traditional'
+
+  useEffect(() => {
+    const loadUserPreference = async () => {
+      const notation = await window.api.getUserPreference('ui', 'key_notation') || 'original'
+      setKeyNotation(notation)
+    }
+    loadUserPreference()
+  }, [])
 
   useEffect(() => {
     loadPlaylist()
@@ -233,6 +242,11 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
     }
   }
 
+  const handleKeyNotationChange = (e) => {
+    window.api.setUserPreference('ui', 'key_notation', e.target.value)
+    setKeyNotation(e.target.value)
+  }
+
   if (loading) {
     return (
       <div className="text-center py-5">
@@ -314,7 +328,7 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
 
       {/* Track List */}
       <Card className="shadow-sm">
-        <Card.Header>
+        <Card.Header className="d-flex justify-content-between align-items-center">
           <h5 className="mb-0">
             Tracks
             {isUpdatingOrder && (
@@ -323,6 +337,22 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
               </small>
             )}
           </h5>
+          <OverlayTrigger overlay={<Tooltip>Key notation</Tooltip>}>
+            <Form.Group controlId="keyNotationSelect" style={{ maxWidth: '200px' }} className="d-flex align-items-center mb-0">
+              <Form.Label className="me-2">
+                <MusicNoteBeamed />
+              </Form.Label>
+              <Form.Select
+                value={keyNotation}
+                onChange={handleKeyNotationChange}
+                size="sm"
+              >
+                <option value="original">Original</option>
+                <option value="camelot">Camelot</option>
+                <option value="traditional">Traditional</option>
+              </Form.Select>
+            </Form.Group>
+          </OverlayTrigger>
         </Card.Header>
         <Card.Body className="p-0">
           {playlist.tracks && playlist.tracks.length > 0 ? (
@@ -347,6 +377,7 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
                       <PlaylistTrackItem
                         key={track.id}
                         track={track}
+                        keyNotation={keyNotation}
                         disabled={isUpdatingOrder}
                         onRemove={handleRemoveTrack}
                       />

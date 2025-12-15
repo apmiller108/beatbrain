@@ -198,15 +198,9 @@ describe('MixxxDatabase', () => {
     })
 
     describe('getAvailableKeys', () => {
-      it('returns unique keys with original and Camelot notation', () => {
+      it('returns the unique keys', () => {
         const keys = mixxxDatabase.getAvailableKeys()
-        expect(keys).toEqual(expect.arrayContaining([
-          {
-            original: "Emin",
-            camelot: "9A",
-            label: "9A - Emin"
-          }
-        ]))
+        expect(keys).toEqual(['Emin', 'Gmaj'])
       })
     })
 

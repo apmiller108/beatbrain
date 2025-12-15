@@ -7,9 +7,10 @@ import Tooltip from 'react-bootstrap/Tooltip'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import formatDuration from '../utilities/formatDuration'
+import { toCamelot, toTraditional } from '../utilities/musicalKeys'
 import TrackInfoModal from './TrackInfoModal'
 
-const PlaylistTrackItem = ({ track, onRemove, disabled }) => {
+const PlaylistTrackItem = ({ track, onRemove, disabled, keyNotation = 'original' }) => {
   const [showModal, setShowModal] = useState(false)
   const [trackInfo, setTrackInfo] = useState(null)
 
@@ -32,6 +33,16 @@ const PlaylistTrackItem = ({ track, onRemove, disabled }) => {
   const handleCloseModal = () => {
     setShowModal(false)
     setTrackInfo(null)
+  }
+
+  const formatKey = (key) => {
+    if (keyNotation === 'camelot') {
+      return toCamelot(key)
+    } else if (keyNotation === 'traditional') {
+      return toTraditional(key)
+    } else {
+      return key
+    }
   }
 
   return (
@@ -62,7 +73,7 @@ const PlaylistTrackItem = ({ track, onRemove, disabled }) => {
         </td>
         <td>
           {track.key ? (
-            <Badge bg="primary">{track.key}</Badge>
+            <Badge bg="primary">{formatKey(track.key)}</Badge>
           ) : (
             '-'
           )}
@@ -79,7 +90,7 @@ const PlaylistTrackItem = ({ track, onRemove, disabled }) => {
         </td>
       </tr>
 
-      <TrackInfoModal show={showModal} onHide={handleCloseModal} track={trackInfo}/>
+      <TrackInfoModal show={showModal} onHide={handleCloseModal} track={trackInfo} keyNotation={keyNotation} trackKey={formatKey(track.key)}/>
     </>
   )
 }
