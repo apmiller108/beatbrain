@@ -35,6 +35,7 @@ const TrackInfoModal = ({ show, onHide, track, keyNotation, trackKey }) => {
         <InfoRow label="Label" value={track.grouping} />
         <InfoRow label="Year" value={track.year} />
         <InfoRow label="Genre" value={track.genre} />
+        <InfoRow label="In Crates" value={track.crates.map(c => c.name).join(', ')} />
 
         <hr className="my-3" />
 

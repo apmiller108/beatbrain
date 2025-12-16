@@ -344,6 +344,8 @@ class MixxxDatabase {
         )
         .get(trackId)
 
+      const crates = this.getCratesForTrack(trackId)
+      track.crates = crates
       return track
     } catch (error) {
       console.error('Error getting track by ID:', error)
@@ -398,6 +400,26 @@ class MixxxDatabase {
       return genres
     } catch (error) {
       console.error('Error getting available genres:', error)
+      throw error
+    }
+  }
+
+  getCratesForTrack(trackId) {
+    if (!this.isConnected || !this.db) {
+      throw new Error('Database not connected')
+    }
+    try {
+      const crates = this.db
+        .prepare(`
+          SELECT c.id, c.name
+          FROM crates c
+          JOIN crate_tracks ct ON ct.crate_id = c.id
+          WHERE ct.track_id = ?
+        `)
+        .all(trackId)
+      return crates
+    } catch (error) {
+      console.error('Error getting crates for track:', error)
       throw error
     }
   }
