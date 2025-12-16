@@ -42,12 +42,16 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
   }, [])
 
   useEffect(() => {
-    // TODO remove this. Debug logging for filters during development
-    // console.log('Filters updated:', JSON.stringify(filters, null, 2))
-
     const getTracks = async () => {
       try {
-        const tracks = await window.api.mixxx.getTracks(filters)
+        // Flatten keys array of objects to array of values. This is weird but
+        // necessary due to how the KeyMultiSelect component normalizes the
+        // select input's values (ie, camelot notation) a single one of which
+        // can correspond to multiple keys as stored in Mixxx.
+        const keys = filters.keys.flatMap(key => key.value)
+        const quereyParams = { ...filters, keys }
+        console.log('Fetching tracks with params:', quereyParams)
+        const tracks = await window.api.mixxx.getTracks(quereyParams)
         setFilteredTracks(tracks)
       } catch (error) {
         console.error('Error fetching tracks:', error)

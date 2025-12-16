@@ -1,4 +1,4 @@
-export const keyMap = {
+const traditionalToCamelotMap = {
     'Am': '8A', 'E': '12B', 'B': '1B', 'F#': '2B', 'C#': '3B', 'G#': '4B',
     'D#': '5B', 'A#': '6B', 'F': '7B', 'C': '8B', 'G': '9B', 'D': '10B',
     'A': '11B', 'Em': '9A', 'Bm': '10A', 'F#m': '11A', 'C#m': '12A',
@@ -17,6 +17,13 @@ export const keyMap = {
     'Dbmaj': '3B', 'Abmaj': '4B', 'Ebmaj': '5B', 'Bbmaj': '6B'
 }
 
+const camelotToTraditionalMap = {
+  '1A': 'G#m', '1B': 'B', '2A': 'D#m', '2B': 'F#', '3A': 'A#m', '3B': 'C#',
+  '4A': 'Fm', '4B': 'G#', '5A': 'Cm', '5B': 'D#', '6A': 'Gm', '6B': 'A#',
+  '7A': 'Dm', '7B': 'F', '8A': 'Am', '8B': 'C', '9A': 'Em', '9B': 'G',
+  '10A': 'Bm', '10B': 'D', '11A': 'F#m', '11B': 'A', '12A': 'C#m', '12B': 'E'
+}
+
 export const toCamelot = (key) => {
   if (!key) return key
 
@@ -25,39 +32,15 @@ export const toCamelot = (key) => {
     return key.split(' ')[0]
   }
 
-  return keyMap[key] || key
+  return traditionalToCamelotMap[key] || key
 }
 
 export const toTraditional = (key) => {
-  let traditionalKey;
-
-  // Extract camelot part if the original notation contains both notations or its just a Camelot key
-  // e.g., "8A (Am)" -> "8A"
-  const camelotKey = (key.match(/[0-9]{1,2}[AB]/) || [])[0]
-
-  // If this is a Camelot key, find the corresponding traditional key. Otherwise, use the original key.
-  if (camelotKey) {
-    let entry = Object.entries(keyMap).find(([traditional, camelot]) => camelot === camelotKey)
-    traditionalKey = entry[0]
-  } else {
-    traditionalKey = key
-  }
-
-  // Handle multiple traditional keys mapping to the same Camelot key by
-  // normalizing the traditional key: Convert maj to M and min to m for
-  // consistency. E.g., "Amin" -> "Am", "Cmaj" -> "CM". For example 8A will
-  // always map to "Am" instead of sometimes "Amin".
-  if (traditionalKey.endsWith('min')) {
-    return traditionalKey.slice(0, -3) + 'm'
-  } else if (traditionalKey.endsWith('maj')) {
-    return traditionalKey.slice(0, -3) + 'M'
-  } else {
-    return traditionalKey
-  }
+  const camelotKey = toCamelot(key) // First convert to Camelot to standardize
+  return camelotToTraditionalMap[camelotKey] // Then convert to normalized Traditional
 }
 
 export default {
   toCamelot,
-  toTraditional,
-  keyMap
+  toTraditional
 }
