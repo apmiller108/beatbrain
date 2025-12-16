@@ -6,9 +6,9 @@ import selectCustomStyles from './selectCustomStyles'
 import { toCamelot, toTraditional } from '../../utilities/musicalKeys'
 
 const KeyMultiSelect = ({ keys, value, onChange, disabled }) => {
-  // Normalize keys into a map of camelot label to original keys
-  // A single camelot key can map to multiple traditional keys depending on notation
-  // (e.g., "8A (Am)", "Amin" and "Am" all map to "8A")
+  // Normalize keys into a map of camelot/traditional label to original keys A
+  // single camelot key could map to multiple keys in the database depending on
+  // notation (e.g., "8A (Am)", "Amin" and "Am" all map to "8A")
   const normalizedKeys = () => {
     const map = {}
     keys.forEach(key => {

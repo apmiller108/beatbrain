@@ -208,8 +208,8 @@ This plan breaks down the work required to implement the "Add Tracks to Playlist
 ### **Phase 2: Frontend - UI Components**
 
 #### **1. Create New Filter Components (`src/renderer/src/components/filters/`)**
-- [ ] Create `KeyMultiSelect.jsx` for filtering by musical key, using `react-select`.
-- [ ] Create `CrateMultiSelect.jsx` for filtering by Mixxx crates, using `react-select`.
+- [x] Create `KeyMultiSelect.jsx` for filtering by musical key, using `react-select`.
+- [x] Create `CrateMultiSelect.jsx` for filtering by Mixxx crates, using `react-select`.
 
 #### **2. Create Search Modal Components (`src/renderer/src/components/`)**
 - [ ] **`AddTracksModal.jsx`**: The main modal container (`react-bootstrap/Modal`).

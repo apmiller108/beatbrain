@@ -3,6 +3,7 @@ import { Form, Button } from 'react-bootstrap'
 import TrackCountInput from './filters/TrackCountInput'
 import BpmRangeInput from './filters/BpmRangeInput'
 import GenreMultiSelect from './filters/GenreMultiSelect'
+import CrateMultiSelect from './filters/CrateMultiSelect'
 import KeyMultiSelect from './filters/KeyMultiSelect'
 
 const PlaylistForm = ({
@@ -11,6 +12,7 @@ const PlaylistForm = ({
   maxTrackCount,
   bpmRange,
   availableGenres,
+  availableCrates,
   availableKeys,
   onGeneratePlaylist,
   isValid
@@ -29,6 +31,10 @@ const PlaylistForm = ({
 
   const handleKeysChange = (value) => {
     onFiltersChange({ ...filters, keys: value })
+  }
+
+  const handleCratesChange = (value) => {
+    onFiltersChange({ ...filters, crates: value })
   }
 
   return (
@@ -51,6 +57,11 @@ const PlaylistForm = ({
           value={filters.genres}
           onChange={handleGenresChange}
         />
+        <CrateMultiSelect
+          crates={availableCrates}
+          value={filters.crates}
+          onChange={handleCratesChange}
+        />
         <KeyMultiSelect
           keys={availableKeys}
           value={filters.keys}
@@ -58,7 +69,8 @@ const PlaylistForm = ({
         />
         <Button variant="primary"
                 disabled={!isValid}
-                onClick={onGeneratePlaylist}>
+                onClick={onGeneratePlaylist}
+        >
           Generate Playlist
         </Button>
       </Form>

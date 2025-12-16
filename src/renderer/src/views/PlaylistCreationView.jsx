@@ -11,12 +11,14 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
   const [maxCount, setMaxCount] = useState(100)
   const [bpmRange, setBpmRange] = useState({ minBpm: 0, maxBpm: 300 })
   const [genres, setGenres] = useState([])
+  const [crates, setCrates] = useState([])
   const [keys, setKeys] = useState([])
   const [filters, setFilters] = useState({
     trackCount: 25,
     minBpm: null,
     maxBpm: null,
     genres: [],
+    crates: [],
     keys: []
   })
   const [filteredTracks, setFilteredTracks] = useState([])
@@ -46,11 +48,11 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
       try {
         // Flatten keys array of objects to array of values. This is weird but
         // necessary due to how the KeyMultiSelect component normalizes the
-        // select input's values (ie, camelot notation) a single one of which
-        // can correspond to multiple keys as stored in Mixxx.
+        // select input's values (ie, camelot notation) a single value which
+        // can correspond to multiple keys as stored in mixxxdb.
         const keys = filters.keys.flatMap(key => key.value)
-        const quereyParams = { ...filters, keys }
-        console.log('Fetching tracks with params:', quereyParams)
+        const crates = filters.crates.map(crate => crate.value) // Extract crate IDs
+        const quereyParams = { ...filters, keys, crates }
         const tracks = await window.api.mixxx.getTracks(quereyParams)
         setFilteredTracks(tracks)
       } catch (error) {
@@ -69,6 +71,9 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
     const getFilterOptions = async () => {
       const availableGenres = await window.api.mixxx.getGenres() || []
       setGenres(availableGenres)
+
+      const availableCrates = await window.api.mixxx.getAvailableCrates() || []
+      setCrates(availableCrates)
 
       const availableKeys = await window.api.mixxx.getAvailableKeys() || []
       setKeys(availableKeys)
@@ -172,6 +177,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
                 maxTrackCount={maxCount}
                 bpmRange={bpmRange}
                 availableGenres={genres}
+                availableCrates={crates}
                 availableKeys={keys}
                 onGeneratePlaylist={onGeneratePlaylist}
                 isValid={canGeneratePlaylist}
