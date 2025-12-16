@@ -1,5 +1,6 @@
 import { Form, InputGroup } from 'react-bootstrap';
 import { MusicNoteBeamed } from 'react-bootstrap-icons';
+import propTypes from 'prop-types';
 
 const TrackCountInput = ({
   value,
@@ -56,5 +57,13 @@ const TrackCountInput = ({
     </Form.Group>
   );
 };
+
+TrackCountInput.propTypes = {
+  value: propTypes.oneOfType([propTypes.number, propTypes.string]).isRequired,
+  onChange: propTypes.func.isRequired,
+  min: propTypes.number,
+  max: propTypes.number.isRequired,
+  disabled: propTypes.bool,
+}
 
 export default TrackCountInput;

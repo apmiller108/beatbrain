@@ -355,7 +355,10 @@ Read-only database operations
 │           │   ├── DatabaseConnectionModal.jsx
 │           │   ├── filters
 │           │   │   ├── BpmRangeInput.jsx
+│           │   │   ├── CrateMultiSelect.jsx
 │           │   │   ├── GenreMultiSelect.jsx
+│           │   │   ├── KeyMultiSelect.jsx
+│           │   │   ├── selectCustomStyles.js
 │           │   │   └── TrackCountInput.jsx
 │           │   ├── LibraryStats.jsx
 │           │   ├── MixxxDatabaseStatus.jsx
@@ -368,20 +371,24 @@ Read-only database operations
 │           │   ├── SystemInformation.jsx
 │           │   ├── TrackInfoModal.jsx
 │           │   └── TrackList.jsx
+│           ├── contexts
+│           │   └── MixxxStatsContext.js
 │           ├── main.jsx
 │           ├── utilities
 │           │   ├── formatDate.js
 │           │   ├── formatDuration.js
-│           │   └── generateM3UContent.js
+│           │   ├── generateM3UContent.js
+│           │   └── musicalKeys.js
 │           └── views
 │               ├── LibraryView.jsx
 │               ├── PlaylistCreationView.jsx
 │               ├── PlaylistDetailView.jsx
 │               └── SettingsView.jsx
 ├── structure.sql
+├── TRACKSEARCH.md
 └── vitest.config.js
 
-29 directories, 67 files
+30 directories, 73 files
 ```
 
 # TODOS
@@ -570,13 +577,15 @@ used to perform a query against the Mixxx dabatase.
 - [ ] Test drag-and-drop reordering across different browsers/platforms
 
 ## TODOs for Feature: Playlist (Phase 3: filter enhancements)
-### Implement fields for user to filter tracks eligible for playlist creation
-- [ ] Filter by crates
+### Implement fields for user to filter tracks eligible for playlist creation and adding tracks to playlist
+- [x] Filter by crates
 - [ ] Filter by Groups
 - [ ] Filter by Artists
-- [ ] Filter by musical key
+- [x] Filter by musical key
 - [ ] Filter by Year range
 - [ ] Filter by date added range
+- [ ] Filter by last played date
+- [ ] Persist the selected filters on the playlist record. Show this data to the user on demand.
 ## TODOs for Feature: Playlist (Phase 4: harmonic mixing engine)
 - [ ] Remove limit from DB query
 - [ ] Add harmonic mixing select with options none, strict and creative (discuss this)
@@ -590,6 +599,7 @@ used to perform a query against the Mixxx dabatase.
 - [ ] Show the transposed key next to the track's key based on the target BPM. (eg, the actual musical key expected based on the BPM the track will be played at)
 - [ ] Add playlist duplication feature
 - [ ] R click on table header to select columns to show/hide
+- [ ] Lazy render track list items for better performance for large playlists
 ## TODOs for Documentation
 - [ ] Update README with playlist management features
 - [ ] Document M3U export format and compatibility
