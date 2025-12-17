@@ -380,7 +380,7 @@ class MixxxDatabase {
     }
   }
 
-  getGenres() {
+  getAvailableGenres() {
     if (!this.isConnected || !this.db) {
       throw new Error('Database not connected')
     }

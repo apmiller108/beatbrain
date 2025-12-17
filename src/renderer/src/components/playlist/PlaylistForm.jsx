@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
 import { Form, Button } from 'react-bootstrap'
-import TrackCountInput from './filters/TrackCountInput'
-import BpmRangeInput from './filters/BpmRangeInput'
-import GenreMultiSelect from './filters/GenreMultiSelect'
-import CrateMultiSelect from './filters/CrateMultiSelect'
-import KeyMultiSelect from './filters/KeyMultiSelect'
+import TrackCountInput from '../filters/TrackCountInput'
+import BpmRangeInput from '../filters/BpmRangeInput'
+import GenreMultiSelect from '../filters/GenreMultiSelect'
+import CrateMultiSelect from '../filters/CrateMultiSelect'
+import KeyMultiSelect from '../filters/KeyMultiSelect'
 
 const PlaylistForm = ({
   filters,

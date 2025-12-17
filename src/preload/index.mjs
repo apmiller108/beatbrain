@@ -48,7 +48,7 @@ const api = {
     getStats: () => ipcRenderer.invoke('mixxx:getStats'),
     getSampleTracks: (limit = 10) =>
       ipcRenderer.invoke('mixxx:getSampleTracks', limit),
-    getGenres: () => ipcRenderer.invoke('mixxx:getGenres'),
+    getAvailableGenres: () => ipcRenderer.invoke('mixxx:getAvailableGenres'),
     getAvailableCrates: () => ipcRenderer.invoke('mixxx:getAvailableCrates'),
     getAvailableKeys: () => ipcRenderer.invoke('mixxx:getAvailableKeys'),
     getTracks: (filters) => ipcRenderer.invoke('mixxx:getTracks', filters),

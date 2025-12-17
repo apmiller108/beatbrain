@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Card, Spinner, Badge, Table, Button, Form, FloatingLabel } from 'react-bootstrap'
-import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3, InfoCircleFill, MusicNoteBeamed } from 'react-bootstrap-icons'
+import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3, InfoCircleFill, MusicNoteBeamed, Plus } from 'react-bootstrap-icons'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import {
@@ -24,7 +24,8 @@ import generateM3UContent from '../utilities/generateM3UContent'
 import ConfirmationPrompt from '../components/common/ConfirmationPrompt'
 import FlashMessage from '../components/common/FlashMessage'
 import InlineEditInput from '../components/common/InlineEditInput'
-import PlaylistTrackItem from '../components/PlaylistTrackItem'
+import PlaylistTrackItem from '../components/playlist/PlaylistTrackItem'
+import AddTracksModal from '../components/playlist/AddTracksModal'
 
 const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, setNotification }) => {
   const [playlist, setPlaylist] = useState(null)
@@ -42,6 +43,7 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
   const [isUpdatingOrder, setIsUpdatingOrder] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
   const [keyNotation, setKeyNotation] = useState('original') // could be 'original', 'camelot', 'traditional'
+  const [showAddTracksModal, setShowAddTracksModal] = useState(false)
 
   useEffect(() => {
     const loadUserPreference = async () => {
@@ -329,14 +331,14 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
       {/* Track List */}
       <Card className="shadow-sm">
         <Card.Header className="d-flex justify-content-between align-items-center">
-          <h5 className="mb-0">
-            Tracks
-            {isUpdatingOrder && (
-              <small className="text-muted ms-2 fs-6">
-                Updating playlist...
-              </small>
-            )}
-          </h5>
+          <div className="d-flex align-items-center">
+            <h5 className="mb-0">Tracks</h5>
+            <OverlayTrigger overlay={<Tooltip>Add tracks</Tooltip>}>
+              <Button variant="link" className="ms-3 p-0" onClick={() => setShowAddTracksModal(true)}>
+                <Plus />
+              </Button>
+            </OverlayTrigger>
+          </div>
           <OverlayTrigger overlay={<Tooltip>Key notation</Tooltip>}>
             <Form.Group controlId="keyNotationSelect" style={{ maxWidth: '200px' }} className="d-flex align-items-center mb-0">
               <Form.Label className="me-2">
@@ -398,6 +400,15 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
                           title={confirmationTitle}
                           onConfirm={confirmationAction}
                           onCancel={() => setShowConfirmation(false)} />
+      <AddTracksModal
+        show={showAddTracksModal}
+        onHide={() => setShowAddTracksModal(false)}
+        playlistTrackIds={playlist.tracks.map(t => t.source_track_id)}
+        onTracksAdded={() => {
+          loadPlaylist()
+          onPlaylistUpdated(playlistId)
+        }}
+      />
     </div>
   )
 }

@@ -3,7 +3,7 @@ import { MixxxStatsContext } from '../contexts/MixxxStatsContext'
 import { Button, Spinner, Badge } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import { MusicNoteList } from 'react-bootstrap-icons'
-import PlaylistForm from '../components/PlaylistForm'
+import PlaylistForm from '../components/playlist/PlaylistForm'
 import FlashMessage from '../components/common/FlashMessage'
 
 const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnectionModal, setNotification }) => {
@@ -69,7 +69,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
 
   useEffect(() => {
     const getFilterOptions = async () => {
-      const availableGenres = await window.api.mixxx.getGenres() || []
+      const availableGenres = await window.api.mixxx.getAvailableGenres() || []
       setGenres(availableGenres)
 
       const availableCrates = await window.api.mixxx.getAvailableCrates() || []
