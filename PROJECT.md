@@ -289,8 +289,8 @@ Read-only database operations
 ├── eslint.config.js
 ├── launch.json
 ├── NOTES.md
-├── package-lock.json
 ├── package.json
+├── package-lock.json
 ├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
@@ -318,7 +318,6 @@ Read-only database operations
 │   │           └── DatabaseConnectionModal.test.jsx
 │   └── setup.js
 ├── src
-│   ├── assets
 │   ├── main
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
@@ -338,7 +337,6 @@ Read-only database operations
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
-│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -388,7 +386,7 @@ Read-only database operations
 ├── TRACKSEARCH.md
 └── vitest.config.js
 
-30 directories, 73 files
+27 directories, 73 files
 ```
 
 # TODOS
@@ -565,7 +563,7 @@ used to perform a query against the Mixxx dabatase.
 - [ ] Add "Add tracks" button to manually add tracks from library. Use react-select. User keywords search artist, track name, group.
 
 ### **Testing**
-- [ ] Write unit tests for new appDatabase playlist methods
+- [x] Write unit tests for new appDatabase playlist methods
 - [ ] Write unit tests for PlaylistList component
 - [ ] Write unit tests for PlaylistDetailView component
 - [ ] Write unit tests for PlaylistTrackItem component
@@ -574,7 +572,6 @@ used to perform a query against the Mixxx dabatase.
 - [ ] Write integration test for playlist deletion
 - [ ] Write e2e test for complete playlist management workflow
 - [ ] Write tests for M3U export functionality
-- [ ] Test drag-and-drop reordering across different browsers/platforms
 
 ## TODOs for Feature: Playlist (Phase 3: filter enhancements)
 ### Implement fields for user to filter tracks eligible for playlist creation and adding tracks to playlist
@@ -598,6 +595,7 @@ used to perform a query against the Mixxx dabatase.
 - [ ] Add option on playlist to set target BPM. Show how much percent the track will need to be pitched up or down next to the BPM value for each track.
 - [ ] Show the transposed key next to the track's key based on the target BPM. (eg, the actual musical key expected based on the BPM the track will be played at)
 - [ ] Add playlist duplication feature
+- [ ] Add playlist combine feature with options to append or prepand other playlists
 - [ ] R click on table header to select columns to show/hide
 - [ ] Lazy render track list items for better performance for large playlists
 ## TODOs for Documentation
