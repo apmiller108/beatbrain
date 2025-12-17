@@ -289,8 +289,8 @@ Read-only database operations
 ├── eslint.config.js
 ├── launch.json
 ├── NOTES.md
-├── package.json
 ├── package-lock.json
+├── package.json
 ├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
@@ -317,7 +317,10 @@ Read-only database operations
 │   │       └── components
 │   │           └── DatabaseConnectionModal.test.jsx
 │   └── setup.js
+├── specifications
+│   └── TRACKSEARCH.md
 ├── src
+│   ├── assets
 │   ├── main
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
@@ -337,6 +340,7 @@ Read-only database operations
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
+│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -383,10 +387,9 @@ Read-only database operations
 │               ├── PlaylistDetailView.jsx
 │               └── SettingsView.jsx
 ├── structure.sql
-├── TRACKSEARCH.md
 └── vitest.config.js
 
-27 directories, 73 files
+31 directories, 73 files
 ```
 
 # TODOS
@@ -560,7 +563,7 @@ used to perform a query against the Mixxx dabatase.
 
 ### **Polish & UX Enhancements**
 - [x] Add info icon for each track that on click shows the full track details (what should the UX be? Modal? expand row item?)
-- [ ] Add "Add tracks" button to manually add tracks from library. Use react-select. User keywords search artist, track name, group.
+- [ ] Add "Add tracks" button to manually add tracks from library. Use react-select. User keywords search artist, track name, group. See ./specifications/TRACKSEARCH.md
 
 ### **Testing**
 - [x] Write unit tests for new appDatabase playlist methods
@@ -582,7 +585,7 @@ used to perform a query against the Mixxx dabatase.
 - [ ] Filter by Year range
 - [ ] Filter by date added range
 - [ ] Filter by last played date
-- [ ] Persist the selected filters on the playlist record. Show this data to the user on demand.
+- [ ] Persist the selected filters on the playlist record. Show this data to the user on demand. This could potentially 
 ## TODOs for Feature: Playlist (Phase 4: harmonic mixing engine)
 - [ ] Remove limit from DB query
 - [ ] Add harmonic mixing select with options none, strict and creative (discuss this)

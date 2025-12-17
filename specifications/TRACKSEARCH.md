@@ -1,10 +1,8 @@
-# UX Recommendations for Track Search & Add Feature
+# UX for Track Search & Add Feature
 
-Based on your current UI and the complexity of search requirements, here are my recommendations:
+## **Approach: Modal with Advanced Search**
 
-## **Recommended Approach: Modal with Advanced Search**
-
-I'd suggest a **modal dialog** triggered by an "Add Tracks" button in the playlist header. This approach works well because:
+A **modal dialog** triggered by an "Add Tracks" button in the playlist header. This approach works well because:
 
 1. **Doesn't disrupt the current view** - User stays in context of the playlist
 2. **Provides focused search experience** - Modal creates dedicated space for complex filtering
@@ -24,7 +22,8 @@ Add an "Add Tracks" button next to the Export/Delete buttons in the playlist hea
 
 ### **2. Modal Structure**
 
-```────────────────────────────────────┐
+```
+                           ────────────────────────────────────┐
 │  Add Tracks to Playlist                                  [✕] │
 ├─────────────────────────────────────────────────────────────┤
 │                                                               │
@@ -142,10 +141,7 @@ const [selectedTracks, setSelectedTracks] = useState(new Set())
 ```
 
 ### **Database Query**
-Add to `mixxxDatabase.js`:
-```javascript
-searchTracks({ query, bpmMin, bpmMax, genres, keys, crates, yearRange, label })
-```
+Re-use mixxxDatabse.getTracks(quereyParams)
 
 ### **Performance Considerations**
 - **Debounce** quick search (300ms)
@@ -226,6 +222,7 @@ This plan breaks down the work required to implement the "Add Tracks to Playlist
     - Includes "Select All" / "Deselect All" functionality.
 - [ ] **`TrackSearchResultItem.jsx`**: An individual item in the results list.
     - Displays track info (title, artist, BPM, key).
+    - re-use TrackInfoModal for full track details.
     - Has a checkbox for selection.
     - Is disabled/styled differently if the track is already in the current playlist.
 
@@ -257,6 +254,7 @@ This plan breaks down the work required to implement the "Add Tracks to Playlist
 - [ ] Add loading indicators while a search is in progress.
 - [ ] Disable the "Add Selected Tracks" button if no tracks are selected, and update its text dynamically.
 - [ ] Add a keyboard shortcut (`Esc`) to close the modal.
+- [ ] Add a keyboard shortcut CTL/CMD-F to open search modal
 - [ ] Show a toast notification upon successful addition of tracks.
 
 ---
@@ -264,7 +262,6 @@ This plan breaks down the work required to implement the "Add Tracks to Playlist
 ### **Phase 5: Testing**
 
 - [ ] **Unit Tests**:
-    - `mixxxDatabase.searchTracks()` with various filter combinations.
     - `appDatabase.addTracksToPlaylist()` logic.
     - New filter components (`KeyMultiSelect`, `CrateMultiSelect`).
 - [ ] **Component Tests**:
