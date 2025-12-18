@@ -333,9 +333,9 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
         <Card.Header className="d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">
             <h5 className="mb-0">Tracks</h5>
-            <OverlayTrigger overlay={<Tooltip>Add tracks</Tooltip>}>
-              <Button variant="link" className="ms-3 p-0" onClick={() => setShowAddTracksModal(true)}>
-                <Plus />
+            <OverlayTrigger overlay={<Tooltip>Add tracks</Tooltip>}  >
+              <Button id="add-tracks-btn" variant="link" className="ms-3 p-0" onClick={() => { setShowAddTracksModal(true) }} >
+                <Plus size={36} />
               </Button>
             </OverlayTrigger>
           </div>
@@ -402,7 +402,13 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
                           onCancel={() => setShowConfirmation(false)} />
       <AddTracksModal
         show={showAddTracksModal}
-        onHide={() => setShowAddTracksModal(false)}
+        onHide={() => { setShowAddTracksModal(false) }}
+        onExited={() => {
+          // Remove focus from the add tracks button after modal closes to hide tooltip
+          setTimeout(() => {
+            document.getElementById('add-tracks-btn').blur()
+          }, 0)
+        }}
         playlistTrackIds={playlist.tracks.map(t => t.source_track_id)}
         onTracksAdded={() => {
           loadPlaylist()

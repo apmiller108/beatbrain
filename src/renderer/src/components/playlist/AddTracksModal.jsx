@@ -4,6 +4,7 @@ import { Modal, Button, Spinner } from 'react-bootstrap'
 export default function AddTracksModal({
   show,
   onHide,
+  onExited,
   playlistTrackIds = [],
   onTracksAdded
 }) {
@@ -71,7 +72,7 @@ export default function AddTracksModal({
   }
 
   return (
-    <Modal show={show} onHide={onHide} size="xl" centered>
+    <Modal show={show} onHide={onHide} size="xl" centered onExited={onExited}>
       <Modal.Header closeButton>
         <Modal.Title>Add Tracks to Playlist</Modal.Title>
       </Modal.Header>
