@@ -25,6 +25,10 @@ export function registerAppDatabaseHandlers(appDatabase) {
     return appDatabase.saveTrackFilters(filters)
   })
 
+  ipcMain.handle('app:saveSearchFilters', async (_, filters) => {
+    return appDatabase.saveSearchFilters(filters)
+  })
+
   ipcMain.handle('app:getSetting', async (_, key) => {
     return appDatabase.getSetting(key)
   })

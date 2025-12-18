@@ -70,6 +70,10 @@ class AppDatabase {
     return this.settingsRepository.getTrackFilters()
   }
 
+  saveSearchFilters(filters = {}) {
+    return this.settingsRepository.saveSearchFilters(filters)
+  }
+
   // User Preferences Repository Methods
   // User preferences are explicit choices made by the user.
 

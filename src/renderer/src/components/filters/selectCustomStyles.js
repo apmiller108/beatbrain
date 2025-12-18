@@ -24,6 +24,10 @@ export const selectCustomStyles = {
       color: '#ffffff',
     },
   }),
+  option: (base) => ({
+    ...base,
+    textAlign: 'left'
+  })
 }
 
 export default selectCustomStyles

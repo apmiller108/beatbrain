@@ -23,7 +23,9 @@ const BpmRangeInput = ({
     let newMin = parseInt(e.target.value, 10);
 
     // minValue must be less than or equal to maxBpm and not less than minBpm
-    if (isNaN(newMin) || newMin < minBpm) {
+    if (isNaN(newMin)) {
+      newMin = null
+    } else if (newMin < minBpm) {
       newMin = minBpm;
     } else if (newMin > maxBpm) {
       newMin = maxBpm;
@@ -41,7 +43,9 @@ const BpmRangeInput = ({
     let newMax = parseInt(e.target.value, 10);
 
     // maxValue must be greater than or equal to minBpm and not greater than maxBpm
-    if (isNaN(newMax) || newMax < minBpm) {
+    if (isNaN(newMax)) {
+      newMax = null
+    } else if (newMax < minBpm) {
       newMax = minBpm;
     } else if (newMax > maxBpm) {
       newMax = maxBpm;
@@ -98,9 +102,6 @@ const BpmRangeInput = ({
           </InputGroup>
         </Col>
       </Row>
-      <Form.Text className="text-muted">
-        Filter tracks by tempo range (BPM)
-      </Form.Text>
     </Form.Group>
   );
 };

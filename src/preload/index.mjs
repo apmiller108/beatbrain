@@ -19,6 +19,7 @@ const api = {
   // User settings
   getTrackFilters: () => ipcRenderer.invoke('app:getTrackFilters'),
   saveTrackFilters: filters => ipcRenderer.invoke('app:saveTrackFilters', filters),
+  saveSearchFilters: filters => ipcRenderer.invoke('app:saveSearchFilters', filters),
   getSetting: key => ipcRenderer.invoke('app:getSetting', key),
   setSetting: (key, value) => ipcRenderer.invoke('app:setSetting', key, value),
 

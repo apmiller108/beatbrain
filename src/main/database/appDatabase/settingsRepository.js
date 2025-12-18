@@ -59,6 +59,11 @@ export default class SettingsRepository {
     }
   }
 
+  saveSearchFilters(filters = {}) {
+    const filtersJson = JSON.stringify(filters)
+    return this.setSetting('searchFilters', filtersJson)
+  }
+
   saveTrackFilters(filters = {}) {
     const filtersJson = JSON.stringify(filters)
     return this.setSetting('trackFilters', filtersJson)

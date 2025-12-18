@@ -118,7 +118,7 @@ Cons: Loses context of playlist, requires navigation back/forth
 src/renderer/src/components/
 ├── AddTracksModal.jsx          # Main modal container
 ├── TrackSearchInput.jsx        # Quick search input
-├── AdvancedTrackFilters.jsx    # Collapsible filter panel
+├── TrackSearchFilters.jsx    # Collapsible filter panel
 ├── TrackSearchResults.jsx      # Scrollable results list
 └── TrackSearchResultItem.jsx   # Individual track checkbox item
 ```
@@ -208,13 +208,13 @@ This plan breaks down the work required to implement the "Add Tracks to Playlist
 - [x] Create `CrateMultiSelect.jsx` for filtering by Mixxx crates, using `react-select`.
 
 #### **2. Create Search Modal Components (`src/renderer/src/components/`)**
-- [ ] **`AddTracksModal.jsx`**: The main modal container (`react-bootstrap/Modal`).
+- [x] **`AddTracksModal.jsx`**: The main modal container (`react-bootstrap/Modal`).
     - Manages state for search, filters, results, and selected tracks.
     - Fetches filter options (genres, keys, crates) on mount.
     - Renders the other search components.
     - Contains "Cancel" and "Add X Selected Tracks" buttons.
-- [ ] **`TrackSearchInput.jsx`**: A simple, debounced text input for the quick search.
-- [ ] **`AdvancedTrackFilters.jsx`**: A collapsible section containing:
+- [x] **`TrackSearchInput.jsx`**: A simple, debounced text input for the quick search.
+- [x] **`TrackSearchFilters.jsx`**: A collapsible section containing:
     - Reused `BpmRangeInput.jsx` and `GenreMultiSelect.jsx`.
     - New `KeyMultiSelect.jsx` and `CrateMultiSelect.jsx`.
 - [ ] **`TrackSearchResults.jsx`**: Container for the results list.

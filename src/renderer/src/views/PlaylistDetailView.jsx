@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Card, Spinner, Badge, Table, Button, Form, FloatingLabel } from 'react-bootstrap'
-import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3, InfoCircleFill, MusicNoteBeamed, Plus } from 'react-bootstrap-icons'
+import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3, InfoCircleFill, MusicNoteBeamed, Plus, PlusSquareFill } from 'react-bootstrap-icons'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import {
@@ -331,11 +331,11 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
       {/* Track List */}
       <Card className="shadow-sm">
         <Card.Header className="d-flex justify-content-between align-items-center">
-          <div className="d-flex align-items-center">
+          <div className="d-flex">
             <h5 className="mb-0">Tracks</h5>
             <OverlayTrigger overlay={<Tooltip>Add tracks</Tooltip>}  >
               <Button id="add-tracks-btn" variant="link" className="ms-3 p-0" onClick={() => { setShowAddTracksModal(true) }} >
-                <Plus size={36} />
+                <PlusSquareFill size={24} />
               </Button>
             </OverlayTrigger>
           </div>

@@ -31,11 +31,11 @@ const KeyMultiSelect = ({ keys, value, onChange, disabled }) => {
     return Object.keys(map).sort((a, b) => {
       const aNum = parseInt(a)
       const bNum = parseInt(b)
-      const aLetter = a.slice(-1)
-      const bLetter = b.slice(-1)
+      const aLetter = a.match(/^[0-9]{1,2}[AB]/)[0].slice(-1)
+      const bLetter = b.match(/^[0-9]{1,2}[AB]/)[0].slice(-1)
 
       if (aNum === bNum) {
-        return aLetter.localeCompare(bLetter)
+        return aLetter === 'A' ? -1 : 1
       }
       return aNum - bNum
     }).map(label => ({

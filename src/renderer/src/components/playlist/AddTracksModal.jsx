@@ -1,5 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
+import { MixxxStatsContext } from '../../contexts/MixxxStatsContext'
 import { Modal, Button, Spinner } from 'react-bootstrap'
+import TrackSearchInput from './TrackSearchInput'
+import TrackSearchFilters from './TrackSearchFilters'
 
 export default function AddTracksModal({
   show,
@@ -8,7 +11,6 @@ export default function AddTracksModal({
   playlistTrackIds = [],
   onTracksAdded
 }) {
-  const [loading, setLoading] = useState(true)
   const [filterOptions, setFilterOptions] = useState({
     genres: [],
     keys: [],
@@ -22,36 +24,61 @@ export default function AddTracksModal({
     keys: [],
     crates: []
   })
-
   const [searchResults, setSearchResults] = useState([])
   const [selectedTracks, setSelectedTracks] = useState(new Set())
   const [searching, setSearching] = useState(false)
 
+  const mixxxStats = useContext(MixxxStatsContext)
+
   useEffect(() => {
+    loadSavedSearchFilters()
     loadFilterOptions()
   }, [])
 
+  const loadSavedSearchFilters = async () => {
+    try {
+      const savedFilters = await window.api.getSetting('searchFilters')
+      if (savedFilters) {
+        const parsedFilters = JSON.parse(savedFilters)
+        setFilters((prevFilters) => ({ ...prevFilters, ...parsedFilters }))
+      }
+    } catch (error) {
+      console.error('Failed to load saved search filters:', error)
+    }
+  }
+
   const loadFilterOptions = async () => {
     try {
-      setLoading(true)
       const [genres, keys, crates] = await Promise.all([
         window.api.mixxx.getAvailableGenres(),
         window.api.mixxx.getAvailableKeys(),
         window.api.mixxx.getAvailableCrates()
       ])
 
-      setFilterOptions({ genres, keys, crates })
+      const bpmOptions = {
+        minBpm: Math.floor(mixxxStats.bpmRange.minBpm),
+        maxBpm: Math.ceil(mixxxStats.bpmRange.maxBpm)
+      }
+
+      setFilterOptions({ genres, keys, crates, ...bpmOptions })
     } catch (error) {
       console.error('Failed to load filter options:', error)
-    } finally {
-      setLoading(false)
     }
   }
+
+  useEffect(() => {
+    window.api.saveSearchFilters(filters)
+    handleSearch()
+  }, [filters])
 
   const handleSearch = async () => {
     try {
       setSearching(true)
-      const results = await window.api.getTracks(filters)
+      const keys = filters.keys.flatMap(key => key.value)
+      const crates = filters.crates.map(crate => crate.value)
+      const quereyParams = { ...filters, keys, crates }
+      const results = await window.api.mixxx.getTracks(quereyParams)
+      console.log('Search results:', results)
       setSearchResults(results)
     } catch (error) {
       console.error('Search failed:', error)
@@ -77,26 +104,19 @@ export default function AddTracksModal({
         <Modal.Title>Add Tracks to Playlist</Modal.Title>
       </Modal.Header>
       <Modal.Body className="text-center py-5">
-        {loading && (
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading search...</span>
-          </Spinner>
-        )}
-        {!loading && (
-          <>
-            <div>Search Query section here</div>
-            <div>Search Filters Here</div>
-            <div>Search Results Here</div>
-            <Button
-              variant="primary"
-              onClick={handleAddTracks}
-              disabled={selectedTracks.size === 0}
-            >
-              Add Selected Tracks
-            </Button>
-          </>
-        )}
-
+        <TrackSearchInput value={filters.query} onChange={(query) => setFilters((prev) => ({ ...prev, query }))} />
+        <TrackSearchFilters filters={filters}
+                            filterOptions={filterOptions}
+                            onChange={(advFilters) => setFilters((prev) => ({ ...prev, ...advFilters }))}
+        />
+        <div>Search Results Here</div>
+        <Button
+          variant="primary"
+          onClick={handleAddTracks}
+          disabled={selectedTracks.size === 0}
+        >
+          Add Selected Tracks
+        </Button>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>
