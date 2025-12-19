@@ -84,6 +84,7 @@ const Navigation = ({ view, setView, onSelectPlaylist, activePlaylistId, deleted
           playlists={playlists}
           loading={loading}
           error={error}
+          currentView={view}
           activePlaylistId={activePlaylistId}
           onSelectPlaylist={handlePlaylistSelect}
           onCreateNew={handleCreateNewPlaylist}

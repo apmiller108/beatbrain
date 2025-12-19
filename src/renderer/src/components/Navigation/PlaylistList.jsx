@@ -3,7 +3,7 @@ import { Nav, Spinner, Badge, Button, Collapse } from 'react-bootstrap'
 import { MusicNoteList, ChevronDown, ChevronRight, Plus } from 'react-bootstrap-icons'
 import propTypes from 'prop-types'
 
-const PlaylistList = ({ playlists, loading, error, activePlaylistId, onSelectPlaylist, onCreateNew }) => {
+const PlaylistList = ({ playlists, loading, error, currentView, activePlaylistId, onSelectPlaylist, onCreateNew }) => {
   const [isExpanded, setIsExpanded] = useState(true)
 
   const handlePlaylistClick = (playlistId) => {
@@ -14,15 +14,17 @@ const PlaylistList = ({ playlists, loading, error, activePlaylistId, onSelectPla
     setIsExpanded(!isExpanded)
   }
 
+  const isActive = currentView === 'playlists' || activePlaylistId !== null
+
   const badgeStyles = {
-    bg: activePlaylistId === null ? "secondary" : "light",
-    text: activePlaylistId === null ? "light" : "dark"
+    bg: isActive ? "light" : "secondary",
+    text: isActive ? "dark" : "light"
   }
 
   return (
     <div className="playlist-navigation">
       <div
-        className={`d-flex px-3 py-2 playlist-header nav-link ${activePlaylistId === null ? '' : 'active'}`}
+        className={`d-flex px-3 py-2 playlist-header nav-link ${isActive ? 'active' : ''}`}
         style={{ cursor: 'pointer', borderRadius: 0 }}
         onClick={toggleExpanded}
       >
@@ -46,7 +48,7 @@ const PlaylistList = ({ playlists, loading, error, activePlaylistId, onSelectPla
           }}
           title="Create new playlist"
         >
-      <Plus size={32} color={activePlaylistId === null ? '' : 'white'} />
+      <Plus size={32} color={isActive ? 'white' : ''} />
         </Button>
       </div>
 
@@ -110,6 +112,7 @@ PlaylistList.propTypes = {
   ).isRequired,
   loading: propTypes.bool,
   error: propTypes.string,
+  currentView: propTypes.string.isRequired,
   activePlaylistId: propTypes.number,
   onSelectPlaylist: propTypes.func.isRequired,
   onCreateNew: propTypes.func.isRequired,

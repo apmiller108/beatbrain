@@ -156,7 +156,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
     <div>
       <h2 className="mb-4 d-flex justify-content-start align-items-center">
         <MusicNoteList className="me-2" />
-        Playlists
+        Create Playlist
       </h2>
 
       {loading ? (
