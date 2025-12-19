@@ -155,6 +155,12 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
     })
   }
 
+  const handleAddTracks = async (tracks) => {
+    await window.api.addTracksToPlaylist(playlistId, tracks)
+    loadPlaylist()
+    onPlaylistUpdated(playlistId)
+  }
+
   const handleDeletePlaylist = () => {
     setConfirmationTitle(`Are you sure you want to delete the playlist "${playlist.name}"?`)
     setShowConfirmation(true)
@@ -410,10 +416,7 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
           }, 0)
         }}
         playlistTrackIds={playlist.tracks.map(t => t.source_track_id)}
-        onTracksAdded={() => {
-          loadPlaylist()
-          onPlaylistUpdated(playlistId)
-        }}
+        onTracksAdded={handleAddTracks}
       />
     </div>
   )

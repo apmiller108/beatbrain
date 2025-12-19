@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types'
+import propTypes from 'prop-types'
 import { Modal, Badge, Row, Col } from 'react-bootstrap'
 import formatDuration from '../utilities/formatDuration'
 import formatDate from '../utilities/formatDate'
@@ -87,30 +87,37 @@ const TrackInfoModal = ({ show, onHide, track, keyNotation }) => {
 }
 
 TrackInfoModal.propTypes = {
-  show: PropTypes.bool.isRequired,
-  onHide: PropTypes.func.isRequired,
-  track: PropTypes.shape({
-    id: PropTypes.number,
-    title: PropTypes.string,
-    artist: PropTypes.string,
-    album: PropTypes.string,
-    grouping: PropTypes.string,
-    year: PropTypes.string,
-    datetime_added: PropTypes.string,
-    genre: PropTypes.string,
-    duration: PropTypes.number,
-    bpm: PropTypes.number,
-    bpm_lock: PropTypes.number,
-    rating: PropTypes.number,
-    key: PropTypes.string,
-    comment: PropTypes.string,
-    timesplayed: PropTypes.number,
-    last_played_at: PropTypes.string,
-    bitrate: PropTypes.number,
-    samplerate: PropTypes.number,
-    filetype: PropTypes.string,
-    file_path: PropTypes.string
-  })
+  show: propTypes.bool.isRequired,
+  onHide: propTypes.func.isRequired,
+  track: propTypes.shape({
+    id: propTypes.number,
+    title: propTypes.string,
+    artist: propTypes.string,
+    album: propTypes.string,
+    grouping: propTypes.string,
+    year: propTypes.string,
+    datetime_added: propTypes.string,
+    genre: propTypes.string,
+    duration: propTypes.number,
+    bpm: propTypes.number,
+    bpm_lock: propTypes.number,
+    rating: propTypes.number,
+    key: propTypes.string,
+    comment: propTypes.string,
+    timesplayed: propTypes.number,
+    last_played_at: propTypes.string,
+    bitrate: propTypes.number,
+    samplerate: propTypes.number,
+    filetype: propTypes.string,
+    file_path: propTypes.string,
+    crates: propTypes.arrayOf(
+      propTypes.shape({
+        id: propTypes.number,
+        name: propTypes.string
+      })
+    )
+  }),
+  keyNotation: propTypes.oneOf(['original', 'camelot', 'openkey']).isRequired
 }
 
 export default TrackInfoModal
