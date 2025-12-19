@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, Spinner, Badge, Table, Button, Form } from 'react-bootstrap'
 import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3, InfoCircle, MusicNoteBeamed, PlusSquareFill } from 'react-bootstrap-icons'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
@@ -17,10 +17,11 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy
 } from '@dnd-kit/sortable'
-
 import propTypes from 'prop-types'
+import useKeyboardShortcut from '../hooks/useKeyboardShortcut'
 import formatDuration from '../utilities/formatDuration'
 import generateM3UContent from '../utilities/generateM3UContent'
+import { getModifierKey } from '../utilities/keyboard'
 import ConfirmationPrompt from '../components/common/ConfirmationPrompt'
 import FlashMessage from '../components/common/FlashMessage'
 import InlineEditInput from '../components/common/InlineEditInput'
@@ -44,12 +45,18 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
   const [isExporting, setIsExporting] = useState(false)
   const [keyNotation, setKeyNotation] = useState('original') // could be 'original', 'camelot', 'traditional'
   const [showTrackSearchModal, setShowTrackSearchModal] = useState(false)
+  const [platform, setPlatform] = useState('')
 
   useEffect(() => {
     const loadUserPreference = async () => {
       const notation = await window.api.getUserPreference('ui', 'key_notation') || 'original'
       setKeyNotation(notation)
     }
+    const getPlatform = async () => {
+      const plt = await window.api.getPlatform()
+      setPlatform(plt)
+    }
+    getPlatform()
     loadUserPreference()
   }, [])
 
@@ -60,6 +67,13 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
   useEffect(() => {
     calculatePlaylistStats()
   }, [playlist])
+
+  const openAddTracksModal = useCallback(() => {
+    setShowTrackSearchModal(true)
+  }, [])
+
+  const modifierKey = getModifierKey(platform)
+  useKeyboardShortcut('f', openAddTracksModal, { modifierKey: modifierKey, enabled: !showTrackSearchModal })
 
   const loadPlaylist = async () => {
     try {
@@ -339,7 +353,7 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
         <Card.Header className="d-flex justify-content-between align-items-center">
           <div className="d-flex">
             <h5 className="mb-0">Tracks</h5>
-            <OverlayTrigger overlay={<Tooltip>Add tracks</Tooltip>}  >
+            <OverlayTrigger overlay={<Tooltip>Add tracks <kbd className='ms-1'>{modifierKey} F</kbd></Tooltip>}  >
               <Button id="add-tracks-btn" variant="link" className="ms-3 p-0" onClick={() => { setShowTrackSearchModal(true) }} >
                 <PlusSquareFill size={24} />
               </Button>
