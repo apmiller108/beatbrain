@@ -119,7 +119,6 @@ const TrackSearchModal = ({
   const handleAddTracks = async () => {
     try {
       const tracksToAdd = Array.from(selectedTracks).map(id => searchResults.find(t => t.id === id))
-      console.log('Adding tracks to playlist:', tracksToAdd)
       onTracksAdded(tracksToAdd)
       onHide()
     } catch (error) {

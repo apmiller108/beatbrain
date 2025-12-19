@@ -7,9 +7,7 @@ import { useEffect } from 'react'
  * @param {Object} options - Modifier keys (ctrl, meta, shift, alt)
  */
 export default function useKeyboardShortcut(key, callback, options = {}) {
-  const { ctrl = false, meta = false, shift = false, alt = false, enabled = true, modifierKey } = options
-
-  switch (modifierKey) {
+  switch (options.modifierKey) {
     case 'Ctrl':
       options.ctrl = true
       break
@@ -20,20 +18,21 @@ export default function useKeyboardShortcut(key, callback, options = {}) {
       break
   }
 
+  const { ctrl = false, meta = false, shift = false, alt = false, enabled = true } = options
+
   useEffect(() => {
     if (!enabled) return
 
     const handleKeyDown = (event) => {
-      // Check if modifiers match
-      const ctrlMatch = ctrl ? event.ctrlKey : !event.ctrlKey
-      const shiftMatch = shift ? event.shiftKey : !event.shiftKey
-      const metaMatch = meta ? event.metaKey : !event.metaKey
-      const altMatch = alt ? event.altKey : !event.altKey
+      const ctrlMatch = ctrl && event.ctrlKey || !ctrl && !event.ctrlKey
+      const shiftMatch = shift && event.shiftKey || !shift && !event.shiftKey
+      const metaMatch = meta && event.metaKey || !meta && !event.metaKey
+      const altMatch = alt && event.altKey || !alt && !event.altKey
 
       // Check if key matches (case-insensitive)
       const keyMatch = event.key.toLowerCase() === key.toLowerCase()
 
-      if (keyMatch && ctrlMatch && shiftMatch && altMatch) {
+      if (keyMatch && ctrlMatch && shiftMatch && altMatch && metaMatch) {
         event.preventDefault()
         callback(event)
       }
