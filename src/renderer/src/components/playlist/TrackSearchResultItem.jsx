@@ -10,18 +10,10 @@ const TrackSearchResultItem = ({
   isSelected,
   isInPlaylist,
   onToggle,
+  keyNotation = 'original'
 }) => {
   const [showInfoModal, setShowInfoModal] = useState(false)
   const [showInfoTrack, setShowInfoTrack] = useState(null)
-  const [keyNotation, setKeyNotation] = useState('original')
-
-  useEffect(() => {
-    const fetchKeyNotation = async () => {
-      const notation = await window.api.getUserPreference('ui', 'key_notation') || 'original'
-      setKeyNotation(notation)
-    }
-    fetchKeyNotation()
-  }, [])
 
   const onShowInfo = async () => {
     const infoTrack = await window.api.mixxx.getTrackById(track.id)

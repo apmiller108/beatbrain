@@ -29,10 +29,16 @@ const TrackSearchModal = ({
   const [searchResults, setSearchResults] = useState([])
   const [selectedTracks, setSelectedTracks] = useState(new Set())
   const [searching, setSearching] = useState(false)
+  const [keyNotation, setKeyNotation] = useState('original')
 
   const mixxxStats = useContext(MixxxStatsContext)
 
   useEffect(() => {
+    const getSettings = async () => {
+      const notation = await window.api.getUserPreference('ui', 'key_notation')
+      setKeyNotation(notation || 'original')
+    }
+    getSettings()
     loadSavedSearchFilters()
     loadFilterOptions()
   }, [])
@@ -139,6 +145,7 @@ const TrackSearchModal = ({
           onToggleTrack={handleToggleTrack}
           onToggleAll={handleToggleAll}
           seaching={searching}
+          keyNotation={keyNotation}
         />
         <Button
           className="mt-3"

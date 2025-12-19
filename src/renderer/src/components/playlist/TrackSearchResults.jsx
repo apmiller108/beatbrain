@@ -1,6 +1,6 @@
-import { useState } from 'react'
 import propTypes from 'prop-types'
 import { Form, Spinner } from 'react-bootstrap'
+import { List } from 'react-window'
 import TrackSearchResultItem from './TrackSearchResultItem'
 
 const TrackSearchResults = ({
@@ -9,11 +9,28 @@ const TrackSearchResults = ({
   playlistTrackIds,
   onToggleTrack,
   onToggleAll,
-  searching
+  searching,
+  keyNotation = 'original'
 }) => {
 
   const allSelected = results.length > 0 &&
     results.every(t => selectedTracks.has(t.id) || playlistTrackIds.includes(t.id))
+
+
+  const Row = ({ index, results, style }) => {
+    const track = results[index]
+    return (
+      <div style={style}>
+        <TrackSearchResultItem
+          track={track}
+          isSelected={selectedTracks.has(track.id)}
+          isInPlaylist={playlistTrackIds.includes(track.id)}
+          onToggle={onToggleTrack}
+          keyNotation={keyNotation}
+        />
+      </div>
+    )
+  }
 
   return (
     <>
@@ -42,17 +59,27 @@ const TrackSearchResults = ({
               />
             </div>
 
-            <div className="overflow-y-scroll py-2" style={{ maxHeight: '300px' }}>
-              {results.map((track) => (
-                <TrackSearchResultItem
-                  key={track.id}
-                  track={track}
-                  isSelected={selectedTracks.has(track.id)}
-                  isInPlaylist={playlistTrackIds.includes(track.id)}
-                  onToggle={onToggleTrack}
-                />
-              ))}
-            </div>
+            <List
+              style={{ height: '300px' }}
+              className='overflow-y-scroll'
+              rowComponent={Row}
+              rowProps={{ results }}
+              rowCount={results.length}
+              rowHeight={60}
+              width="100%"
+            />
+
+            {/* <div className="overflow-y-scroll py-2" style={{ maxHeight: '300px' }}> */}
+            {/*   {results.map((track) => ( */}
+            {/*     <TrackSearchResultItem */}
+            {/*       key={track.id} */}
+            {/*       track={track} */}
+            {/*       isSelected={selectedTracks.has(track.id)} */}
+            {/*       isInPlaylist={playlistTrackIds.includes(track.id)} */}
+            {/*       onToggle={onToggleTrack} */}
+            {/*     /> */}
+            {/*   ))} */}
+            {/* </div> */}
           </>
         )}
       </div>

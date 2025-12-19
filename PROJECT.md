@@ -124,6 +124,7 @@ CREATE TABLE playlist_tracks (
 - react-bootstrap
 - react-bootstrap-icons
 - react-dom
+- react-window
 
 ## Dev Dependencies
 - eslint
@@ -368,11 +369,13 @@ Read-only database operations
 │           │   │   └── PlaylistList.jsx
 │           │   ├── Navigation.jsx
 │           │   ├── playlist
-│           │   │   ├── AddTracksModal.jsx
 │           │   │   ├── PlaylistForm.jsx
 │           │   │   ├── PlaylistTrackItem.jsx
 │           │   │   ├── TrackSearchFilters.jsx
-│           │   │   └── TrackSearchInput.jsx
+│           │   │   ├── TrackSearchInput.jsx
+│           │   │   ├── TrackSearchModal.jsx
+│           │   │   ├── TrackSearchResultItem.jsx
+│           │   │   └── TrackSearchResults.jsx
 │           │   ├── StatusBar.jsx
 │           │   ├── SystemInformation.jsx
 │           │   ├── TrackInfoModal.jsx
@@ -393,7 +396,7 @@ Read-only database operations
 ├── structure.sql
 └── vitest.config.js
 
-32 directories, 76 files
+32 directories, 78 files
 ```
 
 # TODOS
