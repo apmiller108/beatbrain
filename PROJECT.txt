@@ -367,8 +367,12 @@ Read-only database operations
 │           │   ├── Navigation
 │           │   │   └── PlaylistList.jsx
 │           │   ├── Navigation.jsx
-│           │   ├── PlaylistForm.jsx
-│           │   ├── PlaylistTrackItem.jsx
+│           │   ├── playlist
+│           │   │   ├── AddTracksModal.jsx
+│           │   │   ├── PlaylistForm.jsx
+│           │   │   ├── PlaylistTrackItem.jsx
+│           │   │   ├── TrackSearchFilters.jsx
+│           │   │   └── TrackSearchInput.jsx
 │           │   ├── StatusBar.jsx
 │           │   ├── SystemInformation.jsx
 │           │   ├── TrackInfoModal.jsx
@@ -389,7 +393,7 @@ Read-only database operations
 ├── structure.sql
 └── vitest.config.js
 
-31 directories, 73 files
+32 directories, 76 files
 ```
 
 # TODOS
@@ -563,7 +567,8 @@ used to perform a query against the Mixxx dabatase.
 
 ### **Polish & UX Enhancements**
 - [x] Add info icon for each track that on click shows the full track details (what should the UX be? Modal? expand row item?)
-- [ ] Add "Add tracks" button to manually add tracks from library. Use react-select. User keywords search artist, track name, group. See ./specifications/TRACKSEARCH.md
+- [ ] Add tracks to playlist feature See ./specifications/TRACKSEARCH.md for feature specs
+- [ ] Change key notation select to something else. It looks like crap.
 
 ### **Testing**
 - [x] Write unit tests for new appDatabase playlist methods
@@ -585,7 +590,9 @@ used to perform a query against the Mixxx dabatase.
 - [ ] Filter by Year range
 - [ ] Filter by date added range
 - [ ] Filter by last played date
-- [ ] Persist the selected filters on the playlist record. Show this data to the user on demand. This could potentially 
+- [ ] Filter by times played
+- [ ] Filter by rating
+- [ ] Persist the selected filters on the playlist record. Show this data to the user on demand. Use these filters to initialize the add track search filters.
 ## TODOs for Feature: Playlist (Phase 4: harmonic mixing engine)
 - [ ] Remove limit from DB query
 - [ ] Add harmonic mixing select with options none, strict and creative (discuss this)
