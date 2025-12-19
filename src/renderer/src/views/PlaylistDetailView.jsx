@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Card, Spinner, Badge, Table, Button, Form, FloatingLabel } from 'react-bootstrap'
-import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3, InfoCircleFill, MusicNoteBeamed, Plus, PlusSquareFill } from 'react-bootstrap-icons'
+import { Card, Spinner, Badge, Table, Button, Form } from 'react-bootstrap'
+import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3, InfoCircleFill, MusicNoteBeamed, PlusSquareFill } from 'react-bootstrap-icons'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import {
@@ -25,7 +25,7 @@ import ConfirmationPrompt from '../components/common/ConfirmationPrompt'
 import FlashMessage from '../components/common/FlashMessage'
 import InlineEditInput from '../components/common/InlineEditInput'
 import PlaylistTrackItem from '../components/playlist/PlaylistTrackItem'
-import AddTracksModal from '../components/playlist/AddTracksModal'
+import TrackSearchModal from '../components/playlist/TrackSearchModal'
 
 const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, setNotification }) => {
   const [playlist, setPlaylist] = useState(null)
@@ -43,7 +43,7 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
   const [isUpdatingOrder, setIsUpdatingOrder] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
   const [keyNotation, setKeyNotation] = useState('original') // could be 'original', 'camelot', 'traditional'
-  const [showAddTracksModal, setShowAddTracksModal] = useState(false)
+  const [showTrackSearchModal, setShowTrackSearchModal] = useState(false)
 
   useEffect(() => {
     const loadUserPreference = async () => {
@@ -334,7 +334,7 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
           <div className="d-flex">
             <h5 className="mb-0">Tracks</h5>
             <OverlayTrigger overlay={<Tooltip>Add tracks</Tooltip>}  >
-              <Button id="add-tracks-btn" variant="link" className="ms-3 p-0" onClick={() => { setShowAddTracksModal(true) }} >
+              <Button id="add-tracks-btn" variant="link" className="ms-3 p-0" onClick={() => { setShowTrackSearchModal(true) }} >
                 <PlusSquareFill size={24} />
               </Button>
             </OverlayTrigger>
@@ -400,9 +400,9 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
                           title={confirmationTitle}
                           onConfirm={confirmationAction}
                           onCancel={() => setShowConfirmation(false)} />
-      <AddTracksModal
-        show={showAddTracksModal}
-        onHide={() => { setShowAddTracksModal(false) }}
+      <TrackSearchModal
+        show={showTrackSearchModal}
+        onHide={() => { setShowTrackSearchModal(false) }}
         onExited={() => {
           // Remove focus from the add tracks button after modal closes to hide tooltip
           setTimeout(() => {

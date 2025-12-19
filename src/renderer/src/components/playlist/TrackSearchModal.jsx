@@ -4,7 +4,7 @@ import { Modal, Button, Spinner } from 'react-bootstrap'
 import TrackSearchInput from './TrackSearchInput'
 import TrackSearchFilters from './TrackSearchFilters'
 
-export default function AddTracksModal({
+export default function TrackSearchModal({
   show,
   onHide,
   onExited,
