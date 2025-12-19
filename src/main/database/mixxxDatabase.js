@@ -260,11 +260,12 @@ class MixxxDatabase {
         params.query = `%${query}%`
       }
 
-      if (minBpm !== undefined) {
+      // Allows falsey values like 0
+      if (minBpm !== undefined && minBpm !== null) {
         whereClauses.push('l.bpm >= @minBpm')
         params.minBpm = minBpm
       }
-      if (maxBpm !== undefined) {
+      if (maxBpm !== undefined && maxBpm !== null) {
         whereClauses.push('l.bpm <= @maxBpm')
         params.maxBpm = maxBpm
       }

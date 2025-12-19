@@ -32,7 +32,7 @@ const BpmRangeInput = ({
     }
 
     // Ensure min doesn't exceed max
-    if (maxValue && newMin > maxValue) {
+    if (maxValue && newMin && newMin > maxValue) {
       newMin = maxValue;
     }
 
@@ -52,7 +52,7 @@ const BpmRangeInput = ({
     }
 
     // Ensure max doesn't go below min
-    if (minValue && newMax < minValue) {
+    if (minValue && newMax && newMax < minValue) {
       newMax = minValue;
     }
 
