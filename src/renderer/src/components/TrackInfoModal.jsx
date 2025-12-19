@@ -2,8 +2,9 @@ import PropTypes from 'prop-types'
 import { Modal, Badge, Row, Col } from 'react-bootstrap'
 import formatDuration from '../utilities/formatDuration'
 import formatDate from '../utilities/formatDate'
+import { formatKey } from '../utilities/musicalKeys'
 
-const TrackInfoModal = ({ show, onHide, track, keyNotation, trackKey }) => {
+const TrackInfoModal = ({ show, onHide, track, keyNotation }) => {
   if (!track) return null
 
   const InfoRow = ({ label, value, badge = false, badgeVariant = 'secondary' }) => (
@@ -20,6 +21,8 @@ const TrackInfoModal = ({ show, onHide, track, keyNotation, trackKey }) => {
       </Col>
     </Row>
   )
+
+  if (!track) return null
 
   return (
     <Modal show={show} onHide={onHide} centered>
@@ -42,7 +45,7 @@ const TrackInfoModal = ({ show, onHide, track, keyNotation, trackKey }) => {
         <InfoRow label="BPM" value={track.bpm ? Math.round(track.bpm) : null} badge badgeVariant="secondary" />
         <InfoRow label="Key" value={track.key} badge badgeVariant="primary" />
         {keyNotation !== 'original' && (
-          <InfoRow label={`Key (${keyNotation})`} value={trackKey} badge badgeVariant="primary" />
+          <InfoRow label={`Key (${keyNotation})`} value={formatKey(track.key, keyNotation)} badge badgeVariant="primary" />
         )}
         <InfoRow label="Duration" value={track.duration ? formatDuration(track.duration) : null} />
         <InfoRow label="Rating" value={track.rating ? `${track.rating}/5` : 'Not rated'} />

@@ -12,7 +12,7 @@ const TrackSearchFilters = ({
   filterOptions,
   onChange,
 }) => {
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(true)
 
   const handleFilterChange = (newFilters) => {
     onChange({ ...filters, ...newFilters })

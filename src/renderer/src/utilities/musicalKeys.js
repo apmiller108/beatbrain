@@ -40,7 +40,20 @@ export const toTraditional = (key) => {
   return camelotToTraditionalMap[camelotKey] // Then convert to normalized Traditional
 }
 
+export const formatKey = (key, keyNotation) => {
+  if (!key) return key
+
+  if (keyNotation === 'camelot') {
+    return toCamelot(key)
+  } else if (keyNotation === 'traditional') {
+    return toTraditional(key)
+  } else {
+    return key
+  }
+}
+
 export default {
   toCamelot,
-  toTraditional
+  toTraditional,
+  formatKey
 }

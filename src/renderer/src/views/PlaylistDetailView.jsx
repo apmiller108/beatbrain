@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Card, Spinner, Badge, Table, Button, Form } from 'react-bootstrap'
-import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3, InfoCircleFill, MusicNoteBeamed, PlusSquareFill } from 'react-bootstrap-icons'
+import { Clock, MusicNote, Calendar, BoxArrowDown, Trash3, InfoCircle, MusicNoteBeamed, PlusSquareFill } from 'react-bootstrap-icons'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import {
@@ -364,7 +364,7 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
                   <thead>
                     <tr>
                       <th>#</th>
-                      <th><InfoCircleFill/></th>
+                      <th><InfoCircle size={20}/></th>
                       <th>Title</th>
                       <th>Artist</th>
                       <th>Album</th>

@@ -1,16 +1,18 @@
 import { useState, useEffect, useContext } from 'react'
+import propTypes from 'prop-types'
 import { MixxxStatsContext } from '../../contexts/MixxxStatsContext'
-import { Modal, Button, Spinner } from 'react-bootstrap'
+import { Modal, Button } from 'react-bootstrap'
 import TrackSearchInput from './TrackSearchInput'
 import TrackSearchFilters from './TrackSearchFilters'
+import TrackSearchResults from './TrackSearchResults'
 
-export default function TrackSearchModal({
+const TrackSearchModal = ({
   show,
   onHide,
   onExited,
   playlistTrackIds = [],
   onTracksAdded
-}) {
+}) => {
   const [filterOptions, setFilterOptions] = useState({
     genres: [],
     keys: [],
@@ -78,12 +80,33 @@ export default function TrackSearchModal({
       const crates = filters.crates.map(crate => crate.value)
       const quereyParams = { ...filters, keys, crates }
       const results = await window.api.mixxx.getTracks(quereyParams)
-      console.log('Search results:', results)
       setSearchResults(results)
     } catch (error) {
       console.error('Search failed:', error)
     } finally {
       setSearching(false)
+    }
+  }
+
+  const handleToggleTrack = (trackId) => {
+    const newSelected = new Set(selectedTracks)
+    if (newSelected.has(trackId)) {
+      newSelected.delete(trackId)
+    } else {
+      newSelected.add(trackId)
+    }
+    setSelectedTracks(newSelected)
+  }
+
+  const handleToggleAll = () => {
+    const eligibleForSelection = searchResults.filter(t => !playlistTrackIds.includes(t.id))
+
+    const allSelected = eligibleForSelection.every(t => selectedTracks.has(t.id))
+
+    if (allSelected) {
+      setSelectedTracks(new Set())
+    } else {
+      setSelectedTracks(new Set(eligibleForSelection.map(t => t.id)))
     }
   }
 
@@ -109,8 +132,16 @@ export default function TrackSearchModal({
                             filterOptions={filterOptions}
                             onChange={(advFilters) => setFilters((prev) => ({ ...prev, ...advFilters }))}
         />
-        <div>Search Results Here</div>
+        <TrackSearchResults
+          results={searchResults}
+          selectedTracks={selectedTracks}
+          playlistTrackIds={playlistTrackIds}
+          onToggleTrack={handleToggleTrack}
+          onToggleAll={handleToggleAll}
+          seaching={searching}
+        />
         <Button
+          className="mt-3"
           variant="primary"
           onClick={handleAddTracks}
           disabled={selectedTracks.size === 0}
@@ -126,3 +157,13 @@ export default function TrackSearchModal({
     </Modal>
   )
 }
+
+TrackSearchModal.propTypes = {
+  show: propTypes.bool.isRequired,
+  onHide: propTypes.func.isRequired,
+  onExited: propTypes.func,
+  playlistTrackIds: propTypes.arrayOf(propTypes.number),
+  onTracksAdded: propTypes.func.isRequired
+}
+
+export default TrackSearchModal

@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Badge, Button } from 'react-bootstrap'
-import { Trash3, GripVertical, InfoCircleFill } from 'react-bootstrap-icons'
+import { Trash3, GripVertical, InfoCircle } from 'react-bootstrap-icons'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import formatDuration from '../../utilities/formatDuration'
-import { toCamelot, toTraditional } from '../../utilities/musicalKeys'
+import { formatKey } from '../../utilities/musicalKeys'
 import TrackInfoModal from '../TrackInfoModal'
 
 const PlaylistTrackItem = ({ track, onRemove, disabled, keyNotation = 'original' }) => {
@@ -35,16 +35,6 @@ const PlaylistTrackItem = ({ track, onRemove, disabled, keyNotation = 'original'
     setTrackInfo(null)
   }
 
-  const formatKey = (key) => {
-    if (keyNotation === 'camelot') {
-      return toCamelot(key)
-    } else if (keyNotation === 'traditional') {
-      return toTraditional(key)
-    } else {
-      return key
-    }
-  }
-
   return (
     <>
       <tr id={`track-${track.id}`} ref={sortable.setNodeRef} style={style} className="c-playlist-track-item">
@@ -55,8 +45,8 @@ const PlaylistTrackItem = ({ track, onRemove, disabled, keyNotation = 'original'
           </div>
         </td>
         <td>
-          <Button variant="outline-secondary" size="sm" onClick={() => { showTrackInfo(track.source_track_id) } }>
-            <InfoCircleFill />
+          <Button variant="link" size="sm" onClick={() => { showTrackInfo(track.source_track_id) } }>
+            <InfoCircle size={20} />
           </Button>
         </td>
         <td>
@@ -73,7 +63,7 @@ const PlaylistTrackItem = ({ track, onRemove, disabled, keyNotation = 'original'
         </td>
         <td>
           {track.key ? (
-            <Badge bg="primary">{formatKey(track.key)}</Badge>
+            <Badge bg="primary">{formatKey(track.key, keyNotation)}</Badge>
           ) : (
             '-'
           )}
@@ -90,7 +80,11 @@ const PlaylistTrackItem = ({ track, onRemove, disabled, keyNotation = 'original'
         </td>
       </tr>
 
-      <TrackInfoModal show={showModal} onHide={handleCloseModal} track={trackInfo} keyNotation={keyNotation} trackKey={formatKey(track.key)}/>
+      <TrackInfoModal show={showModal}
+                      onHide={handleCloseModal}
+                      track={trackInfo}
+                      keyNotation={keyNotation}
+      />
     </>
   )
 }
