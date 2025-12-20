@@ -257,7 +257,7 @@ This plan breaks down the work required to implement the "Add Tracks to Playlist
 - [x]`appDatabase.addTracksToPlaylist()` logic.
 - [x] `KeyMultiSelect` component test
 - [x] `TrackSearchModal.jsx` component test
-- [ ] **E2E Test (Playwright)**:
+- [x] **E2E Test (Playwright)**:
     - Create a test that:
         1. Navigates to a playlist.
         2. Clicks the "Add Tracks" button.

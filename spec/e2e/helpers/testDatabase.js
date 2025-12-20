@@ -8,7 +8,13 @@ import SqliteManager from './sqliteManager.js';
 export class TestDatabaseHelper {
   constructor() {
     this.tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'beatbrain-e2e'));
+
+    // This path is set to the env var BEATBRAIN_TEST_APP_DB when launching the
+    // app (see ElectronAppHelper) so when appDatabase.initialize is called it
+    // uses this path. We can therefore use this path to initialize another
+    // instance of appDatabase in the tests in order to seed or even read data.
     this.appDbPath = path.join(this.tempDir, 'beatbrain.sqlite');
+
     this.mixxxDbPath = path.join(this.tempDir, 'mixxxdb.sqlite');
     this.sqliteManager = new SqliteManager();
   }
@@ -58,5 +64,13 @@ export class TestDatabaseHelper {
       appDatabase.setUserPreference(category, key, value);
     });
     appDatabase.close();
+  }
+
+  async createPlaylist(name) {
+    await this.sqliteManager.switchToNode();
+    appDatabase.initialize(this.tempDir);
+    const playlist = appDatabase.createPlaylist({ name });
+    appDatabase.close();
+    return playlist;
   }
 }

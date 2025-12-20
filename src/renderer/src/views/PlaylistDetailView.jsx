@@ -285,7 +285,7 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
   }
 
   return (
-    <div className="playlist-detail-view">
+    <div className="c-playlist-detail-view">
       { playlistError && (
         <FlashMessage variant='warning' className="py-2 mb-2" onClose={() => setPlaylistError(null)} dismissible={true} message={playlistError}/>
       )}

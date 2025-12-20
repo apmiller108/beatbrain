@@ -290,8 +290,8 @@ Read-only database operations
 ├── eslint.config.js
 ├── launch.json
 ├── NOTES.md
-├── package-lock.json
 ├── package.json
+├── package-lock.json
 ├── playwright.config.js
 ├── PROJECT.md
 ├── PROJECT.txt
@@ -301,10 +301,11 @@ Read-only database operations
 ├── spec
 │   ├── e2e
 │   │   ├── database-connection.spec.js
-│   │   └── helpers
-│   │       ├── electronApp.js
-│   │       ├── sqliteManager.js
-│   │       └── testDatabase.js
+│   │   ├── helpers
+│   │   │   ├── electronApp.js
+│   │   │   ├── sqliteManager.js
+│   │   │   └── testDatabase.js
+│   │   └── track-search.spec.js
 │   ├── fixtures
 │   │   ├── mixxxData.json
 │   │   └── mixxxdb_schema.sql
@@ -316,12 +317,15 @@ Read-only database operations
 │   ├── renderer
 │   │   └── src
 │   │       └── components
-│   │           └── DatabaseConnectionModal.test.jsx
+│   │           ├── DatabaseConnectionModal.test.jsx
+│   │           ├── filters
+│   │           │   └── KeyMultiSelect.spec.jsx
+│   │           └── playlist
+│   │               └── TrackSearchModal.spec.jsx
 │   └── setup.js
 ├── specifications
 │   └── TRACKSEARCH.md
 ├── src
-│   ├── assets
 │   ├── main
 │   │   ├── assets
 │   │   │   └── beatbrain_logo.png
@@ -341,7 +345,6 @@ Read-only database operations
 │   ├── preload
 │   │   └── index.mjs
 │   └── renderer
-│       ├── assets
 │       ├── index.html
 │       └── src
 │           ├── App.jsx
@@ -382,11 +385,15 @@ Read-only database operations
 │           │   └── TrackList.jsx
 │           ├── contexts
 │           │   └── MixxxStatsContext.js
+│           ├── hooks
+│           │   ├── useDebounced.js
+│           │   └── useKeyboardShortcut.js
 │           ├── main.jsx
 │           ├── utilities
 │           │   ├── formatDate.js
 │           │   ├── formatDuration.js
 │           │   ├── generateM3UContent.js
+│           │   ├── keyboard.js
 │           │   └── musicalKeys.js
 │           └── views
 │               ├── LibraryView.jsx
@@ -396,7 +403,7 @@ Read-only database operations
 ├── structure.sql
 └── vitest.config.js
 
-32 directories, 78 files
+32 directories, 84 files
 ```
 
 # TODOS
@@ -570,19 +577,17 @@ used to perform a query against the Mixxx dabatase.
 
 ### **Polish & UX Enhancements**
 - [x] Add info icon for each track that on click shows the full track details (what should the UX be? Modal? expand row item?)
-- [ ] Add tracks to playlist feature See ./specifications/TRACKSEARCH.md for feature specs
+- [x] Add tracks to playlist feature See ./specifications/TRACKSEARCH.md for feature specs
 - [ ] Change key notation select to something else. It looks like crap.
 
 ### **Testing**
 - [x] Write unit tests for new appDatabase playlist methods
-- [ ] Write unit tests for PlaylistList component
-- [ ] Write unit tests for PlaylistDetailView component
-- [ ] Write unit tests for PlaylistTrackItem component
-- [ ] Write integration test for playlist navigation flow
-- [ ] Write integration test for playlist editing (name, remove tracks)
-- [ ] Write integration test for playlist deletion
+- [ ] Write unit test for generateM3UContent
+- [ ] Write unit test for PlaylistDetailView component
 - [ ] Write e2e test for complete playlist management workflow
-- [ ] Write tests for M3U export functionality
+  - [ ] create playlist
+  - [x] Add track to playlist
+  - [ ] Remove track from playlist
 
 ## TODOs for Feature: Playlist (Phase 3: filter enhancements)
 ### Implement fields for user to filter tracks eligible for playlist creation and adding tracks to playlist

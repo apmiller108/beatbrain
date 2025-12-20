@@ -23,7 +23,7 @@ const TrackSearchResultItem = ({
 
   return (
     <div
-      className={`d-flex align-items-center py-1 px-2 border-bottom ${
+      className={`c-track-search-result-item d-flex align-items-center py-1 px-2 border-bottom ${
         isInPlaylist ? 'text-muted bg-light' : ''
       }`}
       style={{ cursor: isInPlaylist ? 'not-allowed' : 'pointer' }}
