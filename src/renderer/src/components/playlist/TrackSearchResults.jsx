@@ -68,18 +68,6 @@ const TrackSearchResults = ({
               rowHeight={60}
               width="100%"
             />
-
-            {/* <div className="overflow-y-scroll py-2" style={{ maxHeight: '300px' }}> */}
-            {/*   {results.map((track) => ( */}
-            {/*     <TrackSearchResultItem */}
-            {/*       key={track.id} */}
-            {/*       track={track} */}
-            {/*       isSelected={selectedTracks.has(track.id)} */}
-            {/*       isInPlaylist={playlistTrackIds.includes(track.id)} */}
-            {/*       onToggle={onToggleTrack} */}
-            {/*     /> */}
-            {/*   ))} */}
-            {/* </div> */}
           </>
         )}
       </div>
@@ -102,6 +90,7 @@ TrackSearchResults.propTypes = {
   onToggleTrack: propTypes.func.isRequired,
   onToggleAll: propTypes.func.isRequired,
   searching: propTypes.bool.isRequired,
+  keyNotation: propTypes.oneOf(['original', 'traditional', 'camelot']),
 }
 
 export default TrackSearchResults

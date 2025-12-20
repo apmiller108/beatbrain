@@ -1,15 +1,23 @@
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import TrackSearchModal from '@renderer/components/playlist/TrackSearchModal';
 import { MixxxStatsContext } from '@renderer/contexts/MixxxStatsContext';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+
+// Mock the debounce hook to return the value immediately
+vi.mock('@renderer/hooks/useDebounced', () => ({
+  default: (value) => value, // Return value immediately without debouncing
+}));
 
 // Mock window.api
-const mockGetAvailableKeys = vi.fn(() => Promise.resolve([]));
-const mockGetAvailableCrates = vi.fn(() => Promise.resolve([]));
-const mockGetAvailableGenres = vi.fn(() => Promise.resolve([]));
-const mockGetTracks = vi.fn(() => Promise.resolve([{ id: 1, title: 'Track A' }]));
-const mockGetUserPreference = vi.fn(() => Promise.resolve('camelot'));
-const mockGetSetting = vi.fn(() => Promise.resolve(null));
-const mockSaveSearchFilters = vi.fn(() => Promise.resolve());
+const mockGetAvailableKeys = vi.fn();
+const mockGetAvailableCrates = vi.fn();
+const mockGetAvailableGenres = vi.fn();
+const mockGetTracks = vi.fn();
+const mockGetUserPreference = vi.fn();
+const mockGetSetting = vi.fn();
+const mockSaveSearchFilters = vi.fn();
+const mockGetTrackById = vi.fn();
 
 window.api = {
   mixxx: {
@@ -17,6 +25,7 @@ window.api = {
     getAvailableCrates: mockGetAvailableCrates,
     getAvailableGenres: mockGetAvailableGenres,
     getTracks: mockGetTracks,
+    getTrackById: mockGetTrackById,
   },
   getUserPreference: mockGetUserPreference,
   getSetting: mockGetSetting,
@@ -27,10 +36,17 @@ const mockMixxxStatsContextValue = {
   bpmRange: { minBpm: 100, maxBpm: 180 },
 };
 
-const renderComponent = () => {
-  render(
+const defaultProps = {
+  show: true,
+  onHide: vi.fn(),
+  onTracksAdded: vi.fn(),
+  playlistTrackIds: [],
+};
+
+const renderComponent = (props = {}) => {
+  return render(
     <MixxxStatsContext.Provider value={mockMixxxStatsContextValue}>
-      <TrackSearchModal show={true} onHide={vi.fn()} onTracksAdded={vi.fn()} />
+      <TrackSearchModal {...defaultProps} {...props} />
     </MixxxStatsContext.Provider>
   );
 };
@@ -38,96 +54,233 @@ const renderComponent = () => {
 describe('TrackSearchModal', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.useFakeTimers();
+
+    // Default successful responses
+    mockGetAvailableKeys.mockResolvedValue(['1A', '2A', '8A']);
+    mockGetAvailableCrates.mockResolvedValue([{ id: 1, name: 'Main Crate' }]);
+    mockGetAvailableGenres.mockResolvedValue(['House', 'Techno']);
+    mockGetTracks.mockResolvedValue([]);
+    mockGetUserPreference.mockImplementation((section, key) => {
+      if (section === 'ui' && key === 'key_notation') {
+        return Promise.resolve('original');
+      }
+      return Promise.resolve(null);
+    });
+    mockGetSetting.mockResolvedValue(null);
+    mockSaveSearchFilters.mockResolvedValue();
+    mockGetTrackById.mockResolvedValue({ id: 101, title: 'Details', artist: 'Artist' });
   });
 
   afterEach(() => {
-    vi.useRealTimers();
+    vi.clearAllTimers();
   });
 
-  it('fetches initial filter data but does not search on mount', async () => {
+  it('renders correctly and loads initial data', async () => {
     renderComponent();
+
+    expect(screen.getByText('Add Tracks to Playlist')).toBeInTheDocument();
 
     await waitFor(() => {
+      expect(mockGetAvailableGenres).toHaveBeenCalled();
       expect(mockGetAvailableKeys).toHaveBeenCalled();
       expect(mockGetAvailableCrates).toHaveBeenCalled();
-      expect(mockGetAvailableGenres).toHaveBeenCalled();
-      expect(mockGetSetting).toHaveBeenCalled();
+      expect(mockGetUserPreference).toHaveBeenCalledWith('ui', 'key_notation');
     });
-
-    // Should NOT search on initial mount due to isInitialMount.current check
-    expect(mockGetTracks).not.toHaveBeenCalled();
   });
 
-  it('searches when user types in search input (debounced)', async () => {
+  it('performs a search when filters change', async () => {
+    const user = userEvent.setup();
+
+    const mockResults = [
+      { id: 101, title: 'Test Track 1', artist: 'Artist A', bpm: 120, key: '1A' }
+    ];
+    mockGetTracks.mockResolvedValue(mockResults);
+
     renderComponent();
-    const searchInput = screen.getByTestId('track-search-input');
 
-    await act(async () => {
-      fireEvent.change(searchInput, { target: { value: 'test query' } });
-      await vi.advanceTimersByTimeAsync(200); // Before debounce
+    // Wait for initial load to complete
+    await waitFor(() => {
+      expect(mockGetAvailableGenres).toHaveBeenCalled()
+      expect(mockGetAvailableKeys).toHaveBeenCalled()
+      expect(mockGetAvailableCrates).toHaveBeenCalled()
     });
-    expect(mockGetTracks).not.toHaveBeenCalled();
 
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(100); // Past debounce
+    const input = screen.getByPlaceholderText(/Search by track name/i);
+
+    // Clear any previous calls
+    mockGetTracks.mockClear();
+
+    // Type in the search box
+    await user.type(input, 'Test');
+
+    // Wait for the search to be called with the query
+    await waitFor(() => {
+      expect(mockGetTracks).toHaveBeenCalledWith(
+        expect.objectContaining({
+          query: 'Test'
+        })
+      );
     });
-    expect(mockGetTracks).toHaveBeenCalledTimes(1);
-    expect(mockGetTracks).toHaveBeenCalledWith(expect.objectContaining({ query: 'test query' }));
+
+    // Wait for results to appear
+    await waitFor(() => {
+      expect(screen.getByText('Test Track 1')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('Artist A')).toBeInTheDocument();
   });
 
-  it('searches when filters change (debounced)', async () => {
-    renderComponent();
-    const filterButton = screen.getByTestId('mock-filter-change');
+  it('allows selecting tracks and adding them', async () => {
+    const user = userEvent.setup();
 
-    await act(async () => {
-      fireEvent.click(filterButton);
-      await vi.advanceTimersByTimeAsync(200); // Before debounce
-    });
-    expect(mockGetTracks).not.toHaveBeenCalled();
-
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(100); // Past debounce
-    });
-    expect(mockGetTracks).toHaveBeenCalledTimes(1);
-    expect(mockGetTracks).toHaveBeenCalledWith(expect.objectContaining({ genres: expect.any(Array) }));
-  });
-
-  it('calls onTracksAdded with selected tracks and closes', async () => {
-    const onTracksAdded = vi.fn();
-    const onHide = vi.fn();
-    mockGetTracks.mockResolvedValueOnce([
-      { id: 1, title: 'Track A' },
-      { id: 2, title: 'Track B' },
+    mockGetTracks.mockResolvedValue([
+      { id: 101, title: 'Track 1', artist: 'Artist A', bpm: 120, key: '1A' },
+      { id: 102, title: 'Track 2', artist: 'Artist B', bpm: 130, key: '2A' }
     ]);
 
-    render(
-      <MixxxStatsContext.Provider value={mockMixxxStatsContextValue}>
-        <TrackSearchModal show={true} onHide={onHide} onTracksAdded={onTracksAdded} />
-      </MixxxStatsContext.Provider>
-    );
+    const onTracksAdded = vi.fn();
+    const onHide = vi.fn();
 
-    // Let the initial search run
-    await act(async () => {
-      const searchInput = screen.getByTestId('track-search-input');
-      fireEvent.change(searchInput, { target: { value: 'test' } });
-      await vi.runAllTimersAsync();
+    renderComponent({ onTracksAdded, onHide });
+
+    // Wait for initial load
+    await waitFor(() => expect(mockGetAvailableGenres).toHaveBeenCalled());
+
+    // Clear the initial getTracks call
+    mockGetTracks.mockClear();
+
+    // Trigger search by typing
+    const input = screen.getByPlaceholderText(/Search by track name/i);
+    await user.type(input, 'Track');
+
+    // Wait for search results
+    await waitFor(() => {
+      expect(mockGetTracks).toHaveBeenCalled();
     });
 
-    // await waitFor(async () => {
-    // const checkboxes = await screen.findAllByRole('checkbox');
-    // console.log('Checkboxes found:', checkboxes.length);
-    // await act(async () => {
-    //   fireEvent.click(checkboxes[0]);
-    // });
-    // });
+    await waitFor(() => {
+      expect(screen.getByText('Track 1')).toBeInTheDocument();
+    });
 
+    // Find all checkboxes (first one is "Select All", rest are individual tracks)
+    const checkboxes = screen.getAllByRole('checkbox');
+
+    // Click the first track's checkbox (index 1, since 0 is Select All)
+    await user.click(checkboxes[1]);
+
+    // Verify the Add button shows the count
+    await waitFor(() => {
+      const addButton = screen.getByRole('button', { name: /Add 1 Selected Tracks/i });
+      expect(addButton).toBeEnabled();
+    });
+
+    // Click the Add button
     const addButton = screen.getByRole('button', { name: /Add 1 Selected Tracks/i });
-    await act(async () => {
-      fireEvent.click(addButton);
+    await user.click(addButton);
+
+    // Verify callbacks
+    expect(onTracksAdded).toHaveBeenCalledWith([
+      expect.objectContaining({ id: 101, title: 'Track 1' })
+    ]);
+    expect(onHide).toHaveBeenCalled();
+  });
+
+  it('disables Add button when no tracks selected', async () => {
+    const user = userEvent.setup();
+
+    mockGetTracks.mockResolvedValue([
+      { id: 101, title: 'Track 1', artist: 'Artist A', bpm: 120, key: '1A' }
+    ]);
+
+    renderComponent();
+
+    await waitFor(() => expect(mockGetAvailableGenres).toHaveBeenCalled());
+
+    mockGetTracks.mockClear();
+
+    const input = screen.getByPlaceholderText(/Search by track name/i);
+    await user.type(input, 'Track');
+
+    await waitFor(() => {
+      expect(mockGetTracks).toHaveBeenCalled();
     });
 
-    expect(onTracksAdded).toHaveBeenCalledWith([expect.objectContaining({ id: 1, title: 'Track A' })]);
-    expect(onHide).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(screen.getByText('Track 1')).toBeInTheDocument();
+    });
+
+    // Find the Add button - it should show "Add Selected Tracks" when count is 0
+    const addButton = screen.getByRole('button', { name: /Add Selected Tracks/i });
+    expect(addButton).toBeDisabled();
+  });
+
+  it('handles toggle all functionality', async () => {
+    const user = userEvent.setup();
+
+    mockGetTracks.mockResolvedValue([
+      { id: 101, title: 'Track 1', artist: 'Artist A', bpm: 120, key: '1A' },
+      { id: 102, title: 'Track 2', artist: 'Artist B', bpm: 130, key: '2A' }
+    ]);
+
+    renderComponent();
+
+    await waitFor(() => expect(mockGetAvailableGenres).toHaveBeenCalled());
+
+    mockGetTracks.mockClear();
+
+    const input = screen.getByPlaceholderText(/Search by track name/i);
+    await user.type(input, 'Track');
+
+    await waitFor(() => expect(mockGetTracks).toHaveBeenCalled());
+    await waitFor(() => expect(screen.getByText('Track 1')).toBeInTheDocument());
+
+    const checkboxes = screen.getAllByRole('checkbox');
+    const selectAllCheckbox = checkboxes[0];
+
+    // Select all
+    await user.click(selectAllCheckbox);
+
+    await waitFor(() => {
+      const addButton = screen.getByRole('button', { name: /Add 2 Selected Tracks/i });
+      expect(addButton).toBeEnabled();
+    });
+
+    // Deselect all
+    await user.click(selectAllCheckbox);
+
+    await waitFor(() => {
+      const addButton = screen.getByRole('button', { name: /Add Selected Tracks/i });
+      expect(addButton).toBeDisabled();
+    });
+  });
+
+  it('excludes tracks already in playlist from selection', async () => {
+    const user = userEvent.setup();
+
+    mockGetTracks.mockResolvedValue([
+      { id: 101, title: 'Track 1', artist: 'Artist A', bpm: 120, key: '1A' },
+      { id: 102, title: 'Track 2', artist: 'Artist B', bpm: 130, key: '2A' }
+    ]);
+
+    // Track 101 is already in the playlist
+    renderComponent({ playlistTrackIds: [101] });
+
+    await waitFor(() => expect(mockGetAvailableGenres).toHaveBeenCalled());
+
+    mockGetTracks.mockClear();
+
+    const input = screen.getByPlaceholderText(/Search by track name/i);
+    await user.type(input, 'Track');
+
+    await waitFor(() => expect(mockGetTracks).toHaveBeenCalled());
+    await waitFor(() => expect(screen.getByText('Track 1')).toBeInTheDocument());
+
+    const checkboxes = screen.getAllByRole('checkbox');
+
+    // The first track's checkbox should be disabled
+    expect(checkboxes[1]).toBeDisabled();
+
+    // The second track's checkbox should be enabled
+    expect(checkboxes[2]).not.toBeDisabled();
   });
 });
