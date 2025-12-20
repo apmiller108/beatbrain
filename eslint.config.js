@@ -32,6 +32,7 @@ export default [
         Buffer: 'readonly',
         global: 'readonly',
         setTimeout: 'readonly',
+        clearTimeout: 'readonly',
         requestAnimationFrame: 'readonly',
         ...vitest.environments.env.globals
       },

@@ -217,10 +217,10 @@ This plan breaks down the work required to implement the "Add Tracks to Playlist
 - [x] **`TrackSearchFilters.jsx`**: A collapsible section containing:
     - Reused `BpmRangeInput.jsx` and `GenreMultiSelect.jsx`.
     - New `KeyMultiSelect.jsx` and `CrateMultiSelect.jsx`.
-- [ ] **`TrackSearchResults.jsx`**: Container for the results list.
+- [x] **`TrackSearchResults.jsx`**: Container for the results list.
     - Implements virtual scrolling (e.g., with `react-window`) for performance.
     - Includes "Select All" / "Deselect All" functionality.
-- [ ] **`TrackSearchResultItem.jsx`**: An individual item in the results list.
+- [x] **`TrackSearchResultItem.jsx`**: An individual item in the results list.
     - Displays track info (title, artist, BPM, key).
     - re-use TrackInfoModal for full track details.
     - Has a checkbox for selection.
@@ -231,42 +231,32 @@ This plan breaks down the work required to implement the "Add Tracks to Playlist
 ### **Phase 3: Integration & State Management**
 
 #### **1. `PlaylistDetailView.jsx` Integration**
-- [ ] Add an "Add Tracks" button to the header, next to the "Export" button.
-- [ ] Add state to manage the visibility of `TrackSearchModal` (e.g., `const [showTrackSearchModal, setShowTrackSearchModal] = useState(false)`).
-- [ ] Pass the current playlist's track IDs to `TrackSearchModal` for duplicate detection.
-- [ ] Pass a handler to `TrackSearchModal` that is called when tracks are added.
+- [x] Add an "Add Tracks" button to the header, next to the "Export" button.
+- [x] Add state to manage the visibility of `TrackSearchModal` (e.g., `const [showTrackSearchModal, setShowTrackSearchModal] = useState(false)`).
+- [x] Pass the current playlist's track IDs to `TrackSearchModal` for duplicate detection.
+- [x] Pass a handler to `TrackSearchModal` that is called when tracks are added.
     - The handler should call `window.api.addTracksToPlaylist(playlistId, selectedTrackIds)`.
     - On success, it should refresh the playlist data (`loadPlaylist()`) and trigger `onPlaylistUpdated()`.
     - It should also show a success notification/toast.
-
-#### **2. State Management within `TrackSearchModal.jsx`**
-- [ ] Manage state for all filter values.
-- [ ] Manage loading/error states for search execution and filter option fetching.
-- [ ] Manage the array of search results.
-- [ ] Manage the `Set` of selected track IDs.
-
 ---
 
 ### **Phase 4: Polish & UX**
 
-- [ ] Implement debouncing for the quick search input (300ms).
-- [ ] Display a "Found X tracks" count in the results area.
-- [ ] Add loading indicators while a search is in progress.
-- [ ] Disable the "Add Selected Tracks" button if no tracks are selected, and update its text dynamically.
-- [ ] Add a keyboard shortcut (`Esc`) to close the modal.
-- [ ] Add a keyboard shortcut CTL/CMD-F to open search modal
-- [ ] Show a toast notification upon successful addition of tracks.
+- [x] Implement debouncing for the quick search input (300ms).
+- [x] Display a "Found X tracks" count in the results area.
+- [x] Add loading indicators while a search is in progress.
+- [x] Disable the "Add Selected Tracks" button if no tracks are selected, and update its text dynamically.
+- [x] Add a keyboard shortcut (`Esc`) to close the modal.
+- [x] Add a keyboard shortcut CTL/CMD-F to open search modal
 
 ---
 
 ### **Phase 5: Testing**
 
-- [ ] **Unit Tests**:
-    - `appDatabase.addTracksToPlaylist()` logic.
-    - New filter components (`KeyMultiSelect`, `CrateMultiSelect`).
-- [ ] **Component Tests**:
-    - `TrackSearchModal.jsx` (mocking API calls) to verify state changes and interactions.
-    - `TrackSearchResults.jsx` to verify selection and virtual scrolling behavior.
+#### **Unit Tests**:
+- [x]`appDatabase.addTracksToPlaylist()` logic.
+- [x] `KeyMultiSelect` component test
+- [ ] `TrackSearchModal.jsx` component test
 - [ ] **E2E Test (Playwright)**:
     - Create a test that:
         1. Navigates to a playlist.

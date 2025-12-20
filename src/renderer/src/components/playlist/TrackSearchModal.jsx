@@ -1,10 +1,11 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, useRef } from 'react'
 import propTypes from 'prop-types'
 import { MixxxStatsContext } from '../../contexts/MixxxStatsContext'
 import { Modal, Button } from 'react-bootstrap'
 import TrackSearchInput from './TrackSearchInput'
 import TrackSearchFilters from './TrackSearchFilters'
 import TrackSearchResults from './TrackSearchResults'
+import useDebounce from '../../hooks/useDebounced'
 
 const TrackSearchModal = ({
   show,
@@ -32,67 +33,67 @@ const TrackSearchModal = ({
   const [keyNotation, setKeyNotation] = useState('original')
 
   const mixxxStats = useContext(MixxxStatsContext)
+  const debouncedFilters = useDebounce(filters, 300);
+  const isInitialMount = useRef(true);
 
+  // Effect for initial loading of all dropdown options and saved user settings
   useEffect(() => {
-    const getSettings = async () => {
-      const notation = await window.api.getUserPreference('ui', 'key_notation')
-      setKeyNotation(notation || 'original')
-    }
-    getSettings()
-    loadSavedSearchFilters()
-    loadFilterOptions()
-  }, [])
+    const loadInitialData = async () => {
+      try {
+        const [genres, keys, crates, savedFiltersStr, keyNotationPref] = await Promise.all([
+          window.api.mixxx.getAvailableGenres(),
+          window.api.mixxx.getAvailableKeys(),
+          window.api.mixxx.getAvailableCrates(),
+          window.api.getSetting('searchFilters'),
+          window.api.getUserPreference('ui', 'key_notation'),
+        ]);
 
-  const loadSavedSearchFilters = async () => {
-    try {
-      const savedFilters = await window.api.getSetting('searchFilters')
-      if (savedFilters) {
-        const parsedFilters = JSON.parse(savedFilters)
-        setFilters((prevFilters) => ({ ...prevFilters, ...parsedFilters }))
+        const bpmOptions = {
+          minBpm: Math.floor(mixxxStats.bpmRange.minBpm),
+          maxBpm: Math.ceil(mixxxStats.bpmRange.maxBpm)
+        };
+        setFilterOptions({ genres, keys, crates, ...bpmOptions });
+        setKeyNotation(keyNotationPref || 'original');
+
+        if (savedFiltersStr) {
+          const savedFilters = JSON.parse(savedFiltersStr);
+          setFilters(prev => ({ ...prev, ...savedFilters }));
+        }
+      } catch (error) {
+        console.error('Failed to load initial search data:', error);
       }
-    } catch (error) {
-      console.error('Failed to load saved search filters:', error)
-    }
-  }
+    };
 
-  const loadFilterOptions = async () => {
-    try {
-      const [genres, keys, crates] = await Promise.all([
-        window.api.mixxx.getAvailableGenres(),
-        window.api.mixxx.getAvailableKeys(),
-        window.api.mixxx.getAvailableCrates()
-      ])
+    loadInitialData();
+  }, []);
 
-      const bpmOptions = {
-        minBpm: Math.floor(mixxxStats.bpmRange.minBpm),
-        maxBpm: Math.ceil(mixxxStats.bpmRange.maxBpm)
-      }
-
-      setFilterOptions({ genres, keys, crates, ...bpmOptions })
-    } catch (error) {
-      console.error('Failed to load filter options:', error)
-    }
-  }
-
+  // Effect for handling the search that depends on a debounced value
   useEffect(() => {
-    window.api.saveSearchFilters(filters)
-    handleSearch()
-  }, [filters])
-
-  const handleSearch = async () => {
-    try {
-      setSearching(true)
-      const keys = filters.keys.flatMap(key => key.value)
-      const crates = filters.crates.map(crate => crate.value)
-      const quereyParams = { ...filters, keys, crates }
-      const results = await window.api.mixxx.getTracks(quereyParams)
-      setSearchResults(results)
-    } catch (error) {
-      console.error('Search failed:', error)
-    } finally {
-      setSearching(false)
+    // Prevent search on the very first render cycle
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
     }
-  }
+
+    const handleSearch = async () => {
+      try {
+        setSearching(true);
+        const keys = debouncedFilters.keys.flatMap(key => key.value);
+        const crates = debouncedFilters.crates.map(crate => crate.value);
+        const queryParams = { ...debouncedFilters, keys, crates };
+        const results = await window.api.mixxx.getTracks(queryParams);
+        setSearchResults(results);
+      } catch (error) {
+        console.error('Search failed:', error);
+      } finally {
+        setSearching(false);
+      }
+    };
+
+    handleSearch();
+    window.api.saveSearchFilters(debouncedFilters)
+
+  }, [debouncedFilters]);
 
   const handleToggleTrack = (trackId) => {
     const newSelected = new Set(selectedTracks)
@@ -131,7 +132,7 @@ const TrackSearchModal = ({
       <Modal.Header closeButton>
         <Modal.Title>Add Tracks to Playlist</Modal.Title>
       </Modal.Header>
-      <Modal.Body className="text-center py-5">
+      <Modal.Body>
         <TrackSearchInput value={filters.query} onChange={(query) => setFilters((prev) => ({ ...prev, query }))} />
         <TrackSearchFilters filters={filters}
                             filterOptions={filterOptions}
@@ -143,21 +144,20 @@ const TrackSearchModal = ({
           playlistTrackIds={playlistTrackIds}
           onToggleTrack={handleToggleTrack}
           onToggleAll={handleToggleAll}
-          seaching={searching}
+          searching={searching}
           keyNotation={keyNotation}
         />
-        <Button
-          className="mt-3"
-          variant="primary"
-          onClick={handleAddTracks}
-          disabled={selectedTracks.size === 0}
-        >
-          Add Selected Tracks
-        </Button>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>
           Close
+        </Button>
+        <Button
+          variant="primary"
+          onClick={handleAddTracks}
+          disabled={selectedTracks.size === 0}
+        >
+          Add {selectedTracks.size > 0 && `${selectedTracks.size} `}Selected Tracks
         </Button>
       </Modal.Footer>
     </Modal>

@@ -1,19 +1,18 @@
 import { useState, useEffect } from 'react'
+import propTypes from 'prop-types'
 import { Form, InputGroup } from 'react-bootstrap'
 import { Search } from 'react-bootstrap-icons'
+import useDebounce from '../../hooks/useDebounced'
 
-export default function TrackSearchInput({ value, onChange }) {
+const TrackSearchInput = ({ value, onChange }) => {
   const [localValue, setLocalValue] = useState(value)
 
-  // Debounce search
+  const debouncedSearchTerm = useDebounce(localValue, 300)
+
   useEffect(() => {
     if (localValue === value) return
-    const timer = setTimeout(() => {
-      onChange(localValue)
-    }, 300)
-
-    return () => clearTimeout(timer)
-  }, [localValue])
+    onChange(localValue)
+  }, [debouncedSearchTerm])
 
   return (
     <InputGroup className="mb-3">
@@ -30,3 +29,10 @@ export default function TrackSearchInput({ value, onChange }) {
     </InputGroup>
   )
 }
+
+TrackSearchInput.propTypes = {
+  value: propTypes.string.isRequired,
+  onChange: propTypes.func.isRequired,
+}
+
+export default TrackSearchInput

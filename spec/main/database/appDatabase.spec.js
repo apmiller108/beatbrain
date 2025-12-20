@@ -365,12 +365,13 @@ describe('AppDatabase', () => {
 
   describe('close', () => {
     it('should close database connection', () => {
-      appDatabase.initialize(app.getPath('userData'))
+      // Ensure the database is connected from beforeAll
       expect(appDatabase.db).toBeTruthy()
 
       appDatabase.close()
 
       expect(appDatabase.db).toBeNull()
+      expect(appDatabase.getInfo().isOpen).toBe(false)
     })
   })
 })
