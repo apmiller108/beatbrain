@@ -598,6 +598,9 @@ used to perform a query against the Mixxx dabatase.
   - [x] Remove track from playlist
 
 ## TODOs for Feature: Playlist (Phase 3: filter enhancements)
+### Fix bugs
+- [ ] Window scrolls all the way up after removing a track
+- [ ] Window scrolls all the way up after clicking the mp3 link
 ### Implement fields for user to filter tracks eligible for playlist creation and adding tracks to playlist
 - [x] Filter by crates
 - [ ] Filter by Groups
