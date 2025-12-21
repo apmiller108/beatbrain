@@ -305,6 +305,8 @@ Read-only database operations
 │   │   │   ├── electronApp.js
 │   │   │   ├── sqliteManager.js
 │   │   │   └── testDatabase.js
+│   │   ├── playlist-creation.spec.js
+│   │   ├── playlist-management.spec.js
 │   │   └── track-search.spec.js
 │   ├── fixtures
 │   │   ├── mixxxData.json
@@ -316,12 +318,18 @@ Read-only database operations
 │   ├── mockMixxxDatabase.js
 │   ├── renderer
 │   │   └── src
-│   │       └── components
-│   │           ├── DatabaseConnectionModal.test.jsx
-│   │           ├── filters
-│   │           │   └── KeyMultiSelect.spec.jsx
-│   │           └── playlist
-│   │               └── TrackSearchModal.spec.jsx
+│   │       ├── components
+│   │       │   ├── DatabaseConnectionModal.test.jsx
+│   │       │   ├── filters
+│   │       │   │   └── KeyMultiSelect.spec.jsx
+│   │       │   └── playlist
+│   │       │       └── TrackSearchModal.spec.jsx
+│   │       ├── utilities
+│   │       │   ├── formatDuration.spec.js
+│   │       │   ├── generateM3UContent.spec.js
+│   │       │   └── musicalKeys.spec.js
+│   │       └── views
+│   │           └── PlaylistDetailView.spec.jsx
 │   └── setup.js
 ├── specifications
 │   └── TRACKSEARCH.md
@@ -403,7 +411,7 @@ Read-only database operations
 ├── structure.sql
 └── vitest.config.js
 
-32 directories, 84 files
+34 directories, 90 files
 ```
 
 # TODOS
@@ -582,12 +590,12 @@ used to perform a query against the Mixxx dabatase.
 
 ### **Testing**
 - [x] Write unit tests for new appDatabase playlist methods
-- [ ] Write unit test for generateM3UContent
-- [ ] Write unit test for PlaylistDetailView component
-- [ ] Write e2e test for complete playlist management workflow
-  - [ ] create playlist
+- [x] Write unit test for generateM3UContent
+- [x] Write unit test for PlaylistDetailView component
+- [x] Write e2e test for complete playlist management workflow
+  - [x] create playlist
   - [x] Add track to playlist
-  - [ ] Remove track from playlist
+  - [x] Remove track from playlist
 
 ## TODOs for Feature: Playlist (Phase 3: filter enhancements)
 ### Implement fields for user to filter tracks eligible for playlist creation and adding tracks to playlist

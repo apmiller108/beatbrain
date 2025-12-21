@@ -66,10 +66,10 @@ export class TestDatabaseHelper {
     appDatabase.close();
   }
 
-  async createPlaylist(name) {
+  async createPlaylist(name, tracks = []) {
     await this.sqliteManager.switchToNode();
     appDatabase.initialize(this.tempDir);
-    const playlist = appDatabase.createPlaylist({ name });
+    const playlist = appDatabase.createPlaylist({ name }, tracks);
     appDatabase.close();
     return playlist;
   }

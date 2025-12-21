@@ -12,6 +12,7 @@
     "dev": "npm run rebuild  && electron-vite dev",
     "build": "npm run rebuild && electron-vite build",
     "rebuild": "rm -rf node_modules/better-sqlite3/build && electron-rebuild",
+    "purge:sqlite": "rm -rf node_modules/better-sqlite3/build-*",
     "test": "npm rebuild && vitest run",
     "test:ui": "npm rebuild && vitest --ui",
     "test:watch": "npm rebuild && vitest",
