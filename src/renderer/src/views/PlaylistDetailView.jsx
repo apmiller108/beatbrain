@@ -171,7 +171,7 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
 
   const handleAddTracks = async (tracks) => {
     await window.api.addTracksToPlaylist(playlistId, tracks)
-    loadPlaylist()
+    await loadPlaylist()
     onPlaylistUpdated(playlistId)
   }
 

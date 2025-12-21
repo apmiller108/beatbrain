@@ -120,7 +120,7 @@ const TrackSearchModal = ({
   const handleAddTracks = async () => {
     try {
       const tracksToAdd = Array.from(selectedTracks).map(id => searchResults.find(t => t.id === id))
-      onTracksAdded(tracksToAdd)
+      await onTracksAdded(tracksToAdd)
       onHide()
     } catch (error) {
       console.error('Failed to add tracks:', error)

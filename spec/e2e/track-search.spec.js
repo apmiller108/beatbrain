@@ -69,7 +69,7 @@ test.describe('Track Search & Add', () => {
     await expect(modal).not.toBeVisible();
 
     // Verify the track now appears in the playlist view
-    const playlistTrackList = window.locator('.playlist-detail-view')
+    const playlistTrackList = window.locator('.c-playlist-detail-view')
     await expect(playlistTrackList).toContainText('Elevate')
     await expect(playlistTrackList).toContainText('Kashpitzky')
   });

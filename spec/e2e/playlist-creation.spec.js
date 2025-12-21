@@ -69,7 +69,7 @@ test.describe('Playlist Creation', () => {
     await generateBtn.click();
 
     // The app should navigate to the new playlist detail view
-    await expect(window.locator('.playlist-detail-view')).toBeVisible();
+    await expect(window.locator('.c-playlist-detail-view')).toBeVisible();
 
     // Verify the track is in the list
     await expect(window.locator('.table')).toContainText('Sub Lunar Phase II');
