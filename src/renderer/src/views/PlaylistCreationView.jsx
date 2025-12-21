@@ -9,16 +9,20 @@ import FlashMessage from '../components/common/FlashMessage'
 const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnectionModal, setNotification }) => {
   const [loading, setLoading] = useState(true)
   const [maxCount, setMaxCount] = useState(100)
-  const [bpmRange, setBpmRange] = useState({ minBpm: 0, maxBpm: 300 })
-  const [genres, setGenres] = useState([])
-  const [crates, setCrates] = useState([])
-  const [keys, setKeys] = useState([])
-  const [filters, setFilters] = useState({
+  const [filterOptions, setFilterOptions] = useState({
+    bpmRange: { minBpm: 0, maxBpm: 300 },
+    genres: [],
+    crates: [],
+    keys: [],
+    groupings: []
+  })
+  const [selectedFilters, setSelectedFilters] = useState({
     trackCount: 25,
     minBpm: null,
     maxBpm: null,
     genres: [],
     crates: [],
+    groupings: [],
     keys: []
   })
   const [filteredTracks, setFilteredTracks] = useState([])
@@ -31,7 +35,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
         const savedFilters = await window.api.getTrackFilters()
         if (savedFilters) {
           const parsedFilters = JSON.parse(savedFilters)
-          setFilters(prevFilters => ({ ...prevFilters, ...parsedFilters }))
+          setSelectedFilters(prevFilters => ({ ...prevFilters, ...parsedFilters }))
         }
         setLoading(false)
       } catch (error) {
@@ -50,9 +54,9 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
         // necessary due to how the KeyMultiSelect component normalizes the
         // select input's values (ie, camelot notation) a single value which
         // can correspond to multiple keys as stored in mixxxdb.
-        const keys = filters.keys.flatMap(key => key.value)
-        const crates = filters.crates.map(crate => crate.value) // Extract crate IDs
-        const quereyParams = { ...filters, keys, crates }
+        const keys = selectedFilters.keys.flatMap(key => key.value)
+        const crates = selectedFilters.crates.map(crate => crate.value) // Extract crate IDs
+        const quereyParams = { ...selectedFilters, keys, crates }
         const tracks = await window.api.mixxx.getTracks(quereyParams)
         setFilteredTracks(tracks)
       } catch (error) {
@@ -60,41 +64,46 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
       }
     }
 
-    window.api.saveTrackFilters(filters)
+    window.api.saveTrackFilters(selectedFilters)
 
     if (mixxxStatus?.isConnected) {
       getTracks()
     }
-  }, [filters, mixxxStatus])
+  }, [selectedFilters, mixxxStatus])
 
   useEffect(() => {
     const getFilterOptions = async () => {
       const availableGenres = await window.api.mixxx.getAvailableGenres() || []
-      setGenres(availableGenres)
-
       const availableCrates = await window.api.mixxx.getAvailableCrates() || []
-      setCrates(availableCrates)
-
       const availableKeys = await window.api.mixxx.getAvailableKeys() || []
-      setKeys(availableKeys)
+      const availableGroupings = await window.api.mixxx.getAvailableGroupings() || []
+
+      let bpmRange = { minBpm: 0, maxBpm: 300 }
+      if (mixxxStats) {
+        bpmRange = {
+          minBpm: Math.floor(mixxxStats.bpmRange.minBpm),
+          maxBpm: Math.ceil(mixxxStats.bpmRange.maxBpm)
+        }
+      }
+
+      setFilterOptions(prevOptions => ({
+        ...prevOptions,
+        bpmRange,
+        genres: availableGenres,
+        crates: availableCrates,
+        keys: availableKeys,
+        groupings: availableGroupings
+      }))
     }
 
     if (mixxxStatus?.isConnected) {
       getFilterOptions()
     }
-
-    if (mixxxStats) {
-      setMaxCount(mixxxStats.totalTracks)
-      setBpmRange({
-        minBpm: Math.floor(mixxxStats.bpmRange.minBpm),
-        maxBpm: Math.ceil(mixxxStats.bpmRange.maxBpm)
-      })
-    }
   }, [mixxxStats, mixxxStatus])
 
   // Track count indicator logic
   const filteredCount = filteredTracks.length
-  const desiredCount = filters.trackCount
+  const desiredCount = selectedFilters.trackCount
   const isCountSufficient = filteredCount >= desiredCount
 
   // Is the form valid for generating a playlist
@@ -172,13 +181,13 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
             <>
               <TrackCountStatus />
               <PlaylistForm
-                filters={filters}
-                onFiltersChange={setFilters}
+                filters={selectedFilters}
+                onFiltersChange={setSelectedFilters}
                 maxTrackCount={maxCount}
-                bpmRange={bpmRange}
-                availableGenres={genres}
-                availableCrates={crates}
-                availableKeys={keys}
+                bpmRange={filterOptions.bpmRange}
+                availableGenres={filterOptions.genres}
+                availableCrates={filterOptions.crates}
+                availableKeys={filterOptions.keys}
                 onGeneratePlaylist={onGeneratePlaylist}
                 isValid={canGeneratePlaylist}
               />

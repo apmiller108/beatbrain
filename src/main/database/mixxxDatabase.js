@@ -405,6 +405,29 @@ class MixxxDatabase {
     }
   }
 
+  getAvailableGroupings() {
+    if (!this.isConnected || !this.db) {
+      throw new Error('Database not connected')
+    }
+
+    try {
+      const groupings = this.db
+        .prepare(`
+        SELECT DISTINCT "grouping"
+        FROM library
+        WHERE "grouping" IS NOT NULL AND "grouping" != ''
+        AND mixxx_deleted = 0
+        ORDER BY "grouping" COLLATE NOCASE ASC
+        `)
+        .all()
+        .map(row => row.grouping)
+      return groupings
+    } catch (error) {
+      console.error('Error getting available groupings:', error)
+      throw error
+    }
+  }
+
   getCratesForTrack(trackId) {
     if (!this.isConnected || !this.db) {
       throw new Error('Database not connected')

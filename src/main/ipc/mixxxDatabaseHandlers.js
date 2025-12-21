@@ -49,6 +49,10 @@ export function registerMixxxDatabaseHandlers(mixxxDatabase) {
     return mixxxDatabase.getAvailableKeys()
   })
 
+  ipcMain.handle('mixxx:getAvailableGroupings', async () => {
+    return mixxxDatabase.getAvailableGroupings()
+  })
+
   ipcMain.handle('mixxx:getTracks', async (_, filters) => {
     return mixxxDatabase.getTracks(filters)
   })

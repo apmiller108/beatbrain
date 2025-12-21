@@ -599,12 +599,14 @@ used to perform a query against the Mixxx dabatase.
 
 ## TODOs for Feature: Playlist (Phase 3: filter enhancements)
 ### Fix bugs
-- [ ] Window scrolls all the way up after removing a track
+- [ ] Window scrolls all the way up after removing a track. Is is necessary to reload the playlist here?
+- [ ] Is it necessary to reload the playlist when adding tracks? Can we do optimistic update to the view. Can the playlist stats be updated asynchronously?
 - [ ] Window scrolls all the way up after clicking the mp3 link
 ### Implement fields for user to filter tracks eligible for playlist creation and adding tracks to playlist
 - [x] Filter by crates
 - [ ] Filter by Groups
 - [ ] Filter by Artists
+- [ ] Filter by Albums
 - [x] Filter by musical key
 - [ ] Filter by Year range
 - [ ] Filter by date added range
@@ -627,6 +629,7 @@ used to perform a query against the Mixxx dabatase.
 - [ ] Add playlist combine feature with options to append or prepand other playlists
 - [ ] R click on table header to select columns to show/hide
 - [ ] Lazy render track list items for better performance for large playlists
+- [ ] Add option to create empty playlist. I might want to use the add tracks feature to manually create playlists.
 ## TODOs for Documentation
 - [ ] Update README with playlist management features
 - [ ] Document M3U export format and compatibility
