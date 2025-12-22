@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import { MusicNoteList } from 'react-bootstrap-icons'
 import PlaylistForm from '../components/playlist/PlaylistForm'
 import FlashMessage from '../components/common/FlashMessage'
+import { shuffleArray } from '../utilities/shuffleArrary'
 
 const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnectionModal, setNotification }) => {
   const [loading, setLoading] = useState(true)
@@ -128,8 +129,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
         throw new Error('Not enough tracks to generate playlist')
       }
 
-      const tracks = filteredTracks.shuffle().slice(0, trackCount)
-
+      const tracks = shuffleArray(filteredTracks).slice(0, trackCount)
       const name = `Playlist ${new Date().toLocaleString()}`
       const playlist = await window.api.createPlaylist({
         name,
