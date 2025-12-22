@@ -40,7 +40,6 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
         }
 
         const savedTrackCount = await window.api.getSetting('playlist_track_count')
-        console.log('Saved track count:', savedTrackCount)
         if (savedTrackCount) {
           setTrackCount(parseInt(savedTrackCount, 10))
         }

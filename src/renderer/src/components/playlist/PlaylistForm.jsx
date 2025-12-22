@@ -4,6 +4,7 @@ import TrackCountInput from '../filters/TrackCountInput'
 import BpmRangeInput from '../filters/BpmRangeInput'
 import GenreMultiSelect from '../filters/GenreMultiSelect'
 import CrateMultiSelect from '../filters/CrateMultiSelect'
+import GroupingMultiSelect from '../filters/GroupingMultiSelect'
 import KeyMultiSelect from '../filters/KeyMultiSelect'
 
 const PlaylistForm = ({
@@ -16,7 +17,7 @@ const PlaylistForm = ({
   onGeneratePlaylist,
   isValid
 }) => {
-  const { bpmRange, genres, crates, keys } = filterOptions
+  const { bpmRange, genres, crates, keys, groupings } = filterOptions
 
   const handleFilterChange = (changedFilters) => {
     onFiltersChange({ ...filters, ...changedFilters })
@@ -46,6 +47,11 @@ const PlaylistForm = ({
           crates={crates}
           value={filters.crates}
           onChange={(value) => { handleFilterChange({ crates: value }) }}
+        />
+        <GroupingMultiSelect
+          groupings={groupings}
+          value={filters.groupings}
+          onChange={(value) => { handleFilterChange({ groupings: value }) }}
         />
         <KeyMultiSelect
           keys={keys}

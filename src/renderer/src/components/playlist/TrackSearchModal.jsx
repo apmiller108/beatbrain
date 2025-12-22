@@ -17,7 +17,8 @@ const TrackSearchModal = ({
   const [filterOptions, setFilterOptions] = useState({
     genres: [],
     keys: [],
-    crates: []
+    crates: [],
+    groupings: [],
   })
   const [filters, setFilters] = useState({
     query: '',
@@ -25,7 +26,8 @@ const TrackSearchModal = ({
     bpmMax: null,
     genres: [],
     keys: [],
-    crates: []
+    crates: [],
+    groupings: []
   })
   const [searchResults, setSearchResults] = useState([])
   const [selectedTracks, setSelectedTracks] = useState(new Set())
@@ -40,8 +42,9 @@ const TrackSearchModal = ({
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        const [genres, keys, crates, savedFiltersStr, keyNotationPref] = await Promise.all([
+        const [genres, groupings, keys, crates, savedFiltersStr, keyNotationPref] = await Promise.all([
           window.api.mixxx.getAvailableGenres(),
+          window.api.mixxx.getAvailableGroupings(),
           window.api.mixxx.getAvailableKeys(),
           window.api.mixxx.getAvailableCrates(),
           window.api.getSetting('searchFilters'),
@@ -52,7 +55,7 @@ const TrackSearchModal = ({
           minBpm: Math.floor(mixxxStats.bpmRange.minBpm),
           maxBpm: Math.ceil(mixxxStats.bpmRange.maxBpm)
         };
-        setFilterOptions({ genres, keys, crates, ...bpmOptions });
+        setFilterOptions({ genres, groupings, keys, crates, ...bpmOptions });
         setKeyNotation(keyNotationPref || 'original');
 
         if (savedFiltersStr) {

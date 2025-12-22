@@ -6,6 +6,7 @@ import BpmRangeInput from '../filters/BpmRangeInput'
 import GenreMultiSelect from '../filters/GenreMultiSelect'
 import KeyMultiSelect from '../filters/KeyMultiSelect'
 import CrateMultiSelect from '../filters/CrateMultiSelect'
+import GroupingMultiSelect from '../filters/GroupingMultiSelect'
 
 const TrackSearchFilters = ({
   filters,
@@ -65,6 +66,15 @@ const TrackSearchFilters = ({
                 crates={filterOptions.crates}
                 onChange={(crates) => {
                   handleFilterChange({ crates })
+                }}
+              />
+            </Col>
+            <Col md={6}>
+              <GroupingMultiSelect
+                value={filters.groupings}
+                groupings={filterOptions.groupings}
+                onChange={(groupings) => {
+                  handleFilterChange({ groupings })
                 }}
               />
             </Col>

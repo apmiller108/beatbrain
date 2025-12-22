@@ -371,6 +371,7 @@ Read-only database operations
 │           │   │   ├── BpmRangeInput.jsx
 │           │   │   ├── CrateMultiSelect.jsx
 │           │   │   ├── GenreMultiSelect.jsx
+│           │   │   ├── GroupingMultiSelect.jsx
 │           │   │   ├── KeyMultiSelect.jsx
 │           │   │   ├── selectCustomStyles.js
 │           │   │   └── TrackCountInput.jsx
@@ -402,7 +403,8 @@ Read-only database operations
 │           │   ├── formatDuration.js
 │           │   ├── generateM3UContent.js
 │           │   ├── keyboard.js
-│           │   └── musicalKeys.js
+│           │   ├── musicalKeys.js
+│           │   └── shuffleArrary.js
 │           └── views
 │               ├── LibraryView.jsx
 │               ├── PlaylistCreationView.jsx
@@ -411,7 +413,7 @@ Read-only database operations
 ├── structure.sql
 └── vitest.config.js
 
-34 directories, 90 files
+34 directories, 92 files
 ```
 
 # TODOS
@@ -598,13 +600,9 @@ used to perform a query against the Mixxx dabatase.
   - [x] Remove track from playlist
 
 ## TODOs for Feature: Playlist (Phase 3: filter enhancements)
-### Fix bugs
-- [ ] Window scrolls all the way up after removing a track. Is is necessary to reload the playlist here?
-- [ ] Is it necessary to reload the playlist when adding tracks? Can we do optimistic update to the view. Can the playlist stats be updated asynchronously?
-- [ ] Window scrolls all the way up after clicking the mp3 link
 ### Implement fields for user to filter tracks eligible for playlist creation and adding tracks to playlist
 - [x] Filter by crates
-- [ ] Filter by Groups
+- [x] Filter by Groupings
 - [ ] Filter by Artists
 - [ ] Filter by Albums
 - [x] Filter by musical key
@@ -614,6 +612,10 @@ used to perform a query against the Mixxx dabatase.
 - [ ] Filter by times played
 - [ ] Filter by rating
 - [ ] Persist the selected filters on the playlist record. Show this data to the user on demand. Use these filters to initialize the add track search filters.
+### bug fixes
+- [ ] Window scrolls all the way up after removing a track. Is is necessary to reload the playlist here?
+- [ ] Is it necessary to reload the playlist when adding tracks? Can we do optimistic update to the view. Can the playlist stats be updated asynchronously?
+- [ ] Window scrolls all the way up after clicking the mp3 link
 ## TODOs for Feature: Playlist (Phase 4: harmonic mixing engine)
 - [ ] Remove limit from DB query
 - [ ] Add harmonic mixing select with options none, strict and creative (discuss this)

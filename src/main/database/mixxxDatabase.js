@@ -216,7 +216,7 @@ class MixxxDatabase {
     return this.getTracks({ trackCount: limit } )
   }
 
-  getTracks({ minBpm, maxBpm, genres, trackCount, query, keys, crates } = {}) {
+  getTracks({ minBpm, maxBpm, genres, trackCount, query, keys, crates, groupings } = {}) {
     if (!this.isConnected || !this.db) {
       throw new Error('Database not connected')
     }
@@ -277,6 +277,15 @@ class MixxxDatabase {
           return `@${name}`
         })
         whereClauses.push(`LOWER(l.genre) IN (${genreNamedParams.join(', ')})`)
+      }
+
+      if (Array.isArray(groupings) && groupings.length > 0) {
+        const groupingNamedParams = groupings.map((g, index) => {
+          const name = `grouping${index}`
+          params[name] = g.toLowerCase()
+          return `@${name}`
+        })
+        whereClauses.push(`LOWER(l."grouping") IN (${groupingNamedParams.join(', ')})`)
       }
 
       if (Array.isArray(keys) && keys.length > 0) {
