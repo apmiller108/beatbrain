@@ -44,6 +44,7 @@ const TrackCountInput = ({
           value={value || ''}
           onChange={handleChange}
           onBlur={handleBlur}
+          step="1"
           min={min}
           max={max}
           disabled={disabled}

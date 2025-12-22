@@ -8,41 +8,26 @@ import KeyMultiSelect from '../filters/KeyMultiSelect'
 
 const PlaylistForm = ({
   filters,
+  filterOptions,
+  trackCount,
+  setTrackCount,
   onFiltersChange,
   maxTrackCount,
-  bpmRange,
-  availableGenres,
-  availableCrates,
-  availableKeys,
   onGeneratePlaylist,
   isValid
 }) => {
-  const handleTrackCountChange = (value) => {
-    onFiltersChange({ ...filters, trackCount: value })
-  }
+  const { bpmRange, genres, crates, keys } = filterOptions
 
-  const handleBpmRangeChange = (value) => {
-    onFiltersChange({ ...filters, ...value })
-  }
-
-  const handleGenresChange = (value) => {
-    onFiltersChange({ ...filters, genres: value })
-  }
-
-  const handleKeysChange = (value) => {
-    onFiltersChange({ ...filters, keys: value })
-  }
-
-  const handleCratesChange = (value) => {
-    onFiltersChange({ ...filters, crates: value })
+  const handleFilterChange = (changedFilters) => {
+    onFiltersChange({ ...filters, ...changedFilters })
   }
 
   return (
     <div id="playlist-filters" className="mb-4 p-3 border rounded shadow-sm bg-light">
       <Form>
         <TrackCountInput
-          value={filters.trackCount}
-          onChange={handleTrackCountChange}
+          value={trackCount}
+          onChange={setTrackCount}
           max={maxTrackCount}
         />
         <BpmRangeInput
@@ -50,22 +35,22 @@ const PlaylistForm = ({
           maxBpm={bpmRange.maxBpm}
           minValue={filters.minBpm}
           maxValue={filters.maxBpm}
-          onChange={handleBpmRangeChange}
+          onChange={handleFilterChange}
         />
         <GenreMultiSelect
-          genres={availableGenres}
+          genres={genres}
           value={filters.genres}
-          onChange={handleGenresChange}
+          onChange={(value) => { handleFilterChange({ genres: value }) }}
         />
         <CrateMultiSelect
-          crates={availableCrates}
+          crates={crates}
           value={filters.crates}
-          onChange={handleCratesChange}
+          onChange={(value) => { handleFilterChange({ crates: value }) }}
         />
         <KeyMultiSelect
-          keys={availableKeys}
+          keys={keys}
           value={filters.keys}
-          onChange={handleKeysChange}
+          onChange={(value) => { handleFilterChange({ keys: value }) }}
         />
         <Button variant="primary"
                 disabled={!isValid}

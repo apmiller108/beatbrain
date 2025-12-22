@@ -16,8 +16,8 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
     keys: [],
     groupings: []
   })
+  const [trackCount, setTrackCount] = useState(25)
   const [selectedFilters, setSelectedFilters] = useState({
-    trackCount: 25,
     minBpm: null,
     maxBpm: null,
     genres: [],
@@ -37,6 +37,13 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
           const parsedFilters = JSON.parse(savedFilters)
           setSelectedFilters(prevFilters => ({ ...prevFilters, ...parsedFilters }))
         }
+
+        const savedTrackCount = await window.api.getSetting('playlist_track_count')
+        console.log('Saved track count:', savedTrackCount)
+        if (savedTrackCount) {
+          setTrackCount(parseInt(savedTrackCount, 10))
+        }
+
         setLoading(false)
       } catch (error) {
         console.error('Error loading saved filters:', error)
@@ -101,10 +108,14 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
     }
   }, [mixxxStats, mixxxStatus])
 
+  const handleSetTrackCount = (count) => {
+    setTrackCount(count)
+    window.api.setSetting('playlist_track_count', count)
+  }
+
   // Track count indicator logic
   const filteredCount = filteredTracks.length
-  const desiredCount = selectedFilters.trackCount
-  const isCountSufficient = filteredCount >= desiredCount
+  const isCountSufficient = filteredCount >= trackCount
 
   // Is the form valid for generating a playlist
   const canGeneratePlaylist = mixxxStatus?.isConnected && !loading && isCountSufficient
@@ -113,11 +124,17 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
     try {
       setLoading(true)
 
+      if (!isCountSufficient) {
+        throw new Error('Not enough tracks to generate playlist')
+      }
+
+      const tracks = filteredTracks.shuffle().slice(0, trackCount)
+
       const name = `Playlist ${new Date().toLocaleString()}`
       const playlist = await window.api.createPlaylist({
         name,
         description: 'A playlist created from Mixxx tracks',
-      }, filteredTracks)
+      }, tracks)
 
       onPlaylistCreated(playlist.id)
     } catch (error) {
@@ -147,7 +164,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
           </Badge>
           {!isCountSufficient && (
             <small className="text-muted">
-              (need {desiredCount} for playlist)
+              (need {trackCount} for playlist)
             </small>
           )}
         </div>
@@ -182,12 +199,11 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
               <TrackCountStatus />
               <PlaylistForm
                 filters={selectedFilters}
+                filterOptions={filterOptions}
+                trackCount={trackCount}
+                setTrackCount={handleSetTrackCount}
                 onFiltersChange={setSelectedFilters}
                 maxTrackCount={maxCount}
-                bpmRange={filterOptions.bpmRange}
-                availableGenres={filterOptions.genres}
-                availableCrates={filterOptions.crates}
-                availableKeys={filterOptions.keys}
                 onGeneratePlaylist={onGeneratePlaylist}
                 isValid={canGeneratePlaylist}
               />
