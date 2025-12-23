@@ -53,6 +53,10 @@ export function registerMixxxDatabaseHandlers(mixxxDatabase) {
     return mixxxDatabase.getAvailableGroupings()
   })
 
+  ipcMain.handle('mixxx:getAvailableArtists', async () => {
+    return mixxxDatabase.getAvailableArtists()
+  })
+
   ipcMain.handle('mixxx:getTracks', async (_, filters) => {
     return mixxxDatabase.getTracks(filters)
   })

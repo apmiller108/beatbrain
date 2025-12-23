@@ -368,6 +368,7 @@ Read-only database operations
 │           │   │   └── ToastNotification.jsx
 │           │   ├── DatabaseConnectionModal.jsx
 │           │   ├── filters
+│           │   │   ├── ArtistMultiSelect.jsx
 │           │   │   ├── BpmRangeInput.jsx
 │           │   │   ├── CrateMultiSelect.jsx
 │           │   │   ├── GenreMultiSelect.jsx
@@ -413,7 +414,7 @@ Read-only database operations
 ├── structure.sql
 └── vitest.config.js
 
-34 directories, 92 files
+34 directories, 93 files
 ```
 
 # TODOS
@@ -588,7 +589,6 @@ used to perform a query against the Mixxx dabatase.
 ### **Polish & UX Enhancements**
 - [x] Add info icon for each track that on click shows the full track details (what should the UX be? Modal? expand row item?)
 - [x] Add tracks to playlist feature See ./specifications/TRACKSEARCH.md for feature specs
-- [ ] Change key notation select to something else. It looks like crap.
 
 ### **Testing**
 - [x] Write unit tests for new appDatabase playlist methods
@@ -603,7 +603,7 @@ used to perform a query against the Mixxx dabatase.
 ### Implement fields for user to filter tracks eligible for playlist creation and adding tracks to playlist
 - [x] Filter by crates
 - [x] Filter by Groupings
-- [ ] Filter by Artists
+- [x] Filter by Artists
 - [ ] Filter by Albums
 - [x] Filter by musical key
 - [ ] Filter by Year range
@@ -616,6 +616,7 @@ used to perform a query against the Mixxx dabatase.
 - [ ] Window scrolls all the way up after removing a track. Is is necessary to reload the playlist here?
 - [ ] Is it necessary to reload the playlist when adding tracks? Can we do optimistic update to the view. Can the playlist stats be updated asynchronously?
 - [ ] Window scrolls all the way up after clicking the mp3 link
+- [ ] Change key notation select to something else. It looks like crap.
 ## TODOs for Feature: Playlist (Phase 4: harmonic mixing engine)
 - [ ] Remove limit from DB query
 - [ ] Add harmonic mixing select with options none, strict and creative (discuss this)

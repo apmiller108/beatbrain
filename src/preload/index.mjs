@@ -53,6 +53,7 @@ const api = {
     getAvailableCrates: () => ipcRenderer.invoke('mixxx:getAvailableCrates'),
     getAvailableKeys: () => ipcRenderer.invoke('mixxx:getAvailableKeys'),
     getAvailableGroupings: () => ipcRenderer.invoke('mixxx:getAvailableGroupings'),
+    getAvailableArtists: () => ipcRenderer.invoke('mixxx:getAvailableArtists'),
     getTracks: (filters) => ipcRenderer.invoke('mixxx:getTracks', filters),
     getTrackById: (trackId) => ipcRenderer.invoke('mixxx:getTrackById', trackId)
   }

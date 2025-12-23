@@ -216,7 +216,7 @@ class MixxxDatabase {
     return this.getTracks({ trackCount: limit } )
   }
 
-  getTracks({ minBpm, maxBpm, genres, trackCount, query, keys, crates, groupings } = {}) {
+  getTracks({ minBpm, maxBpm, genres, trackCount, query, keys, crates, groupings, artists } = {}) {
     if (!this.isConnected || !this.db) {
       throw new Error('Database not connected')
     }
@@ -286,6 +286,15 @@ class MixxxDatabase {
           return `@${name}`
         })
         whereClauses.push(`LOWER(l."grouping") IN (${groupingNamedParams.join(', ')})`)
+      }
+
+      if (Array.isArray(artists) && artists.length > 0) {
+        const artistNamedParams = artists.map((a, index) => {
+          const name = `artist${index}`
+          params[name] = a.toLowerCase()
+          return `@${name}`
+        })
+        whereClauses.push(`LOWER(l.artist) IN (${artistNamedParams.join(', ')})`)
       }
 
       if (Array.isArray(keys) && keys.length > 0) {
@@ -433,6 +442,29 @@ class MixxxDatabase {
       return groupings
     } catch (error) {
       console.error('Error getting available groupings:', error)
+      throw error
+    }
+  }
+
+  getAvailableArtists() {
+    if (!this.isConnected || !this.db) {
+      throw new Error('Database not connected')
+    }
+
+    try {
+      const artists = this.db
+        .prepare(`
+        SELECT DISTINCT artist
+        FROM library
+        WHERE artist IS NOT NULL AND artist != ''
+        AND mixxx_deleted = 0
+        ORDER BY artist COLLATE NOCASE ASC
+        `)
+        .all()
+        .map(row => row.artist)
+      return artists
+    } catch (error) {
+      console.error('Error getting available artists:', error)
       throw error
     }
   }

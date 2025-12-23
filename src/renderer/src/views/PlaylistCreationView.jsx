@@ -15,7 +15,8 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
     genres: [],
     crates: [],
     keys: [],
-    groupings: []
+    groupings: [],
+    artists: []
   })
   const [trackCount, setTrackCount] = useState(25)
   const [selectedFilters, setSelectedFilters] = useState({
@@ -24,6 +25,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
     genres: [],
     crates: [],
     groupings: [],
+    artists: [],
     keys: []
   })
   const [filteredTracks, setFilteredTracks] = useState([])
@@ -84,6 +86,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
       const availableCrates = await window.api.mixxx.getAvailableCrates() || []
       const availableKeys = await window.api.mixxx.getAvailableKeys() || []
       const availableGroupings = await window.api.mixxx.getAvailableGroupings() || []
+      const availableArtists = await window.api.mixxx.getAvailableArtists() || []
 
       let bpmRange = { minBpm: 0, maxBpm: 300 }
       if (mixxxStats) {
@@ -99,7 +102,8 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
         genres: availableGenres,
         crates: availableCrates,
         keys: availableKeys,
-        groupings: availableGroupings
+        groupings: availableGroupings,
+        artists: availableArtists
       }))
     }
 

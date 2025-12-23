@@ -5,6 +5,7 @@ import BpmRangeInput from '../filters/BpmRangeInput'
 import GenreMultiSelect from '../filters/GenreMultiSelect'
 import CrateMultiSelect from '../filters/CrateMultiSelect'
 import GroupingMultiSelect from '../filters/GroupingMultiSelect'
+import ArtistMultiSelect from '../filters/ArtistMultiSelect'
 import KeyMultiSelect from '../filters/KeyMultiSelect'
 
 const PlaylistForm = ({
@@ -17,7 +18,7 @@ const PlaylistForm = ({
   onGeneratePlaylist,
   isValid
 }) => {
-  const { bpmRange, genres, crates, keys, groupings } = filterOptions
+  const { bpmRange, genres, crates, keys, groupings, artists } = filterOptions
 
   const handleFilterChange = (changedFilters) => {
     onFiltersChange({ ...filters, ...changedFilters })
@@ -53,6 +54,11 @@ const PlaylistForm = ({
           value={filters.groupings}
           onChange={(value) => { handleFilterChange({ groupings: value }) }}
         />
+        <ArtistMultiSelect
+          artists={artists}
+          value={filters.artists}
+          onChange={(value) => { handleFilterChange({ artists: value }) }}
+        />
         <KeyMultiSelect
           keys={keys}
           value={filters.keys}
@@ -71,19 +77,34 @@ const PlaylistForm = ({
 
 PlaylistForm.propTypes = {
   filters: PropTypes.shape({
-    trackCount: PropTypes.number.isRequired,
     minBpm: PropTypes.number,
     maxBpm: PropTypes.number,
     genres: PropTypes.arrayOf(PropTypes.string).isRequired,
+    artists: PropTypes.arrayOf(PropTypes.string).isRequired,
+    crates: PropTypes.arrayOf(PropTypes.string).isRequired,
+    keys: PropTypes.arrayOf(PropTypes.string).isRequired,
+    groupings: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
+  filterOptions: PropTypes.shape({
+    bpmRange: PropTypes.shape({
+      minBpm: PropTypes.number,
+      maxBpm: PropTypes.number,
+    }),
+    genres: PropTypes.arrayOf(PropTypes.string),
+    artists: PropTypes.arrayOf(PropTypes.string),
+    crates: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+        name: PropTypes.string,
+      })
+    ),
+    keys: PropTypes.arrayOf(PropTypes.string),
+    groupings: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired,
+  trackCount: PropTypes.number.isRequired,
+  setTrackCount: PropTypes.func.isRequired,
   onFiltersChange: PropTypes.func.isRequired,
   maxTrackCount: PropTypes.number.isRequired,
-  bpmRange: PropTypes.shape({
-    minBpm: PropTypes.number.isRequired,
-    maxBpm: PropTypes.number.isRequired,
-  }).isRequired,
-  availableGenres: PropTypes.arrayOf(PropTypes.string).isRequired,
-  disabled: PropTypes.bool,
   onGeneratePlaylist: PropTypes.func.isRequired,
   isValid: PropTypes.bool.isRequired,
 }
