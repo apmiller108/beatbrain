@@ -53,6 +53,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
         setLoading(false)
       }
     }
+    setMaxCount(mixxxStats ? mixxxStats.totalTracks : 100)
     loadSavedFilters()
   }, [])
 

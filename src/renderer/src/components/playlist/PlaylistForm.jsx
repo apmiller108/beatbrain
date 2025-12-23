@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { Form, Button } from 'react-bootstrap'
+import { Form, Button, Row, Col } from 'react-bootstrap'
 import TrackCountInput from '../filters/TrackCountInput'
 import BpmRangeInput from '../filters/BpmRangeInput'
 import GenreMultiSelect from '../filters/GenreMultiSelect'
@@ -27,38 +27,56 @@ const PlaylistForm = ({
   return (
     <div id="playlist-filters" className="mb-4 p-3 border rounded shadow-sm bg-light">
       <Form>
-        <TrackCountInput
-          value={trackCount}
-          onChange={setTrackCount}
-          max={maxTrackCount}
-        />
-        <BpmRangeInput
-          minBpm={bpmRange.minBpm}
-          maxBpm={bpmRange.maxBpm}
-          minValue={filters.minBpm}
-          maxValue={filters.maxBpm}
-          onChange={handleFilterChange}
-        />
-        <GenreMultiSelect
-          genres={genres}
-          value={filters.genres}
-          onChange={(value) => { handleFilterChange({ genres: value }) }}
-        />
-        <CrateMultiSelect
-          crates={crates}
-          value={filters.crates}
-          onChange={(value) => { handleFilterChange({ crates: value }) }}
-        />
-        <GroupingMultiSelect
-          groupings={groupings}
-          value={filters.groupings}
-          onChange={(value) => { handleFilterChange({ groupings: value }) }}
-        />
-        <ArtistMultiSelect
-          artists={artists}
-          value={filters.artists}
-          onChange={(value) => { handleFilterChange({ artists: value }) }}
-        />
+        <Row>
+          <Col xs={6}>
+            <TrackCountInput
+              value={trackCount}
+              onChange={setTrackCount}
+              max={maxTrackCount}
+            />
+          </Col>
+          <Col xs={6}>
+            <BpmRangeInput
+              minBpm={bpmRange.minBpm}
+              maxBpm={bpmRange.maxBpm}
+              minValue={filters.minBpm}
+              maxValue={filters.maxBpm}
+              onChange={handleFilterChange}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={6}>
+            <GenreMultiSelect
+              genres={genres}
+              value={filters.genres}
+              onChange={(value) => { handleFilterChange({ genres: value }) }}
+            />
+          </Col>
+          <Col xs={6}>
+            <CrateMultiSelect
+              crates={crates}
+              value={filters.crates}
+              onChange={(value) => { handleFilterChange({ crates: value }) }}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={6}>
+            <ArtistMultiSelect
+              artists={artists}
+              value={filters.artists}
+              onChange={(value) => { handleFilterChange({ artists: value }) }}
+            />
+          </Col>
+          <Col xs={6}>
+            <GroupingMultiSelect
+              groupings={groupings}
+              value={filters.groupings}
+              onChange={(value) => { handleFilterChange({ groupings: value }) }}
+            />
+          </Col>
+        </Row>
         <KeyMultiSelect
           keys={keys}
           value={filters.keys}

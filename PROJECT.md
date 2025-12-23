@@ -612,6 +612,8 @@ used to perform a query against the Mixxx dabatase.
 - [ ] Filter by times played
 - [ ] Filter by rating
 - [ ] Persist the selected filters on the playlist record. Show this data to the user on demand. Use these filters to initialize the add track search filters.
+- [ ] Selecting filters upon updating the available tracks should constrain the other filters (except for crates)
+- [ ] Add missing icons to filter inputs.
 ### bug fixes
 - [ ] Window scrolls all the way up after removing a track. Is is necessary to reload the playlist here?
 - [ ] Is it necessary to reload the playlist when adding tracks? Can we do optimistic update to the view. Can the playlist stats be updated asynchronously?

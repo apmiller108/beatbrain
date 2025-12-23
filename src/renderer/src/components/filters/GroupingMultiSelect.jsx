@@ -27,7 +27,7 @@ const GroupingMultiSelect = ({ groupings, value, onChange, disabled }) => {
         options={options}
         value={selectedOptions}
         onChange={handleChange}
-        placeholder="All groups"
+        placeholder="All groupings"
         isDisabled={disabled || groupings.length === 0}
         styles={selectCustomStyles}
         classNamePrefix="react-select"
