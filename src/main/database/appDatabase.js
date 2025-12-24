@@ -91,8 +91,8 @@ class AppDatabase {
 
   // Playlist Repository Methods
 
-  createPlaylist({ name, description = '', trackSource = 'mixxx' }, tracks = []) {
-    return this.playlistRepository.createPlaylist(name, description, trackSource, tracks)
+  createPlaylist({ name, description = '', trackSource = 'mixxx', filters = '' }, tracks = []) {
+    return this.playlistRepository.createPlaylist(name, description, trackSource, filters, tracks)
   }
 
   getPlaylist(id) {

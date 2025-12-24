@@ -53,10 +53,25 @@ export default class CreateTables {
           FOREIGN KEY (playlist_id) REFERENCES playlists(id)
         );
       `
+
+      const updatePlaylistsTable = `
+        ALTER TABLE playlists ADD COLUMN filters TEXT
+      `
+
       this.appDatabase.exec(createSettingsTable)
       this.appDatabase.exec(createUserPreferencesTable)
       this.appDatabase.exec(createPlaylistsTable)
       this.appDatabase.exec(createPlaylistTracksTable)
+
+      try {
+        this.appDatabase.exec(updatePlaylistsTable)
+      } catch (error) {
+        if (error.message === 'duplicate column name: filters') {
+          console.log(error.message)
+        } else {
+          throw error
+        }
+      }
     } catch (error) {
       console.error('Error creating tables:', error)
       throw error

@@ -6,6 +6,7 @@ import { MusicNoteList } from 'react-bootstrap-icons'
 import PlaylistForm from '../components/playlist/PlaylistForm'
 import FlashMessage from '../components/common/FlashMessage'
 import { shuffleArray } from '../utilities/shuffleArrary'
+import useDebounce from '../hooks/useDebounced'
 
 const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnectionModal, setNotification }) => {
   const [loading, setLoading] = useState(true)
@@ -31,6 +32,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
   const [filteredTracks, setFilteredTracks] = useState([])
 
   const mixxxStats = useContext(MixxxStatsContext)
+  const debouncedSelectedFilters = useDebounce(selectedFilters, 200);
 
   useEffect(() => {
     const loadSavedFilters = async () => {
@@ -64,9 +66,9 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
         // necessary due to how the KeyMultiSelect component normalizes the
         // select input's values (ie, camelot notation) a single value which
         // can correspond to multiple keys as stored in mixxxdb.
-        const keys = selectedFilters.keys.flatMap(key => key.value)
-        const crates = selectedFilters.crates.map(crate => crate.value) // Extract crate IDs
-        const quereyParams = { ...selectedFilters, keys, crates }
+        const keys = debouncedSelectedFilters.keys.flatMap(key => key.value)
+        const crates = debouncedSelectedFilters.crates.map(crate => crate.value) // Extract crate IDs
+        const quereyParams = { ...debouncedSelectedFilters, keys, crates }
         const tracks = await window.api.mixxx.getTracks(quereyParams)
         setFilteredTracks(tracks)
       } catch (error) {
@@ -74,12 +76,12 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
       }
     }
 
-    window.api.saveTrackFilters(selectedFilters)
+    window.api.saveTrackFilters(debouncedSelectedFilters)
 
     if (mixxxStatus?.isConnected) {
       getTracks()
     }
-  }, [selectedFilters, mixxxStatus])
+  }, [debouncedSelectedFilters, mixxxStatus])
 
   useEffect(() => {
     const getFilterOptions = async () => {
@@ -113,6 +115,33 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
     }
   }, [mixxxStats, mixxxStatus])
 
+  // Constrain filter options based on previously selected tracks
+  useEffect(() => {
+    const extractFilterOptionsFromTracks = (fieldName) => {
+      const optionsSet = new Set()
+      filteredTracks.forEach(track => {
+        const fieldValue = track[fieldName]
+        if (fieldValue) {
+          optionsSet.add(fieldValue)
+        }
+      })
+      return Array.from(optionsSet).sort()
+    }
+
+    const updateFilterOptions = async () => {
+      await setFilterOptions(prevOptions => ({
+        ...prevOptions,
+        artists: extractFilterOptionsFromTracks('artist'),
+        groupings: extractFilterOptionsFromTracks('grouping'),
+        keys: extractFilterOptionsFromTracks('key')
+      }))
+    }
+
+    updateFilterOptions()
+
+
+  }, [filteredTracks])
+
   const handleSetTrackCount = (count) => {
     setTrackCount(count)
     window.api.setSetting('playlist_track_count', count)
@@ -138,6 +167,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
       const playlist = await window.api.createPlaylist({
         name,
         description: 'A playlist created from Mixxx tracks',
+        filters: JSON.stringify(selectedFilters)
       }, tracks)
 
       onPlaylistCreated(playlist.id)
