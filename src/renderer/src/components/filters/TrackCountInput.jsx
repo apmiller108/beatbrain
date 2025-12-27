@@ -1,4 +1,4 @@
-import { Form, InputGroup } from 'react-bootstrap';
+import { Form, InputGroup, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { MusicNoteBeamed } from 'react-bootstrap-icons';
 import propTypes from 'prop-types';
 
@@ -33,10 +33,12 @@ const TrackCountInput = ({
 
   return (
     <Form.Group className="mb-3">
-      <Form.Label htmlFor="track-count-input">
-        <MusicNoteBeamed className="me-2" />
-        Number of Tracks
-      </Form.Label>
+      <OverlayTrigger overlay={<Tooltip>Choose how many tracks to include in your playlist ({min}-{max})</Tooltip>}>
+        <Form.Label htmlFor="track-count-input">
+          <MusicNoteBeamed className="me-2" />
+          Number of Tracks
+        </Form.Label>
+      </OverlayTrigger>
       <InputGroup>
         <Form.Control
           id="track-count-input"
@@ -52,9 +54,6 @@ const TrackCountInput = ({
         />
         <InputGroup.Text>tracks</InputGroup.Text>
       </InputGroup>
-      <Form.Text className="text-muted">
-        Choose how many tracks to include in your playlist ({min}-{max})
-      </Form.Text>
     </Form.Group>
   );
 };

@@ -29,13 +29,29 @@ const PlaylistForm = ({
     <div id="playlist-filters" className="mb-4 p-3 border rounded shadow-sm bg-light">
       <Form>
         <Row>
-          <Col xs={6}>
+          <Col xs={2}>
             <TrackCountInput
               value={trackCount}
               onChange={setTrackCount}
               max={maxTrackCount}
             />
           </Col>
+          <Col xs={5}>
+            <GenreMultiSelect
+              genres={genres}
+              value={filters.genres}
+              onChange={(value) => { handleFilterChange({ genres: value }) }}
+            />
+          </Col>
+          <Col xs={5}>
+            <CrateMultiSelect
+              crates={crates}
+              value={filters.crates}
+              onChange={(value) => { handleFilterChange({ crates: value }) }}
+            />
+          </Col>
+        </Row>
+        <Row>
           <Col xs={6}>
             <BpmRangeInput
               minBpm={bpmRange.minBpm}
@@ -47,7 +63,7 @@ const PlaylistForm = ({
           </Col>
         </Row>
         <Row>
-          <Col xs={6}>
+          <Col xs={4}>
             <DateRangeInput
               minYear={yearRange.minYear}
               maxYear={yearRange.maxYear}
@@ -56,22 +72,6 @@ const PlaylistForm = ({
               onChange={(value) => { handleFilterChange({ minYear: value.minDate, maxYear: value.maxDate }) }}
               label="Year"
               granularity="year"
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={6}>
-            <GenreMultiSelect
-              genres={genres}
-              value={filters.genres}
-              onChange={(value) => { handleFilterChange({ genres: value }) }}
-            />
-          </Col>
-          <Col xs={6}>
-            <CrateMultiSelect
-              crates={crates}
-              value={filters.crates}
-              onChange={(value) => { handleFilterChange({ crates: value }) }}
             />
           </Col>
         </Row>
@@ -91,11 +91,15 @@ const PlaylistForm = ({
             />
           </Col>
         </Row>
-        <KeyMultiSelect
-          keys={keys}
-          value={filters.keys}
-          onChange={(value) => { handleFilterChange({ keys: value }) }}
-        />
+        <Row>
+          <Col xs={6}>
+            <KeyMultiSelect
+              keys={keys}
+              value={filters.keys}
+              onChange={(value) => { handleFilterChange({ keys: value }) }}
+            />
+          </Col>
+        </Row>
         <Button variant="primary"
                 disabled={!isValid}
                 onClick={onGeneratePlaylist}
