@@ -7,6 +7,7 @@ import CrateMultiSelect from '../filters/CrateMultiSelect'
 import GroupingMultiSelect from '../filters/GroupingMultiSelect'
 import ArtistMultiSelect from '../filters/ArtistMultiSelect'
 import KeyMultiSelect from '../filters/KeyMultiSelect'
+import DateRangeInput from '../filters/DateRangeInput'
 
 const PlaylistForm = ({
   filters,
@@ -18,7 +19,7 @@ const PlaylistForm = ({
   onGeneratePlaylist,
   isValid
 }) => {
-  const { bpmRange, genres, crates, keys, groupings, artists } = filterOptions
+  const { bpmRange, yearRange, dateAddedRange, lastPlayedAtRange, genres, crates, keys, groupings, artists } = filterOptions
 
   const handleFilterChange = (changedFilters) => {
     onFiltersChange({ ...filters, ...changedFilters })
@@ -42,6 +43,19 @@ const PlaylistForm = ({
               minValue={filters.minBpm}
               maxValue={filters.maxBpm}
               onChange={handleFilterChange}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={6}>
+            <DateRangeInput
+              minYear={yearRange.minYear}
+              maxYear={yearRange.maxYear}
+              minValue={filters.minYear}
+              maxValue={filters.maxYear}
+              onChange={(value) => { handleFilterChange({ minYear: value.minDate, maxYear: value.maxDate }) }}
+              label="Year"
+              granularity="year"
             />
           </Col>
         </Row>

@@ -13,6 +13,9 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
   const [maxCount, setMaxCount] = useState(100)
   const [filterOptions, setFilterOptions] = useState({
     bpmRange: { minBpm: 0, maxBpm: 300 },
+    yearRange: { minYear: 0, maxYear: new Date().getFullYear() },
+    dateAddedRange: { minDate: null, maxDate: null },
+    lastPlayedAtRange: { minDate: null, maxDate: null },
     genres: [],
     crates: [],
     keys: [],
@@ -23,6 +26,8 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
   const [selectedFilters, setSelectedFilters] = useState({
     minBpm: null,
     maxBpm: null,
+    minYear: null,
+    maxYear: null,
     genres: [],
     crates: [],
     groupings: [],
@@ -106,16 +111,25 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
       const availableArtists = await window.api.mixxx.getAvailableArtists() || []
 
       let bpmRange = { minBpm: 0, maxBpm: 300 }
+      let yearRange = { minYear: 0, maxYear: new Date().getFullYear() }
+      let dateAddedRange = { minDate: null, maxDate: null }
+      let lastPlayedAtRange = { minDate: null, maxDate: null }
       if (libraryStats) {
         bpmRange = {
           minBpm: Math.floor(libraryStats.bpmRange.minBpm),
           maxBpm: Math.ceil(libraryStats.bpmRange.maxBpm)
         }
+        yearRange = libraryStats.yearRange
+        dateAddedRange = libraryStats.dateAddedRange
+        lastPlayedAtRange = libraryStats.lastPlayedAtRange
       }
 
       setFilterOptions(prevOptions => ({
         ...prevOptions,
         bpmRange,
+        yearRange,
+        dateAddedRange,
+        lastPlayedAtRange,
         genres: availableGenres,
         crates: availableCrates,
         keys: availableKeys,

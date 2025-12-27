@@ -218,7 +218,23 @@ class MixxxDatabase {
     return this.getTracks({ trackCount: limit } )
   }
 
-  getTracks({ minBpm, maxBpm, genres, trackCount, query, keys, crates, groupings, artists } = {}) {
+  getTracks({
+    minBpm,
+    maxBpm,
+    genres,
+    trackCount,
+    query,
+    keys,
+    crates,
+    groupings,
+    artists,
+    minYear,
+    maxYear,
+    minDateAdded,
+    maxDateAdded,
+    minLastPlayedAt,
+    maxLastPlayedAt
+  } = {}) {
     if (!this.isConnected || !this.db) {
       throw new Error('Database not connected')
     }
@@ -270,6 +286,36 @@ class MixxxDatabase {
       if (maxBpm !== undefined && maxBpm !== null) {
         whereClauses.push('l.bpm <= @maxBpm')
         params.maxBpm = maxBpm
+      }
+
+      if (minYear !== undefined && minYear !== null) {
+        whereClauses.push("CAST(SUBSTR(l.year, 1, 4) AS INTEGER) >= @minYear")
+        params.minYear = minYear
+      }
+
+      if (maxYear !== undefined && maxYear !== null) {
+        whereClauses.push("CAST(SUBSTR(l.year, 1, 4) AS INTEGER) <= @maxYear")
+        params.maxYear = maxYear
+      }
+
+      if (minDateAdded) {
+        whereClauses.push('l.datetime_added >= @minDateAdded')
+        params.minDateAdded = minDateAdded
+      }
+
+      if (maxDateAdded) {
+        whereClauses.push('l.datetime_added <= @maxDateAdded')
+        params.maxDateAdded = maxDateAdded
+      }
+
+      if (minLastPlayedAt) {
+        whereClauses.push('l.last_played_at >= @minLastPlayedAt')
+        params.minLastPlayedAt = minLastPlayedAt
+      }
+
+      if (maxLastPlayedAt) {
+        whereClauses.push('l.last_played_at <= @maxLastPlayedAt')
+        params.maxLastPlayedAt = maxLastPlayedAt
       }
 
       if (Array.isArray(genres) && genres.length > 0) {

@@ -374,6 +374,7 @@ Read-only database operations
 │           │   │   ├── ArtistMultiSelect.jsx
 │           │   │   ├── BpmRangeInput.jsx
 │           │   │   ├── CrateMultiSelect.jsx
+│           │   │   ├── DateRangeInput.jsx
 │           │   │   ├── GenreMultiSelect.jsx
 │           │   │   ├── GroupingMultiSelect.jsx
 │           │   │   ├── KeyMultiSelect.jsx
@@ -419,7 +420,7 @@ Read-only database operations
 ├── structure.sql
 └── vitest.config.js
 
-35 directories, 97 files
+35 directories, 98 files
 ```
 
 # TODOS
@@ -611,7 +612,7 @@ used to perform a query against the Mixxx dabatase.
 - [x] Filter by Artists
 - [ ] Filter by Albums
 - [x] Filter by musical key
-- [ ] Filter by Year range
+- [x] Filter by Year range
 - [ ] Filter by last played date
 - [ ] Filter by date added range
 - [ ] Filter by times played
@@ -621,13 +622,14 @@ used to perform a query against the Mixxx dabatase.
 - [x] Selecting filters upon updating the available tracks should constrain the other filters (except for crates)
 - [ ] Add missing icons to filter inputs.
 - [x] Find a better way to handle alter table operations when initializing the database
+- [ ] Add clear button to bpm range input
 ### bug fixes
 - [ ] Window scrolls all the way up after removing a track. Is is necessary to reload the playlist here?
 - [ ] Is it necessary to reload the playlist when adding tracks? Can we do optimistic update to the view. Can the playlist stats be updated asynchronously?
 - [ ] Window scrolls all the way up after clicking the mp3 link
 - [ ] Change key notation select to something else. It looks like crap.
 ## TODOs for Feature: Playlist (Phase 4: harmonic mixing engine)
-- [ ] Remove limit from DB query
+- [x] Remove limit from DB query
 - [ ] Add harmonic mixing select with options none, strict and creative (discuss this)
 - [ ] Build harmonic mixing engine that creates a playlist order where tracks are harmonically compatible
 ## TODOs for Feature: Playlist (Phase 5: Audio Player)
