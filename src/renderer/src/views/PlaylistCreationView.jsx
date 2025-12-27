@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from 'react'
-import { MixxxStatsContext } from '../contexts/MixxxStatsContext'
+import { LibraryStatsContext } from '../contexts/LibraryStatsContext'
 import { Button, Spinner, Badge } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import { MusicNoteList } from 'react-bootstrap-icons'
@@ -31,7 +31,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
   })
   const [filteredTracks, setFilteredTracks] = useState([])
 
-  const mixxxStats = useContext(MixxxStatsContext)
+  const libraryStats = useContext(LibraryStatsContext)
   const debouncedSelectedFilters = useDebounce(selectedFilters, 200);
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
         setLoading(false)
       }
     }
-    setMaxCount(mixxxStats ? mixxxStats.totalTracks : 100)
+    setMaxCount(libraryStats ? libraryStats.totalTracks : 100)
     loadSavedFilters()
   }, [])
 
@@ -76,10 +76,24 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
       }
     }
 
+    // Constrain filter options based on previously selected broad filtes (like genre or crate)
+    const updateFilterOptions = async () => {
+      const artists = await window.api.mixxx.getAvailableArtists(debouncedSelectedFilters)
+      const groupings = await window.api.mixxx.getAvailableGroupings(debouncedSelectedFilters)
+      const keys = await window.api.mixxx.getAvailableKeys(debouncedSelectedFilters)
+      setFilterOptions(prevOptions => ({
+        ...prevOptions,
+        artists,
+        groupings,
+        keys
+      }))
+    }
+
     window.api.saveTrackFilters(debouncedSelectedFilters)
 
     if (mixxxStatus?.isConnected) {
       getTracks()
+      updateFilterOptions()
     }
   }, [debouncedSelectedFilters, mixxxStatus])
 
@@ -92,10 +106,10 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
       const availableArtists = await window.api.mixxx.getAvailableArtists() || []
 
       let bpmRange = { minBpm: 0, maxBpm: 300 }
-      if (mixxxStats) {
+      if (libraryStats) {
         bpmRange = {
-          minBpm: Math.floor(mixxxStats.bpmRange.minBpm),
-          maxBpm: Math.ceil(mixxxStats.bpmRange.maxBpm)
+          minBpm: Math.floor(libraryStats.bpmRange.minBpm),
+          maxBpm: Math.ceil(libraryStats.bpmRange.maxBpm)
         }
       }
 
@@ -113,34 +127,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
     if (mixxxStatus?.isConnected) {
       getFilterOptions()
     }
-  }, [mixxxStats, mixxxStatus])
-
-  // Constrain filter options based on previously selected tracks
-  useEffect(() => {
-    const extractFilterOptionsFromTracks = (fieldName) => {
-      const optionsSet = new Set()
-      filteredTracks.forEach(track => {
-        const fieldValue = track[fieldName]
-        if (fieldValue) {
-          optionsSet.add(fieldValue)
-        }
-      })
-      return Array.from(optionsSet).sort()
-    }
-
-    const updateFilterOptions = async () => {
-      await setFilterOptions(prevOptions => ({
-        ...prevOptions,
-        artists: extractFilterOptionsFromTracks('artist'),
-        groupings: extractFilterOptionsFromTracks('grouping'),
-        keys: extractFilterOptionsFromTracks('key')
-      }))
-    }
-
-    updateFilterOptions()
-
-
-  }, [filteredTracks])
+  }, [libraryStats, mixxxStatus])
 
   const handleSetTrackCount = (count) => {
     setTrackCount(count)

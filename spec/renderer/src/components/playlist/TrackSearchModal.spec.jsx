@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import TrackSearchModal from '@renderer/components/playlist/TrackSearchModal';
-import { MixxxStatsContext } from '@renderer/contexts/MixxxStatsContext';
+import { LibraryStatsContext } from '@renderer/contexts/LibraryStatsContext';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 // Mock the debounce hook to return the value immediately
@@ -32,7 +32,7 @@ window.api = {
   saveSearchFilters: mockSaveSearchFilters,
 };
 
-const mockMixxxStatsContextValue = {
+const mockLibraryStatsContextValue = {
   bpmRange: { minBpm: 100, maxBpm: 180 },
 };
 
@@ -45,9 +45,9 @@ const defaultProps = {
 
 const renderComponent = (props = {}) => {
   return render(
-    <MixxxStatsContext.Provider value={mockMixxxStatsContextValue}>
+    <LibraryStatsContext.Provider value={mockLibraryStatsContextValue}>
       <TrackSearchModal {...defaultProps} {...props} />
-    </MixxxStatsContext.Provider>
+    </LibraryStatsContext.Provider>
   );
 };
 

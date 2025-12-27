@@ -199,8 +199,10 @@ class MixxxDatabase {
         .all()
       stats.topGenres = genres
 
-      // BPM range
       stats.bpmRange = this.getBpmRange()
+      stats.yearRange = this.getYearRange()
+      stats.lastPlayedAtRange = this.getLastPlayedAtRange()
+      stats.dateAddedRange = this.getDateTimeAddedRange()
 
       return stats
     } catch (error) {
@@ -347,7 +349,6 @@ class MixxxDatabase {
             l.rating,
             l.key,
             l.comment,
-            l.datetime_added,
             l.timesplayed,
             l.last_played_at,
             l.bitrate,
@@ -423,21 +424,41 @@ class MixxxDatabase {
     }
   }
 
-  getAvailableGroupings() {
+  getAvailableGroupings({ genres, crates } = {}) {
     if (!this.isConnected || !this.db) {
       throw new Error('Database not connected')
     }
 
+    let baseQuery = 'SELECT DISTINCT grouping FROM library'
+    const whereClauses = ['grouping IS NOT NULL',  "grouping != ''", "mixxx_deleted = 0"]
+    const orderByClause = 'ORDER BY "grouping" COLLATE NOCASE ASC'
+    const params = {}
+
+    if (Array.isArray(genres) && genres.length > 0) {
+      const genreNamedParams = genres.map((g, index) => {
+        const name = `genre${index}`
+        params[name] = g.toLowerCase()
+        return `@${name}`
+      })
+      whereClauses.push(`LOWER(l.genre) IN (${genreNamedParams.join(', ')})`)
+    }
+
+    if (Array.isArray(crates) && crates.length > 0) {
+      baseQuery += ' JOIN crate_tracks ct ON ct.track_id = l.id'
+      const crateNamedParams = crates.map((g, index) => {
+        const name = `crate${index}`
+        params[name] = g
+        return `@${name}`
+      })
+      whereClauses.push(`ct.crate_id IN (${crateNamedParams.join(', ')})`)
+    }
+
+    const finalQuery = `${baseQuery} WHERE ${whereClauses.join(' AND ')} ${orderByClause}`
+
     try {
       const groupings = this.db
-        .prepare(`
-        SELECT DISTINCT "grouping"
-        FROM library
-        WHERE "grouping" IS NOT NULL AND "grouping" != ''
-        AND mixxx_deleted = 0
-        ORDER BY "grouping" COLLATE NOCASE ASC
-        `)
-        .all()
+        .prepare(finalQuery)
+        .all(params)
         .map(row => row.grouping)
       return groupings
     } catch (error) {
@@ -446,21 +467,41 @@ class MixxxDatabase {
     }
   }
 
-  getAvailableArtists() {
+  getAvailableArtists({ genres, crates } = {}) {
     if (!this.isConnected || !this.db) {
       throw new Error('Database not connected')
     }
 
+    let baseQuery = 'SELECT DISTINCT artist FROM library'
+    const whereClauses = ['artist IS NOT NULL',  "artist != ''", "mixxx_deleted = 0"]
+    const orderByClause = 'ORDER BY "artist" COLLATE NOCASE ASC'
+    const params = {}
+
+    if (Array.isArray(genres) && genres.length > 0) {
+      const genreNamedParams = genres.map((g, index) => {
+        const name = `genre${index}`
+        params[name] = g.toLowerCase()
+        return `@${name}`
+      })
+      whereClauses.push(`LOWER(l.genre) IN (${genreNamedParams.join(', ')})`)
+    }
+
+    if (Array.isArray(crates) && crates.length > 0) {
+      baseQuery += ' JOIN crate_tracks ct ON ct.track_id = l.id'
+      const crateNamedParams = crates.map((g, index) => {
+        const name = `crate${index}`
+        params[name] = g
+        return `@${name}`
+      })
+      whereClauses.push(`ct.crate_id IN (${crateNamedParams.join(', ')})`)
+    }
+
+    const finalQuery = `${baseQuery} WHERE ${whereClauses.join(' AND ')} ${orderByClause}`
+
     try {
       const artists = this.db
-        .prepare(`
-        SELECT DISTINCT artist
-        FROM library
-        WHERE artist IS NOT NULL AND artist != ''
-        AND mixxx_deleted = 0
-        ORDER BY artist COLLATE NOCASE ASC
-        `)
-        .all()
+        .prepare(finalQuery)
+        .all(params)
         .map(row => row.artist)
       return artists
     } catch (error) {
@@ -509,20 +550,41 @@ class MixxxDatabase {
     }
   }
 
-  getAvailableKeys() {
+  getAvailableKeys({ genres, crates } = {}) {
     if (!this.isConnected || !this.db) {
       throw new Error('Database not connected');
     }
 
+    let baseQuery = 'SELECT DISTINCT key FROM library'
+    const whereClauses = ['key IS NOT NULL',  "key != ''", "mixxx_deleted = 0"]
+    const params = {}
+
+    if (Array.isArray(genres) && genres.length > 0) {
+      const genreNamedParams = genres.map((g, index) => {
+        const name = `genre${index}`
+        params[name] = g.toLowerCase()
+        return `@${name}`
+      })
+      whereClauses.push(`LOWER(l.genre) IN (${genreNamedParams.join(', ')})`)
+    }
+
+    if (Array.isArray(crates) && crates.length > 0) {
+      baseQuery += ' JOIN crate_tracks ct ON ct.track_id = l.id'
+      const crateNamedParams = crates.map((g, index) => {
+        const name = `crate${index}`
+        params[name] = g
+        return `@${name}`
+      })
+      whereClauses.push(`ct.crate_id IN (${crateNamedParams.join(', ')})`)
+    }
+
+    const finalQuery = `${baseQuery} WHERE ${whereClauses.join(' AND ')}`
+
     try {
       const keys = this.db
-        .prepare(`
-          SELECT DISTINCT key
-          FROM library
-          WHERE key IS NOT NULL AND key != ''
-          AND mixxx_deleted = 0
-        `)
-        .all().map(row => row.key)
+            .prepare(finalQuery)
+            .all(params)
+            .map(row => row.key)
 
       return keys;
     } catch (error) {
@@ -555,6 +617,78 @@ class MixxxDatabase {
       return bpmRange
     } catch (error) {
       console.error('Error getting BPM range:', error)
+      throw error
+    }
+  }
+
+  getYearRange() {
+    if (!this.isConnected || !this.db) {
+      throw new Error('Database not connected')
+    }
+
+    try {
+      const yearRange = this.db
+        .prepare(`
+        SELECT
+          MIN(CAST(SUBSTR(year, 1, 4) AS INTEGER)) as minYear,
+          MAX(CAST(SUBSTR(year, 1, 4) AS INTEGER)) as maxYear
+        FROM library
+        WHERE year IS NOT NULL AND year != ''
+        AND mixxx_deleted = 0
+      `)
+        .get()
+
+      return yearRange
+    } catch (error) {
+      console.error('Error getting Year range:', error)
+      throw error
+    }
+  }
+
+  getDateTimeAddedRange() {
+    if (!this.isConnected || !this.db) {
+      throw new Error('Database not connected')
+    }
+
+    try {
+      const dateRange = this.db
+        .prepare(`
+        SELECT
+          MIN(datetime_added) as minDate,
+          MAX(datetime_added) as maxDate
+        FROM library
+        WHERE datetime_added IS NOT NULL
+        AND mixxx_deleted = 0
+      `)
+        .get()
+
+      return dateRange
+    } catch (error) {
+      console.error('Error getting Date Added range:', error)
+      throw error
+    }
+  }
+
+  getLastPlayedAtRange() {
+    if (!this.isConnected || !this.db) {
+      throw new Error('Database not connected')
+    }
+
+    try {
+      const dateRange = this.db
+        .prepare(`
+        SELECT
+          MIN(last_played_at) as minDate,
+          MAX(last_played_at) as maxDate
+        FROM library
+        WHERE last_played_at IS NOT NULL
+        AND mixxx_deleted = 0
+      `)
+        .get()
+
+      return dateRange
+    } catch (error) {
+      console.error('Error getting Last Played At range:', error)
       throw error
     }
   }

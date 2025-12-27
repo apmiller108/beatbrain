@@ -1,4 +1,5 @@
 import { Form, InputGroup, Row, Col } from 'react-bootstrap';
+import propTypes from 'prop-types';
 import { Speedometer2 } from 'react-bootstrap-icons';
 
 const BpmRangeInput = ({
@@ -104,6 +105,15 @@ const BpmRangeInput = ({
       </Row>
     </Form.Group>
   );
+};
+
+BpmRangeInput.propTypes = {
+  minValue: propTypes.number,
+  maxValue: propTypes.number,
+  onChange: propTypes.func.isRequired,
+  minBpm: propTypes.number,
+  maxBpm: propTypes.number,
+  disabled: propTypes.bool,
 };
 
 export default BpmRangeInput;

@@ -339,7 +339,10 @@ Read-only database operations
 │   │   │   └── beatbrain_logo.png
 │   │   ├── database
 │   │   │   ├── appDatabase
-│   │   │   │   ├── createTables.js
+│   │   │   │   ├── migrationManager.js
+│   │   │   │   ├── migrations
+│   │   │   │   │   ├── add_filters_to_playlists.js
+│   │   │   │   │   └── create_initial_tables.js
 │   │   │   │   ├── playlistRepository.js
 │   │   │   │   ├── settingsRepository.js
 │   │   │   │   └── userPreferenceRepository.js
@@ -382,6 +385,7 @@ Read-only database operations
 │           │   │   └── PlaylistList.jsx
 │           │   ├── Navigation.jsx
 │           │   ├── playlist
+│           │   │   ├── PlaylistFiltersPopover.jsx
 │           │   │   ├── PlaylistForm.jsx
 │           │   │   ├── PlaylistTrackItem.jsx
 │           │   │   ├── TrackSearchFilters.jsx
@@ -394,7 +398,7 @@ Read-only database operations
 │           │   ├── TrackInfoModal.jsx
 │           │   └── TrackList.jsx
 │           ├── contexts
-│           │   └── MixxxStatsContext.js
+│           │   └── LibraryStatsContext.js
 │           ├── hooks
 │           │   ├── useDebounced.js
 │           │   └── useKeyboardShortcut.js
@@ -402,6 +406,7 @@ Read-only database operations
 │           ├── utilities
 │           │   ├── formatDate.js
 │           │   ├── formatDuration.js
+│           │   ├── formatString.js
 │           │   ├── generateM3UContent.js
 │           │   ├── keyboard.js
 │           │   ├── musicalKeys.js
@@ -414,7 +419,7 @@ Read-only database operations
 ├── structure.sql
 └── vitest.config.js
 
-34 directories, 93 files
+35 directories, 97 files
 ```
 
 # TODOS
@@ -607,16 +612,15 @@ used to perform a query against the Mixxx dabatase.
 - [ ] Filter by Albums
 - [x] Filter by musical key
 - [ ] Filter by Year range
-- [ ] Filter by date added range
 - [ ] Filter by last played date
+- [ ] Filter by date added range
 - [ ] Filter by times played
 - [ ] Filter by rating
 - [x] Persist the selected filters on the playlist record.
-- [ ] Show this data to the user on demand. Use these filters to initialize the add track search filters.
-- [ ] Selecting filters upon updating the available tracks should constrain the other filters (except for crates)
+- [x] Show this data to the user on demand. Use these filters to initialize the add track search filters.
+- [x] Selecting filters upon updating the available tracks should constrain the other filters (except for crates)
 - [ ] Add missing icons to filter inputs.
-- [ ] make mixxxStats a generic libraryData object that not only has stats but also caches the filterOptions
-- [ ] Find a better way to handle alter table operations when initializing the database
+- [x] Find a better way to handle alter table operations when initializing the database
 ### bug fixes
 - [ ] Window scrolls all the way up after removing a track. Is is necessary to reload the playlist here?
 - [ ] Is it necessary to reload the playlist when adding tracks? Can we do optimistic update to the view. Can the playlist stats be updated asynchronously?

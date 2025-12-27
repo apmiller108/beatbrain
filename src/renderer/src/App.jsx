@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
-import { MixxxStatsContext } from './contexts/MixxxStatsContext'
+import { LibraryStatsContext } from './contexts/LibraryStatsContext'
 
 import PlaylistCreationView from './views/PlaylistCreationView'
 import PlaylistDetailView from './views/PlaylistDetailView'
@@ -21,7 +21,7 @@ function App() {
     userDataPath: 'Loading...',
   })
   const [mixxxStatus, setMixxxStatus] = useState({})
-  const [mixxxStats, setMixxxStats] = useState(null)
+  const [libraryStats, setLibraryStats] = useState(null)
   const [sampleTracks, setSampleTracks] = useState([])
   const [loading, setLoading] = useState(false)
   const [showConnectionModal, setShowConnectionModal] = useState(false)
@@ -102,8 +102,8 @@ function App() {
   const loadMixxxData = async () => {
     const status = await window.api.mixxx.getStatus()
     setMixxxStatus(status)
-    const stats = await window.api.mixxx.getStats()
-    setMixxxStats(stats)
+    const stats = await window.api.library.getStats('mixxx')
+    setLibraryStats(stats)
     const tracks = await window.api.mixxx.getSampleTracks(5)
     setSampleTracks(tracks)
   }
@@ -131,7 +131,7 @@ function App() {
       await window.api.mixxx.disconnect()
       const status = await window.api.mixxx.getStatus()
       setMixxxStatus(status)
-      setMixxxStats(null)
+      setLibraryStats(null)
       setSampleTracks([])
     } catch (error) {
       console.error('Failed to disconnect:', error)
@@ -248,7 +248,7 @@ function App() {
   }
 
   return (
-    <MixxxStatsContext.Provider value={mixxxStats}>
+    <LibraryStatsContext.Provider value={libraryStats}>
       <div className="App">
         <ToastNotification
           message={notification.message}
@@ -296,7 +296,7 @@ function App() {
           handleShowConnectionModal={handleShowConnectionModal}
         />
       </div>
-    </MixxxStatsContext.Provider>
+    </LibraryStatsContext.Provider>
   )
 }
 

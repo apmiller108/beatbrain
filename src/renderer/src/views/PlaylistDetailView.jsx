@@ -27,6 +27,7 @@ import FlashMessage from '../components/common/FlashMessage'
 import InlineEditInput from '../components/common/InlineEditInput'
 import PlaylistTrackItem from '../components/playlist/PlaylistTrackItem'
 import TrackSearchModal from '../components/playlist/TrackSearchModal'
+import PlaylistFiltersPopover from '../components/playlist/PlaylistFiltersPopover'
 
 const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, setNotification }) => {
   const [playlist, setPlaylist] = useState(null)
@@ -293,11 +294,17 @@ const PlaylistDetailView = ({ playlistId, onPlaylistDeleted, onPlaylistUpdated, 
         <Card.Body>
           <div className="d-flex justify-content-between align-items-start">
             <div>
-              <InlineEditInput value={playlist.name}
-                               onSave={handleSaveName}
-                               id="playlist-name-input">
-                <h2 className="mb-0">{playlist.name}</h2>
-              </InlineEditInput>
+              <div className="d-flex align-items-center">
+                <PlaylistFiltersPopover filters={playlist.filters} className="me-3" />
+                <InlineEditInput
+                  className="ms-3"
+                  value={playlist.name}
+                  onSave={handleSaveName}
+                  id="playlist-name-input">
+                  <h2 className="mb-0">{playlist.name}</h2>
+                </InlineEditInput>
+              </div>
+
               <div className="mt-1">
                 <InlineEditInput value={playlist.description}
                                  onSave={handleSaveDescription}

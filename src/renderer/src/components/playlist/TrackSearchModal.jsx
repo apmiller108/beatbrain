@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useRef } from 'react'
 import propTypes from 'prop-types'
-import { MixxxStatsContext } from '../../contexts/MixxxStatsContext'
+import { LibraryStatsContext } from '../../contexts/LibraryStatsContext'
 import { Modal, Button } from 'react-bootstrap'
 import TrackSearchInput from './TrackSearchInput'
 import TrackSearchFilters from './TrackSearchFilters'
@@ -34,7 +34,7 @@ const TrackSearchModal = ({
   const [searching, setSearching] = useState(false)
   const [keyNotation, setKeyNotation] = useState('original')
 
-  const mixxxStats = useContext(MixxxStatsContext)
+  const libraryStats = useContext(LibraryStatsContext)
   const debouncedFilters = useDebounce(filters, 300);
   const isInitialMount = useRef(true);
 
@@ -52,8 +52,8 @@ const TrackSearchModal = ({
         ]);
 
         const bpmOptions = {
-          minBpm: Math.floor(mixxxStats.bpmRange.minBpm),
-          maxBpm: Math.ceil(mixxxStats.bpmRange.maxBpm)
+          minBpm: Math.floor(libraryStats.bpmRange.minBpm),
+          maxBpm: Math.ceil(libraryStats.bpmRange.maxBpm)
         };
         setFilterOptions({ genres, groupings, keys, crates, ...bpmOptions });
         setKeyNotation(keyNotationPref || 'original');
