@@ -1,29 +1,43 @@
 import { useContext, useState, useEffect } from 'react'
-import { MixxxStatsContext } from '../contexts/MixxxStatsContext'
+import { LibraryStatsContext } from '../contexts/LibraryStatsContext'
 import { Button, Spinner, Badge } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import { MusicNoteList } from 'react-bootstrap-icons'
 import PlaylistForm from '../components/playlist/PlaylistForm'
 import FlashMessage from '../components/common/FlashMessage'
+import { shuffleArray } from '../utilities/shuffleArrary'
+import useDebounce from '../hooks/useDebounced'
 
 const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnectionModal, setNotification }) => {
   const [loading, setLoading] = useState(true)
   const [maxCount, setMaxCount] = useState(100)
-  const [bpmRange, setBpmRange] = useState({ minBpm: 0, maxBpm: 300 })
-  const [genres, setGenres] = useState([])
-  const [crates, setCrates] = useState([])
-  const [keys, setKeys] = useState([])
-  const [filters, setFilters] = useState({
-    trackCount: 25,
-    minBpm: null,
-    maxBpm: null,
+  const [filterOptions, setFilterOptions] = useState({
+    bpmRange: { minBpm: 0, maxBpm: 300 },
+    yearRange: { minYear: 0, maxYear: new Date().getFullYear() },
+    dateAddedRange: { minDate: null, maxDate: null },
+    lastPlayedAtRange: { minDate: null, maxDate: null },
     genres: [],
     crates: [],
+    keys: [],
+    groupings: [],
+    artists: []
+  })
+  const [trackCount, setTrackCount] = useState(25)
+  const [selectedFilters, setSelectedFilters] = useState({
+    minBpm: null,
+    maxBpm: null,
+    minYear: null,
+    maxYear: null,
+    genres: [],
+    crates: [],
+    groupings: [],
+    artists: [],
     keys: []
   })
   const [filteredTracks, setFilteredTracks] = useState([])
 
-  const mixxxStats = useContext(MixxxStatsContext)
+  const libraryStats = useContext(LibraryStatsContext)
+  const debouncedSelectedFilters = useDebounce(selectedFilters, 200);
 
   useEffect(() => {
     const loadSavedFilters = async () => {
@@ -31,8 +45,14 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
         const savedFilters = await window.api.getTrackFilters()
         if (savedFilters) {
           const parsedFilters = JSON.parse(savedFilters)
-          setFilters(prevFilters => ({ ...prevFilters, ...parsedFilters }))
+          setSelectedFilters(prevFilters => ({ ...prevFilters, ...parsedFilters }))
         }
+
+        const savedTrackCount = await window.api.getSetting('playlist_track_count')
+        if (savedTrackCount) {
+          setTrackCount(parseInt(savedTrackCount, 10))
+        }
+
         setLoading(false)
       } catch (error) {
         console.error('Error loading saved filters:', error)
@@ -40,6 +60,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
         setLoading(false)
       }
     }
+    setMaxCount(libraryStats ? libraryStats.totalTracks : 100)
     loadSavedFilters()
   }, [])
 
@@ -50,9 +71,9 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
         // necessary due to how the KeyMultiSelect component normalizes the
         // select input's values (ie, camelot notation) a single value which
         // can correspond to multiple keys as stored in mixxxdb.
-        const keys = filters.keys.flatMap(key => key.value)
-        const crates = filters.crates.map(crate => crate.value) // Extract crate IDs
-        const quereyParams = { ...filters, keys, crates }
+        const keys = debouncedSelectedFilters.keys.flatMap(key => key.value)
+        const crates = debouncedSelectedFilters.crates.map(crate => crate.value) // Extract crate IDs
+        const quereyParams = { ...debouncedSelectedFilters, keys, crates }
         const tracks = await window.api.mixxx.getTracks(quereyParams)
         setFilteredTracks(tracks)
       } catch (error) {
@@ -60,42 +81,76 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
       }
     }
 
-    window.api.saveTrackFilters(filters)
+    // Constrain filter options based on previously selected broad filtes (like genre or crate)
+    const updateFilterOptions = async () => {
+      const artists = await window.api.mixxx.getAvailableArtists(debouncedSelectedFilters)
+      const groupings = await window.api.mixxx.getAvailableGroupings(debouncedSelectedFilters)
+      const keys = await window.api.mixxx.getAvailableKeys(debouncedSelectedFilters)
+      setFilterOptions(prevOptions => ({
+        ...prevOptions,
+        artists,
+        groupings,
+        keys
+      }))
+    }
+
+    window.api.saveTrackFilters(debouncedSelectedFilters)
 
     if (mixxxStatus?.isConnected) {
       getTracks()
+      updateFilterOptions()
     }
-  }, [filters, mixxxStatus])
+  }, [debouncedSelectedFilters, mixxxStatus])
 
   useEffect(() => {
     const getFilterOptions = async () => {
       const availableGenres = await window.api.mixxx.getAvailableGenres() || []
-      setGenres(availableGenres)
-
       const availableCrates = await window.api.mixxx.getAvailableCrates() || []
-      setCrates(availableCrates)
-
       const availableKeys = await window.api.mixxx.getAvailableKeys() || []
-      setKeys(availableKeys)
+      const availableGroupings = await window.api.mixxx.getAvailableGroupings() || []
+      const availableArtists = await window.api.mixxx.getAvailableArtists() || []
+
+      let bpmRange = { minBpm: 0, maxBpm: 300 }
+      let yearRange = { minYear: 0, maxYear: new Date().getFullYear() }
+      let dateAddedRange = { minDate: null, maxDate: null }
+      let lastPlayedAtRange = { minDate: null, maxDate: null }
+      if (libraryStats) {
+        bpmRange = {
+          minBpm: Math.floor(libraryStats.bpmRange.minBpm),
+          maxBpm: Math.ceil(libraryStats.bpmRange.maxBpm)
+        }
+        yearRange = libraryStats.yearRange
+        dateAddedRange = libraryStats.dateAddedRange
+        lastPlayedAtRange = libraryStats.lastPlayedAtRange
+      }
+
+      setFilterOptions(prevOptions => ({
+        ...prevOptions,
+        bpmRange,
+        yearRange,
+        dateAddedRange,
+        lastPlayedAtRange,
+        genres: availableGenres,
+        crates: availableCrates,
+        keys: availableKeys,
+        groupings: availableGroupings,
+        artists: availableArtists
+      }))
     }
 
     if (mixxxStatus?.isConnected) {
       getFilterOptions()
     }
+  }, [libraryStats, mixxxStatus])
 
-    if (mixxxStats) {
-      setMaxCount(mixxxStats.totalTracks)
-      setBpmRange({
-        minBpm: Math.floor(mixxxStats.bpmRange.minBpm),
-        maxBpm: Math.ceil(mixxxStats.bpmRange.maxBpm)
-      })
-    }
-  }, [mixxxStats, mixxxStatus])
+  const handleSetTrackCount = (count) => {
+    setTrackCount(count)
+    window.api.setSetting('playlist_track_count', count)
+  }
 
   // Track count indicator logic
   const filteredCount = filteredTracks.length
-  const desiredCount = filters.trackCount
-  const isCountSufficient = filteredCount >= desiredCount
+  const isCountSufficient = filteredCount >= trackCount
 
   // Is the form valid for generating a playlist
   const canGeneratePlaylist = mixxxStatus?.isConnected && !loading && isCountSufficient
@@ -104,11 +159,17 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
     try {
       setLoading(true)
 
+      if (!isCountSufficient) {
+        throw new Error('Not enough tracks to generate playlist')
+      }
+
+      const tracks = shuffleArray(filteredTracks).slice(0, trackCount)
       const name = `Playlist ${new Date().toLocaleString()}`
       const playlist = await window.api.createPlaylist({
         name,
         description: 'A playlist created from Mixxx tracks',
-      }, filteredTracks)
+        filters: JSON.stringify(selectedFilters)
+      }, tracks)
 
       onPlaylistCreated(playlist.id)
     } catch (error) {
@@ -138,7 +199,7 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
           </Badge>
           {!isCountSufficient && (
             <small className="text-muted">
-              (need {desiredCount} for playlist)
+              (need {trackCount} for playlist)
             </small>
           )}
         </div>
@@ -172,13 +233,12 @@ const PlaylistCreationView = ({ mixxxStatus, onPlaylistCreated, handleShowConnec
             <>
               <TrackCountStatus />
               <PlaylistForm
-                filters={filters}
-                onFiltersChange={setFilters}
+                filters={selectedFilters}
+                filterOptions={filterOptions}
+                trackCount={trackCount}
+                setTrackCount={handleSetTrackCount}
+                onFiltersChange={setSelectedFilters}
                 maxTrackCount={maxCount}
-                bpmRange={bpmRange}
-                availableGenres={genres}
-                availableCrates={crates}
-                availableKeys={keys}
                 onGeneratePlaylist={onGeneratePlaylist}
                 isValid={canGeneratePlaylist}
               />

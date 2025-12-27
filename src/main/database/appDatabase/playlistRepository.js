@@ -3,13 +3,13 @@ export default class PlaylistRepository {
     this.db = db
   }
 
-  createPlaylist(name, description, trackSource, tracks) {
+  createPlaylist(name, description, trackSource, filters, tracks) {
     return this.db.transaction(() => {
       const insertPlaylistStmt = this.db.prepare(`
-        INSERT INTO playlists (name, description, track_source, created_at, updated_at)
-        VALUES ($name, $description, $trackSource, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        INSERT INTO playlists (name, description, track_source, filters, created_at, updated_at)
+        VALUES ($name, $description, $trackSource, $filters, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `)
-      const playlist = insertPlaylistStmt.run({ name, description, trackSource })
+      const playlist = insertPlaylistStmt.run({ name, description, trackSource, filters })
 
       const insertTrackStmt = this.db.prepare(`
         INSERT INTO playlist_tracks (playlist_id, source_track_id, file_path, duration, artist, title, album, genre, bpm, key, position, created_at, updated_at)

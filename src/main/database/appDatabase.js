@@ -1,21 +1,27 @@
 import Database from 'better-sqlite3'
-import CreateTables from './appDatabase/createTables.js'
+import path from 'path'
 import SettingsRepository from './appDatabase/settingsRepository.js'
 import UserPreferenceRepository from './appDatabase/userPreferenceRepository.js'
 import PlaylistRepository from './appDatabase/playlistRepository.js'
-import path from 'path'
+import MigrationManager from './appDatabase/migrationManager.js'
+import create_initial_tables from './appDatabase/migrations/create_initial_tables.js'
+import add_filters_to_playlists from './appDatabase/migrations/add_filters_to_playlists.js'
 
 class AppDatabase {
   constructor(debug = false) {
     this.dbPath = null
     this.db = null
     this.verbose = debug ? console.log : null
+    this.migrations = [
+      create_initial_tables,
+      add_filters_to_playlists
+    ]
     this.settingsRepository = new SettingsRepository(this)
     this.userPreferencesRepository = new UserPreferenceRepository(this)
     this.playlistRepository = new PlaylistRepository(this)
   }
 
-  initialize(userDataPath) {
+  async initialize(userDataPath) {
     if (process.env.NODE_ENV === 'test' && process.env.BEATBRAIN_TEST_APP_DB) {
       // In test mode, use a temporary database path if provided (for e2e testing)
       this.dbPath = process.env.BEATBRAIN_TEST_APP_DB
@@ -28,17 +34,14 @@ class AppDatabase {
     this.db.pragma('journal_mode = WAL')
 
     try {
-      this.createTables()
+      const migrationManager = new MigrationManager(this.db)
+      migrationManager.register(this.migrations)
+      await migrationManager.runMigrations()
       return true
     } catch (error) {
       console.error('Error getting user data path:', error)
       throw error
     }
-  }
-
-  createTables() {
-    const createTables = new CreateTables(this)
-    createTables.up()
   }
 
   // Settings Repository Methods
@@ -91,8 +94,8 @@ class AppDatabase {
 
   // Playlist Repository Methods
 
-  createPlaylist({ name, description = '', trackSource = 'mixxx' }, tracks = []) {
-    return this.playlistRepository.createPlaylist(name, description, trackSource, tracks)
+  createPlaylist({ name, description = '', trackSource = 'mixxx', filters = '' }, tracks = []) {
+    return this.playlistRepository.createPlaylist(name, description, trackSource, filters, tracks)
   }
 
   getPlaylist(id) {

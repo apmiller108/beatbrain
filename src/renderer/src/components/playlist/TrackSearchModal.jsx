@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useRef } from 'react'
 import propTypes from 'prop-types'
-import { MixxxStatsContext } from '../../contexts/MixxxStatsContext'
+import { LibraryStatsContext } from '../../contexts/LibraryStatsContext'
 import { Modal, Button } from 'react-bootstrap'
 import TrackSearchInput from './TrackSearchInput'
 import TrackSearchFilters from './TrackSearchFilters'
@@ -17,7 +17,8 @@ const TrackSearchModal = ({
   const [filterOptions, setFilterOptions] = useState({
     genres: [],
     keys: [],
-    crates: []
+    crates: [],
+    groupings: [],
   })
   const [filters, setFilters] = useState({
     query: '',
@@ -25,14 +26,15 @@ const TrackSearchModal = ({
     bpmMax: null,
     genres: [],
     keys: [],
-    crates: []
+    crates: [],
+    groupings: []
   })
   const [searchResults, setSearchResults] = useState([])
   const [selectedTracks, setSelectedTracks] = useState(new Set())
   const [searching, setSearching] = useState(false)
   const [keyNotation, setKeyNotation] = useState('original')
 
-  const mixxxStats = useContext(MixxxStatsContext)
+  const libraryStats = useContext(LibraryStatsContext)
   const debouncedFilters = useDebounce(filters, 300);
   const isInitialMount = useRef(true);
 
@@ -40,8 +42,9 @@ const TrackSearchModal = ({
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        const [genres, keys, crates, savedFiltersStr, keyNotationPref] = await Promise.all([
+        const [genres, groupings, keys, crates, savedFiltersStr, keyNotationPref] = await Promise.all([
           window.api.mixxx.getAvailableGenres(),
+          window.api.mixxx.getAvailableGroupings(),
           window.api.mixxx.getAvailableKeys(),
           window.api.mixxx.getAvailableCrates(),
           window.api.getSetting('searchFilters'),
@@ -49,10 +52,10 @@ const TrackSearchModal = ({
         ]);
 
         const bpmOptions = {
-          minBpm: Math.floor(mixxxStats.bpmRange.minBpm),
-          maxBpm: Math.ceil(mixxxStats.bpmRange.maxBpm)
+          minBpm: Math.floor(libraryStats.bpmRange.minBpm),
+          maxBpm: Math.ceil(libraryStats.bpmRange.maxBpm)
         };
-        setFilterOptions({ genres, keys, crates, ...bpmOptions });
+        setFilterOptions({ genres, groupings, keys, crates, ...bpmOptions });
         setKeyNotation(keyNotationPref || 'original');
 
         if (savedFiltersStr) {

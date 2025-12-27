@@ -1,72 +1,105 @@
 import PropTypes from 'prop-types'
-import { Form, Button } from 'react-bootstrap'
+import { Form, Button, Row, Col } from 'react-bootstrap'
 import TrackCountInput from '../filters/TrackCountInput'
 import BpmRangeInput from '../filters/BpmRangeInput'
 import GenreMultiSelect from '../filters/GenreMultiSelect'
 import CrateMultiSelect from '../filters/CrateMultiSelect'
+import GroupingMultiSelect from '../filters/GroupingMultiSelect'
+import ArtistMultiSelect from '../filters/ArtistMultiSelect'
 import KeyMultiSelect from '../filters/KeyMultiSelect'
+import DateRangeInput from '../filters/DateRangeInput'
 
 const PlaylistForm = ({
   filters,
+  filterOptions,
+  trackCount,
+  setTrackCount,
   onFiltersChange,
   maxTrackCount,
-  bpmRange,
-  availableGenres,
-  availableCrates,
-  availableKeys,
   onGeneratePlaylist,
   isValid
 }) => {
-  const handleTrackCountChange = (value) => {
-    onFiltersChange({ ...filters, trackCount: value })
-  }
+  const { bpmRange, yearRange, dateAddedRange, lastPlayedAtRange, genres, crates, keys, groupings, artists } = filterOptions
 
-  const handleBpmRangeChange = (value) => {
-    onFiltersChange({ ...filters, ...value })
-  }
-
-  const handleGenresChange = (value) => {
-    onFiltersChange({ ...filters, genres: value })
-  }
-
-  const handleKeysChange = (value) => {
-    onFiltersChange({ ...filters, keys: value })
-  }
-
-  const handleCratesChange = (value) => {
-    onFiltersChange({ ...filters, crates: value })
+  const handleFilterChange = (changedFilters) => {
+    onFiltersChange({ ...filters, ...changedFilters })
   }
 
   return (
     <div id="playlist-filters" className="mb-4 p-3 border rounded shadow-sm bg-light">
       <Form>
-        <TrackCountInput
-          value={filters.trackCount}
-          onChange={handleTrackCountChange}
-          max={maxTrackCount}
-        />
-        <BpmRangeInput
-          minBpm={bpmRange.minBpm}
-          maxBpm={bpmRange.maxBpm}
-          minValue={filters.minBpm}
-          maxValue={filters.maxBpm}
-          onChange={handleBpmRangeChange}
-        />
-        <GenreMultiSelect
-          genres={availableGenres}
-          value={filters.genres}
-          onChange={handleGenresChange}
-        />
-        <CrateMultiSelect
-          crates={availableCrates}
-          value={filters.crates}
-          onChange={handleCratesChange}
-        />
-        <KeyMultiSelect
-          keys={availableKeys}
-          value={filters.keys}
-          onChange={handleKeysChange}
-        />
+        <Row>
+          <Col xs={2}>
+            <TrackCountInput
+              value={trackCount}
+              onChange={setTrackCount}
+              max={maxTrackCount}
+            />
+          </Col>
+          <Col xs={5}>
+            <GenreMultiSelect
+              genres={genres}
+              value={filters.genres}
+              onChange={(value) => { handleFilterChange({ genres: value }) }}
+            />
+          </Col>
+          <Col xs={5}>
+            <CrateMultiSelect
+              crates={crates}
+              value={filters.crates}
+              onChange={(value) => { handleFilterChange({ crates: value }) }}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={6}>
+            <BpmRangeInput
+              minBpm={bpmRange.minBpm}
+              maxBpm={bpmRange.maxBpm}
+              minValue={filters.minBpm}
+              maxValue={filters.maxBpm}
+              onChange={handleFilterChange}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={4}>
+            <DateRangeInput
+              minYear={yearRange.minYear}
+              maxYear={yearRange.maxYear}
+              minValue={filters.minYear}
+              maxValue={filters.maxYear}
+              onChange={(value) => { handleFilterChange({ minYear: value.minDate, maxYear: value.maxDate }) }}
+              label="Year"
+              granularity="year"
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={6}>
+            <ArtistMultiSelect
+              artists={artists}
+              value={filters.artists}
+              onChange={(value) => { handleFilterChange({ artists: value }) }}
+            />
+          </Col>
+          <Col xs={6}>
+            <GroupingMultiSelect
+              groupings={groupings}
+              value={filters.groupings}
+              onChange={(value) => { handleFilterChange({ groupings: value }) }}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={6}>
+            <KeyMultiSelect
+              keys={keys}
+              value={filters.keys}
+              onChange={(value) => { handleFilterChange({ keys: value }) }}
+            />
+          </Col>
+        </Row>
         <Button variant="primary"
                 disabled={!isValid}
                 onClick={onGeneratePlaylist}
@@ -80,19 +113,34 @@ const PlaylistForm = ({
 
 PlaylistForm.propTypes = {
   filters: PropTypes.shape({
-    trackCount: PropTypes.number.isRequired,
     minBpm: PropTypes.number,
     maxBpm: PropTypes.number,
     genres: PropTypes.arrayOf(PropTypes.string).isRequired,
+    artists: PropTypes.arrayOf(PropTypes.string).isRequired,
+    crates: PropTypes.arrayOf(PropTypes.string).isRequired,
+    keys: PropTypes.arrayOf(PropTypes.string).isRequired,
+    groupings: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
+  filterOptions: PropTypes.shape({
+    bpmRange: PropTypes.shape({
+      minBpm: PropTypes.number,
+      maxBpm: PropTypes.number,
+    }),
+    genres: PropTypes.arrayOf(PropTypes.string),
+    artists: PropTypes.arrayOf(PropTypes.string),
+    crates: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+        name: PropTypes.string,
+      })
+    ),
+    keys: PropTypes.arrayOf(PropTypes.string),
+    groupings: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired,
+  trackCount: PropTypes.number.isRequired,
+  setTrackCount: PropTypes.func.isRequired,
   onFiltersChange: PropTypes.func.isRequired,
   maxTrackCount: PropTypes.number.isRequired,
-  bpmRange: PropTypes.shape({
-    minBpm: PropTypes.number.isRequired,
-    maxBpm: PropTypes.number.isRequired,
-  }).isRequired,
-  availableGenres: PropTypes.arrayOf(PropTypes.string).isRequired,
-  disabled: PropTypes.bool,
   onGeneratePlaylist: PropTypes.func.isRequired,
   isValid: PropTypes.bool.isRequired,
 }

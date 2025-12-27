@@ -41,6 +41,10 @@ const api = {
   openFileInFolder: (filePath) => ipcRenderer.invoke('file:openFileInFolder', filePath),
   openFile: (filePath) => ipcRenderer.invoke('file:openFile', filePath),
 
+  library: {
+    getStats: (libraryType) => ipcRenderer.invoke('library:getStats', libraryType),
+  },
+
   // Mixxx integration
   mixxx: {
     getStatus: () => ipcRenderer.invoke('mixxx:getStatus'),
@@ -52,6 +56,8 @@ const api = {
     getAvailableGenres: () => ipcRenderer.invoke('mixxx:getAvailableGenres'),
     getAvailableCrates: () => ipcRenderer.invoke('mixxx:getAvailableCrates'),
     getAvailableKeys: () => ipcRenderer.invoke('mixxx:getAvailableKeys'),
+    getAvailableGroupings: () => ipcRenderer.invoke('mixxx:getAvailableGroupings'),
+    getAvailableArtists: () => ipcRenderer.invoke('mixxx:getAvailableArtists'),
     getTracks: (filters) => ipcRenderer.invoke('mixxx:getTracks', filters),
     getTrackById: (trackId) => ipcRenderer.invoke('mixxx:getTrackById', trackId)
   }

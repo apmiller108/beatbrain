@@ -77,6 +77,14 @@ app.whenReady().then(() => {
     return app.getPath(name)
   })
 
+  ipcMain.handle('library:getStats', (_, libraryType) => {
+    if (libraryType === 'mixxx') {
+      return mixxxDatabase.getLibraryStats()
+    } else {
+      throw new Error(`Unknown library type: ${libraryType}`)
+    }
+  })
+
   registerAppDatabaseHandlers(appDatabase)
   registerMixxxDatabaseHandlers(mixxxDatabase)
   registerFileHandlers()
